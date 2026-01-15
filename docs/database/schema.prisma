@@ -1,0 +1,625 @@
+// Global Quest - Database Schema
+// Prisma Schema for PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id            String   @id @default(cuid())
+  email         String?  @unique
+  phone         String?  @unique
+  name          String
+  avatarUrl     String?
+  
+  // Demographics (optional, for adaptive UI)
+  ageGroup      AgeGroup @default(ADULT)
+  country       String   @default("IN")
+  language      String   @default("en")
+  
+  // Preferences
+  settings      Json     @default("{}")  // notifications, sounds, theme
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastActiveAt  DateTime @default(now())
+  
+  // Relations
+  progress      UserProgress[]
+  streaks       UserStreak?
+  answers       UserAnswer[]
+  achievements  UserAchievement[]
+  artifacts     UserArtifact[]
+  duels         Duel[]           @relation("DuelChallenger")
+  duelsReceived Duel[]           @relation("DuelOpponent")
+  dailyChallenges DailyChallenge[]
+  
+  @@index([email])
+  @@index([lastActiveAt])
+}
+
+enum AgeGroup {
+  KID      // < 13
+  TEEN     // 13-17
+  ADULT    // 18+
+}
+
+// ============================================================================
+// PROGRESSION SYSTEM
+// ============================================================================
+
+model UserProgress {
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // What they're progressing in
+  continent           Continent
+  category            Category
+  
+  // Progress metrics
+  questionsAnswered   Int       @default(0)
+  correctAnswers      Int       @default(0)
+  masteryPercentage   Float     @default(0)
+  
+  // Skill tracking (for adaptive difficulty)
+  skillLevel          Float     @default(0.5)  // 0-1 scale
+  confidenceIndex     Float     @default(0.5)
+  
+  // Timestamps
+  lastPlayedAt        DateTime?
+  updatedAt           DateTime  @updatedAt
+  
+  @@unique([userId, continent, category])
+  @@index([userId])
+  @@index([masteryPercentage])
+}
+
+model UserStreak {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Streak data
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  lastActivityDate DateTime?
+  
+  // Protection items
+  freezesAvailable Int     @default(0)
+  shieldsAvailable Int     @default(0)
+  
+  // Timestamps
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================================================
+// XP & LEVELING
+// ============================================================================
+
+model UserXP {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  
+  // XP tracking
+  totalXP       Int      @default(0)
+  currentLevel  Int      @default(1)
+  xpToNextLevel Int      @default(500)
+  
+  // Daily/Weekly caps (prevent grinding)
+  dailyXPEarned Int      @default(0)
+  weeklyXPEarned Int     @default(0)
+  lastDailyReset DateTime @default(now())
+  lastWeeklyReset DateTime @default(now())
+  
+  updatedAt     DateTime @updatedAt
+  
+  @@index([totalXP])
+  @@index([currentLevel])
+}
+
+// ============================================================================
+// QUESTIONS & CONTENT
+// ============================================================================
+
+model Question {
+  id                  String    @id @default(cuid())
+  
+  // Classification
+  continent           Continent
+  category            Category
+  subCategory         String?   // e.g., "Geography", "Culture", "Wildlife"
+  
+  // Difficulty & Engagement
+  difficulty          Float     @default(0.5)  // 0-1 scale
+  fascinationScore    Float     @default(0.5)  // How "wow" is this fact
+  
+  // Question content
+  hookText            String    // The curiosity-driving question
+  options             Json      // Array of 4 options: [{id: "a", text: "..."}, ...]
+  correctAnswer       String    // "a", "b", "c", or "d"
+  
+  // Explanation (the learning moment)
+  explanation         String    @db.Text  // Mind-blowing explanation
+  explanationShort    String?   // For share cards
+  
+  // Visual & Media
+  visualInstruction   String?   @db.Text  // Animation/visual guidance
+  imageUrl            String?
+  
+  // Metadata
+  source              String?   // Where this fact came from
+  verifiedAt          DateTime?
+  isActive            Boolean   @default(true)
+  
+  // AI Generation tracking
+  generatedByAI       Boolean   @default(false)
+  aiModel             String?
+  humanReviewed       Boolean   @default(false)
+  
+  // Stats
+  timesShown          Int       @default(0)
+  timesCorrect        Int       @default(0)
+  avgTimeToAnswer     Float?    // in milliseconds
+  
+  // Timestamps
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  
+  // Relations
+  answers             UserAnswer[]
+  dailyChallenges     DailyChallengeQuestion[]
+  duelQuestions       DuelQuestion[]
+  
+  @@index([continent, category])
+  @@index([difficulty])
+  @@index([fascinationScore])
+  @@index([isActive])
+}
+
+enum Continent {
+  ASIA
+  AFRICA
+  EUROPE
+  NORTH_AMERICA
+  SOUTH_AMERICA
+  AUSTRALIA_OCEANIA
+  ANTARCTICA
+}
+
+enum Category {
+  // Primary content categories
+  GEOGRAPHY
+  CULTURE
+  HISTORY
+  ECONOMY
+  NATURE_WILDLIFE
+  POLITICS
+  WEIRD_FASCINATING
+  
+  // Secondary high-retention categories
+  ANIMALS_NATURE
+  FOOD_ORIGINS
+  SCIENCE_MAGIC
+  WORLD_MYSTERIES
+  INDIA_SPECIAL
+  USA_SPECIAL
+  COMPETITIVE_EXAM
+}
+
+// ============================================================================
+// USER ANSWERS & LEARNING
+// ============================================================================
+
+model UserAnswer {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId    String
+  question      Question @relation(fields: [questionId], references: [id])
+  
+  // Answer data
+  selectedAnswer String   // "a", "b", "c", or "d"
+  isCorrect     Boolean
+  timeTakenMs   Int      // Time to answer in milliseconds
+  
+  // Context
+  context       AnswerContext @default(FREE_PLAY)
+  sessionId     String?  // Group answers by session
+  
+  // Spaced repetition
+  nextReviewAt  DateTime?
+  reviewCount   Int      @default(0)
+  easeFactor    Float    @default(2.5)  // SM-2 algorithm
+  
+  // Timestamps
+  answeredAt    DateTime @default(now())
+  
+  @@index([userId, answeredAt])
+  @@index([questionId])
+  @@index([nextReviewAt])
+}
+
+enum AnswerContext {
+  FREE_PLAY
+  DAILY_CHALLENGE
+  DUEL
+  REVIEW
+  CONTINENT_QUEST
+}
+
+// ============================================================================
+// DAILY CHALLENGES
+// ============================================================================
+
+model DailyChallenge {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Challenge date
+  date          DateTime @db.Date
+  
+  // Status
+  isCompleted   Boolean  @default(false)
+  questionsAnswered Int  @default(0)
+  correctAnswers Int     @default(0)
+  
+  // Rewards
+  xpEarned      Int      @default(0)
+  bonusEarned   Int      @default(0)
+  
+  // Timestamps
+  startedAt     DateTime?
+  completedAt   DateTime?
+  
+  // Relations
+  questions     DailyChallengeQuestion[]
+  
+  @@unique([userId, date])
+  @@index([date])
+}
+
+model DailyChallengeQuestion {
+  id                String    @id @default(cuid())
+  dailyChallengeId  String
+  dailyChallenge    DailyChallenge @relation(fields: [dailyChallengeId], references: [id], onDelete: Cascade)
+  questionId        String
+  question          Question  @relation(fields: [questionId], references: [id])
+  
+  order             Int       // 1-5 for daily challenges
+  
+  @@unique([dailyChallengeId, order])
+}
+
+// ============================================================================
+// SOCIAL DUELS
+// ============================================================================
+
+model Duel {
+  id              String    @id @default(cuid())
+  
+  // Players
+  challengerId    String
+  challenger      User      @relation("DuelChallenger", fields: [challengerId], references: [id])
+  opponentId      String?   // Null until someone accepts
+  opponent        User?     @relation("DuelOpponent", fields: [opponentId], references: [id])
+  
+  // Challenge config
+  continent       Continent?
+  category        Category?
+  questionCount   Int       @default(5)
+  timeLimitSeconds Int      @default(60)  // Per question
+  
+  // Stakes
+  stakeType       DuelStakeType @default(CASUAL)
+  xpWager         Int       @default(0)
+  
+  // Scores
+  challengerScore Int       @default(0)
+  opponentScore   Int       @default(0)
+  
+  // Status
+  status          DuelStatus @default(PENDING)
+  
+  // Share link
+  shareCode       String    @unique @default(cuid())
+  
+  // Timestamps
+  createdAt       DateTime  @default(now())
+  expiresAt       DateTime  // Link expires after 48 hours
+  startedAt       DateTime?
+  completedAt     DateTime?
+  
+  // Relations
+  questions       DuelQuestion[]
+  
+  @@index([shareCode])
+  @@index([status])
+  @@index([challengerId])
+  @@index([opponentId])
+}
+
+model DuelQuestion {
+  id            String   @id @default(cuid())
+  duelId        String
+  duel          Duel     @relation(fields: [duelId], references: [id], onDelete: Cascade)
+  questionId    String
+  question      Question @relation(fields: [questionId], references: [id])
+  
+  order         Int
+  
+  // Answers
+  challengerAnswer String?
+  challengerTimeMs Int?
+  opponentAnswer   String?
+  opponentTimeMs   Int?
+  
+  @@unique([duelId, order])
+}
+
+enum DuelStakeType {
+  CASUAL      // No stakes
+  XP_WAGER    // Winner takes XP
+  STREAK_SHIELD // Winner takes protection item
+}
+
+enum DuelStatus {
+  PENDING     // Waiting for opponent
+  ACTIVE      // In progress
+  COMPLETED   // Finished
+  EXPIRED     // Not accepted in time
+  CANCELLED   // Cancelled by challenger
+}
+
+// ============================================================================
+// ACHIEVEMENTS & ARTIFACTS
+// ============================================================================
+
+model Achievement {
+  id            String   @id @default(cuid())
+  
+  // Definition
+  code          String   @unique  // e.g., "STREAK_7", "AFRICA_MASTER"
+  name          String
+  description   String
+  iconUrl       String?
+  
+  // Requirements
+  requirementType AchievementType
+  requirementValue Int   // e.g., 7 for 7-day streak
+  continent     Continent?
+  category      Category?
+  
+  // Rewards
+  xpReward      Int       @default(0)
+  artifactId    String?   // Unlock artifact on achievement
+  
+  // Relations
+  users         UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  
+  // Progress
+  currentValue  Int         @default(0)
+  isUnlocked    Boolean     @default(false)
+  unlockedAt    DateTime?
+  
+  @@unique([userId, achievementId])
+}
+
+enum AchievementType {
+  STREAK_DAYS
+  CONTINENT_MASTERY
+  CATEGORY_MASTERY
+  QUESTIONS_ANSWERED
+  CORRECT_STREAK
+  DUELS_WON
+  LEVEL_REACHED
+}
+
+// Collectible digital artifacts (prestige items)
+model Artifact {
+  id            String   @id @default(cuid())
+  
+  // Definition
+  code          String   @unique  // e.g., "JADE_DRAGON", "GOLDEN_MASK"
+  name          String
+  description   String
+  
+  // Visual
+  imageUrl      String
+  animationUrl  String?  // Lottie/Rive animation
+  rarity        ArtifactRarity @default(RARE)
+  
+  // How to earn
+  continent     Continent?  // Earned by mastering this continent
+  requirement   String?     // Human-readable requirement
+  
+  // Relations
+  users         UserArtifact[]
+}
+
+model UserArtifact {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artifactId    String
+  artifact      Artifact @relation(fields: [artifactId], references: [id])
+  
+  // Ownership
+  earnedAt      DateTime @default(now())
+  isEquipped    Boolean  @default(false)  // Show on profile
+  
+  @@unique([userId, artifactId])
+}
+
+enum ArtifactRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+// ============================================================================
+// LEADERBOARDS
+// ============================================================================
+
+model Leaderboard {
+  id            String   @id @default(cuid())
+  
+  type          LeaderboardType
+  scope         String?  // e.g., "IN" for India, "ASIA" for continent
+  period        LeaderboardPeriod
+  
+  // Period bounds
+  periodStart   DateTime
+  periodEnd     DateTime
+  
+  // Relations
+  entries       LeaderboardEntry[]
+  
+  @@unique([type, scope, periodStart])
+  @@index([type, period])
+}
+
+model LeaderboardEntry {
+  id            String      @id @default(cuid())
+  leaderboardId String
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  
+  userId        String
+  rank          Int
+  score         Int         // XP earned in this period
+  
+  @@unique([leaderboardId, userId])
+  @@index([leaderboardId, rank])
+}
+
+enum LeaderboardType {
+  GLOBAL
+  COUNTRY
+  CONTINENT
+  FRIENDS
+}
+
+enum LeaderboardPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+// ============================================================================
+// TODAY'S DISCOVERY (Daily Facts)
+// ============================================================================
+
+model DailyDiscovery {
+  id            String   @id @default(cuid())
+  
+  // When it's featured
+  date          DateTime @unique @db.Date
+  
+  // Content
+  factText      String   @db.Text
+  factShort     String   // For notifications
+  source        String?
+  imageUrl      String?
+  
+  // Classification
+  continent     Continent?
+  category      Category?
+  
+  // Engagement
+  timesViewed   Int      @default(0)
+  timesShared   Int      @default(0)
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  
+  @@index([date])
+}
+
+// ============================================================================
+// ANALYTICS EVENTS
+// ============================================================================
+
+model AnalyticsEvent {
+  id            String   @id @default(cuid())
+  
+  userId        String?
+  sessionId     String
+  
+  // Event data
+  eventType     String   // e.g., "question_answered", "duel_started"
+  eventData     Json     @default("{}")
+  
+  // Context
+  platform      String   // "ios", "android"
+  appVersion    String
+  
+  // Timestamp
+  timestamp     DateTime @default(now())
+  
+  @@index([userId, timestamp])
+  @@index([eventType, timestamp])
+}
+
+// ============================================================================
+// SUBSCRIPTIONS & MONETIZATION
+// ============================================================================
+
+model Subscription {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  
+  // Plan
+  plan          SubscriptionPlan @default(FREE)
+  
+  // Billing
+  provider      String?  // "apple", "google", "stripe"
+  externalId    String?  // ID from payment provider
+  
+  // Status
+  status        SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  
+  // Trial
+  trialEndsAt   DateTime?
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  cancelledAt   DateTime?
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM_MONTHLY
+  PREMIUM_YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  EXPIRED
+  TRIALING
+}
