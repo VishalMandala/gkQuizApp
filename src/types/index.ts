@@ -113,15 +113,22 @@ export type Continent =
     | 'ANTARCTICA';
 
 export type Category =
-    // Primary categories
+    // Primary categories (educational & family-friendly)
     | 'GEOGRAPHY'
     | 'CULTURE'
     | 'HISTORY'
-    | 'ECONOMY'
     | 'NATURE_WILDLIFE'
-    | 'POLITICS'
+    | 'SPORTS'              // Sports & Olympics
+    | 'FOOD'                // Food & Cuisine
+    | 'MUSIC_ARTS'          // Music, Dance & Arts
+    | 'SCIENCE'             // Science & Inventions
+    | 'FAMOUS_PEOPLE'       // Leaders, explorers, athletes
+    | 'FESTIVALS'           // Festivals & Traditions
+    | 'RECORDS'             // Records & Superlatives
+    | 'FUN_FACTS'           // Unusual & Mind-blowing facts
+    // Legacy categories (for backward compatibility)
+    | 'ECONOMY'
     | 'WEIRD_FASCINATING'
-    // Secondary categories
     | 'ANIMALS_NATURE'
     | 'FOOD_ORIGINS'
     | 'SCIENCE_MAGIC'
