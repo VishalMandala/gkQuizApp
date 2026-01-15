@@ -1,207 +1,229 @@
 /**
- * Global Quest - Premium World Map Screen V2
- * Matching Gemini 3 Pro mockup with map silhouette and connection lines
+ * Global Quest - Premium World Map Screen V3
+ * Precise matching to Gemini 3 Pro mockup
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Circle, Line, Defs, RadialGradient, Stop, Path } from 'react-native-svg';
+import Svg, { Circle, Line, Path, G, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const MAP_HEIGHT = SCREEN_HEIGHT - 250;
 
 // ============================================================================
 // DESIGN TOKENS
 // ============================================================================
 
 const colors = {
-    bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942' },
-    accent: { indigo: '#6366F1', purple: '#8B5CF6', gold: '#FBBF24', goldDark: '#D97706', pink: '#EC4899', green: '#34D399', cyan: '#06B6D4', orange: '#FB923C', blue: '#60A5FA' },
+    bg: { deep: '#030712', card: '#0f172a', cardLight: '#1e293b' },
+    accent: { indigo: '#6366F1', purple: '#8B5CF6', gold: '#FBBF24', goldDark: '#D97706', pink: '#EC4899', green: '#34D399', cyan: '#22D3EE', orange: '#FB923C', blue: '#3B82F6' },
     text: { white: '#FFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B' },
+    map: { land: '#1e3a5f', landLight: '#2d4a6f', line: '#38bdf8' },
 };
 
-const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
-
 // ============================================================================
-// CONTINENT DATA
+// CONTINENT DATA - Positioned to match mockup layout
 // ============================================================================
 
 const continents = [
-    { id: 'N_AMERICA', name: 'N. America', emoji: '🗽', progress: 28, color: '#34D399', position: { x: 18, y: 28 }, size: 75, unlocked: true },
-    { id: 'S_AMERICA', name: 'S. America', emoji: '🌎', progress: 15, color: '#A78BFA', position: { x: 25, y: 58 }, size: 70, unlocked: true },
-    { id: 'EUROPE', name: 'Europe', emoji: '🏰', progress: 65, color: '#60A5FA', position: { x: 48, y: 22 }, size: 70, unlocked: true },
-    { id: 'AFRICA', name: 'Africa', emoji: '🦁', progress: 80, color: '#FBBF24', position: { x: 48, y: 48 }, size: 85, unlocked: true, complete: true },
-    { id: 'ASIA', name: 'Asia', emoji: '🌏', progress: 32, color: '#EC4899', position: { x: 75, y: 30 }, size: 75, unlocked: true },
-    { id: 'OCEANIA', name: 'Oceania', emoji: '🦘', progress: 72, color: '#FB923C', position: { x: 82, y: 62 }, size: 70, unlocked: true },
-    { id: 'ANTARCTICA', name: 'Antarctica', emoji: '🐧', progress: 0, color: '#64748B', position: { x: 50, y: 85 }, size: 60, unlocked: false },
+    { id: 'N_AMERICA', name: 'N. America', emoji: '🗽', progress: 28, color: '#34D399', x: 75, y: MAP_HEIGHT * 0.22, size: 72 },
+    { id: 'S_AMERICA', name: 'S. America', emoji: '🌎', progress: 15, color: '#A78BFA', x: 95, y: MAP_HEIGHT * 0.52, size: 68 },
+    { id: 'EUROPE', name: 'Europe', emoji: '🏰', progress: 65, color: '#60A5FA', x: SCREEN_WIDTH * 0.42, y: MAP_HEIGHT * 0.18, size: 68 },
+    { id: 'AFRICA', name: 'Africa', emoji: '🦁', progress: 80, color: '#FBBF24', x: SCREEN_WIDTH * 0.45, y: MAP_HEIGHT * 0.45, size: 88, complete: true },
+    { id: 'ASIA', name: 'Asia', emoji: '🌏', progress: 32, color: '#EC4899', x: SCREEN_WIDTH * 0.72, y: MAP_HEIGHT * 0.25, size: 72 },
+    { id: 'OCEANIA', name: 'Oceania', emoji: '🦘', progress: 72, color: '#FB923C', x: SCREEN_WIDTH * 0.78, y: MAP_HEIGHT * 0.58, size: 68 },
+    { id: 'ANTARCTICA', name: 'Antarctica', emoji: '🐧', progress: 0, color: '#64748B', x: SCREEN_WIDTH * 0.45, y: MAP_HEIGHT * 0.82, size: 60, locked: true },
 ];
 
-// Connection lines between continents
-const connections = [
-    { from: 'N_AMERICA', to: 'EUROPE' },
-    { from: 'N_AMERICA', to: 'S_AMERICA' },
-    { from: 'EUROPE', to: 'AFRICA' },
-    { from: 'EUROPE', to: 'ASIA' },
-    { from: 'AFRICA', to: 'ASIA' },
-    { from: 'AFRICA', to: 'S_AMERICA' },
-    { from: 'ASIA', to: 'OCEANIA' },
-    { from: 'OCEANIA', to: 'ANTARCTICA' },
-    { from: 'S_AMERICA', to: 'ANTARCTICA' },
+// Connection pairs
+const connections: [string, string][] = [
+    ['N_AMERICA', 'EUROPE'],
+    ['N_AMERICA', 'S_AMERICA'],
+    ['EUROPE', 'AFRICA'],
+    ['EUROPE', 'ASIA'],
+    ['AFRICA', 'ASIA'],
+    ['AFRICA', 'S_AMERICA'],
+    ['ASIA', 'OCEANIA'],
+    ['OCEANIA', 'ANTARCTICA'],
+    ['S_AMERICA', 'ANTARCTICA'],
 ];
-
-const stats = {
-    totalProgress: 42,
-    continentsExplored: 5,
-    totalContinents: 7,
-    questionsAnswered: 847,
-    currentStreak: 47,
-};
 
 // ============================================================================
 // ANIMATION HOOKS
 // ============================================================================
 
-const useEntranceAnimation = (delay: number = 0) => {
+const useNodeAnimation = (delay: number) => {
+    const scale = useRef(new Animated.Value(0)).current;
     const opacity = useRef(new Animated.Value(0)).current;
-    const scale = useRef(new Animated.Value(0.3)).current;
 
     useEffect(() => {
         Animated.sequence([
             Animated.delay(delay),
             Animated.parallel([
-                Animated.timing(opacity, { toValue: 1, duration: 600, easing: Easing.out(Easing.back(1.5)), useNativeDriver: true }),
-                Animated.spring(scale, { toValue: 1, friction: 5, tension: 60, useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, friction: 5, tension: 50, useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
             ]),
         ]).start();
     }, []);
 
-    return { opacity, scale };
+    return { scale, opacity };
 };
 
-const usePulseAnimation = (delay: number = 0, intensity: number = 1.08) => {
+const usePulse = (delay: number = 0, max: number = 1.06) => {
     const scale = useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
-        Animated.sequence([
-            Animated.delay(delay),
-            Animated.loop(
-                Animated.sequence([
-                    Animated.timing(scale, { toValue: intensity, duration: 2000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-                    Animated.timing(scale, { toValue: 1, duration: 2000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-                ])
-            ),
-        ]).start();
+        Animated.loop(
+            Animated.sequence([
+                Animated.delay(delay),
+                Animated.timing(scale, { toValue: max, duration: 1800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+                Animated.timing(scale, { toValue: 1, duration: 1800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+            ])
+        ).start();
     }, []);
 
     return scale;
 };
 
-const useGlowAnimation = () => {
-    const opacity = useRef(new Animated.Value(0.3)).current;
-
-    useEffect(() => {
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(opacity, { toValue: 0.7, duration: 1500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-                Animated.timing(opacity, { toValue: 0.3, duration: 1500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-            ])
-        ).start();
-    }, []);
-
-    return opacity;
-};
-
 // ============================================================================
-// COMPONENTS
+// WORLD MAP SVG - More detailed silhouette
 // ============================================================================
 
-const Header = () => {
+const WorldMapBackground = () => {
     const opacity = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(-20)).current;
 
     useEffect(() => {
-        Animated.parallel([
-            Animated.timing(opacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-            Animated.timing(translateY, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-        ]).start();
+        Animated.timing(opacity, { toValue: 1, duration: 1500, useNativeDriver: true }).start();
     }, []);
 
     return (
-        <Animated.View style={[styles.header, { opacity, transform: [{ translateY }] }]}>
-            <View style={styles.headerCenter}>
-                <Text style={styles.headerTitle}>World Map</Text>
-                <Text style={styles.headerSubtitle}>Explore knowledge across continents</Text>
-            </View>
-        </Animated.View>
-    );
-};
-
-// World Map SVG silhouette (simplified)
-const WorldMapSilhouette = () => {
-    const opacity = useGlowAnimation();
-
-    return (
-        <Animated.View style={[styles.mapSilhouette, { opacity }]}>
-            {/* Simplified world map representation using shapes */}
-            <Svg width="100%" height="100%" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+        <Animated.View style={[styles.mapBackground, { opacity }]}>
+            <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT} viewBox={`0 0 ${SCREEN_WIDTH} ${MAP_HEIGHT}`}>
                 <Defs>
-                    <RadialGradient id="mapGlow" cx="50%" cy="50%" rx="50%" ry="50%">
-                        <Stop offset="0%" stopColor="#1e3a5f" stopOpacity="0.6" />
-                        <Stop offset="100%" stopColor="#0a1628" stopOpacity="0" />
+                    <RadialGradient id="landGrad" cx="50%" cy="50%" r="60%">
+                        <Stop offset="0%" stopColor={colors.map.landLight} />
+                        <Stop offset="100%" stopColor={colors.map.land} />
                     </RadialGradient>
                 </Defs>
 
                 {/* North America */}
-                <Path d="M40 60 L80 50 L100 70 L90 100 L70 110 L50 100 L40 80 Z" fill="#1e3a5f" opacity="0.5" />
+                <Path
+                    d={`M30 ${MAP_HEIGHT * 0.12} 
+              Q60 ${MAP_HEIGHT * 0.08} 100 ${MAP_HEIGHT * 0.1}
+              Q130 ${MAP_HEIGHT * 0.15} 120 ${MAP_HEIGHT * 0.25}
+              Q110 ${MAP_HEIGHT * 0.35} 80 ${MAP_HEIGHT * 0.38}
+              Q50 ${MAP_HEIGHT * 0.4} 40 ${MAP_HEIGHT * 0.32}
+              Q25 ${MAP_HEIGHT * 0.22} 30 ${MAP_HEIGHT * 0.12}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
                 {/* South America */}
-                <Path d="M80 130 L100 125 L110 160 L95 200 L75 190 L70 150 Z" fill="#1e3a5f" opacity="0.5" />
+                <Path
+                    d={`M70 ${MAP_HEIGHT * 0.42}
+              Q100 ${MAP_HEIGHT * 0.4} 120 ${MAP_HEIGHT * 0.48}
+              Q130 ${MAP_HEIGHT * 0.58} 110 ${MAP_HEIGHT * 0.72}
+              Q90 ${MAP_HEIGHT * 0.78} 75 ${MAP_HEIGHT * 0.68}
+              Q60 ${MAP_HEIGHT * 0.55} 70 ${MAP_HEIGHT * 0.42}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
                 {/* Europe */}
-                <Path d="M170 50 L200 45 L210 70 L195 85 L175 80 L170 60 Z" fill="#1e3a5f" opacity="0.5" />
+                <Path
+                    d={`M${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.08}
+              Q${SCREEN_WIDTH * 0.48} ${MAP_HEIGHT * 0.06} ${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.1}
+              Q${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.18} ${SCREEN_WIDTH * 0.48} ${MAP_HEIGHT * 0.25}
+              Q${SCREEN_WIDTH * 0.42} ${MAP_HEIGHT * 0.28} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.22}
+              Q${SCREEN_WIDTH * 0.35} ${MAP_HEIGHT * 0.15} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.08}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
                 {/* Africa */}
-                <Path d="M175 100 L210 95 L220 150 L200 190 L175 180 L165 130 Z" fill="#1e3a5f" opacity="0.5" />
+                <Path
+                    d={`M${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.32}
+              Q${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.3} ${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.38}
+              Q${SCREEN_WIDTH * 0.58} ${MAP_HEIGHT * 0.52} ${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.65}
+              Q${SCREEN_WIDTH * 0.45} ${MAP_HEIGHT * 0.7} ${SCREEN_WIDTH * 0.4} ${MAP_HEIGHT * 0.62}
+              Q${SCREEN_WIDTH * 0.35} ${MAP_HEIGHT * 0.48} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.32}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
                 {/* Asia */}
-                <Path d="M230 40 L310 35 L330 80 L320 120 L270 110 L240 80 L230 50 Z" fill="#1e3a5f" opacity="0.5" />
-                {/* Oceania */}
-                <Path d="M310 160 L350 155 L360 190 L340 210 L310 200 L305 175 Z" fill="#1e3a5f" opacity="0.5" />
+                <Path
+                    d={`M${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.08}
+              Q${SCREEN_WIDTH * 0.85} ${MAP_HEIGHT * 0.05} ${SCREEN_WIDTH * 0.92} ${MAP_HEIGHT * 0.15}
+              Q${SCREEN_WIDTH * 0.95} ${MAP_HEIGHT * 0.3} ${SCREEN_WIDTH * 0.88} ${MAP_HEIGHT * 0.4}
+              Q${SCREEN_WIDTH * 0.75} ${MAP_HEIGHT * 0.45} ${SCREEN_WIDTH * 0.6} ${MAP_HEIGHT * 0.38}
+              Q${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.25} ${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.08}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
+                {/* Australia/Oceania */}
+                <Path
+                    d={`M${SCREEN_WIDTH * 0.72} ${MAP_HEIGHT * 0.52}
+              Q${SCREEN_WIDTH * 0.88} ${MAP_HEIGHT * 0.5} ${SCREEN_WIDTH * 0.92} ${MAP_HEIGHT * 0.58}
+              Q${SCREEN_WIDTH * 0.9} ${MAP_HEIGHT * 0.7} ${SCREEN_WIDTH * 0.8} ${MAP_HEIGHT * 0.72}
+              Q${SCREEN_WIDTH * 0.7} ${MAP_HEIGHT * 0.68} ${SCREEN_WIDTH * 0.72} ${MAP_HEIGHT * 0.52}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.6}
+                />
+
                 {/* Antarctica */}
-                <Path d="M150 260 L250 255 L260 280 L150 285 Z" fill="#1e3a5f" opacity="0.3" />
+                <Path
+                    d={`M${SCREEN_WIDTH * 0.2} ${MAP_HEIGHT * 0.88}
+              Q${SCREEN_WIDTH * 0.5} ${MAP_HEIGHT * 0.82} ${SCREEN_WIDTH * 0.8} ${MAP_HEIGHT * 0.88}
+              Q${SCREEN_WIDTH * 0.7} ${MAP_HEIGHT * 0.95} ${SCREEN_WIDTH * 0.3} ${MAP_HEIGHT * 0.95}
+              Q${SCREEN_WIDTH * 0.15} ${MAP_HEIGHT * 0.92} ${SCREEN_WIDTH * 0.2} ${MAP_HEIGHT * 0.88}
+              Z`}
+                    fill="url(#landGrad)"
+                    opacity={0.35}
+                />
             </Svg>
         </Animated.View>
     );
 };
 
-// Connection lines between continents
-const ConnectionLines = () => {
-    const lineOpacity = useGlowAnimation();
+// ============================================================================
+// CONNECTION LINES - Solid glowing lines
+// ============================================================================
 
-    const getContinentCenter = (id: string) => {
-        const continent = continents.find(c => c.id === id);
-        if (!continent) return { x: 0, y: 0 };
-        return {
-            x: (continent.position.x / 100) * SCREEN_WIDTH,
-            y: (continent.position.y / 100) * (SCREEN_HEIGHT - 200),
-        };
+const ConnectionLines = () => {
+    const opacity = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(opacity, { toValue: 0.6, duration: 1200, delay: 300, useNativeDriver: true }).start();
+    }, []);
+
+    const getPos = (id: string) => {
+        const c = continents.find(c => c.id === id);
+        return c ? { x: c.x, y: c.y } : { x: 0, y: 0 };
     };
 
     return (
-        <Animated.View style={[styles.connectionLines, { opacity: lineOpacity }]}>
-            <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
-                {connections.map((conn, i) => {
-                    const from = getContinentCenter(conn.from);
-                    const to = getContinentCenter(conn.to);
+        <Animated.View style={[styles.linesContainer, { opacity }]}>
+            <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT}>
+                {connections.map(([from, to], i) => {
+                    const start = getPos(from);
+                    const end = getPos(to);
                     return (
-                        <Line
-                            key={i}
-                            x1={from.x}
-                            y1={from.y}
-                            x2={to.x}
-                            y2={to.y}
-                            stroke="#38bdf8"
-                            strokeWidth="1"
-                            strokeOpacity="0.4"
-                            strokeDasharray="4,4"
-                        />
+                        <G key={i}>
+                            {/* Glow line */}
+                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={3} strokeOpacity={0.3} />
+                            {/* Core line */}
+                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={1.5} strokeOpacity={0.7} />
+                        </G>
                     );
                 })}
             </Svg>
@@ -209,117 +231,74 @@ const ConnectionLines = () => {
     );
 };
 
-// Progress Ring SVG
-const ProgressRing: React.FC<{ progress: number; size: number; color: string; strokeWidth?: number }> = ({
-    progress, size, color, strokeWidth = 5
-}) => {
-    const radius = (size - strokeWidth * 2) / 2;
-    const circumference = radius * 2 * Math.PI;
-    const strokeDashoffset = circumference - (progress / 100) * circumference;
+// ============================================================================
+// CONTINENT NODE
+// ============================================================================
 
-    return (
-        <Svg width={size} height={size} style={styles.progressRing}>
-            {/* Glow effect */}
-            <Circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius + 3}
-                fill="none"
-                stroke={color}
-                strokeWidth={8}
-                strokeOpacity={0.2}
-            />
-            {/* Background ring */}
-            <Circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                stroke={`${color}40`}
-                strokeWidth={strokeWidth}
-                fill="none"
-            />
-            {/* Progress ring */}
-            <Circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                stroke={color}
-                strokeWidth={strokeWidth}
-                fill="none"
-                strokeDasharray={`${circumference} ${circumference}`}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-                rotation="-90"
-                origin={`${size / 2}, ${size / 2}`}
-            />
-        </Svg>
-    );
-};
-
-// Individual continent node
-const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number; onPress: () => void }> = ({
-    continent, index, onPress
-}) => {
-    const { opacity, scale } = useEntranceAnimation(300 + index * 120);
-    const pulseScale = usePulseAnimation(500 + index * 100, continent.complete ? 1.12 : 1.06);
-    const nodeSize = continent.size;
+const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number }> = ({ continent, index }) => {
+    const { scale: entryScale, opacity } = useNodeAnimation(400 + index * 100);
+    const pulseScale = usePulse(600 + index * 50, continent.complete ? 1.1 : 1.05);
+    const size = continent.size;
+    const ringSize = size + 8;
 
     return (
         <Animated.View
             style={[
-                styles.continentNode,
-                {
-                    left: `${continent.position.x}%`,
-                    top: `${continent.position.y}%`,
-                    width: nodeSize,
-                    height: nodeSize + 50,
-                    marginLeft: -nodeSize / 2,
-                    marginTop: -nodeSize / 2,
-                    opacity,
-                    transform: [{ scale: Animated.multiply(scale, pulseScale) }],
-                },
+                styles.nodeContainer,
+                { left: continent.x - size / 2, top: continent.y - size / 2, opacity, transform: [{ scale: Animated.multiply(entryScale, pulseScale) }] },
             ]}
         >
-            <TouchableOpacity onPress={onPress} activeOpacity={0.85} disabled={!continent.unlocked}>
-                {/* Outer glow for complete continents */}
-                {continent.complete && (
-                    <View style={[styles.completeGlow, { backgroundColor: continent.color }]} />
-                )}
+            <TouchableOpacity activeOpacity={0.85} disabled={continent.locked}>
+                {/* Outer glow for complete */}
+                {continent.complete && <View style={[styles.glowRing, { width: size + 30, height: size + 30, borderRadius: (size + 30) / 2, backgroundColor: continent.color }]} />}
 
                 {/* Progress ring */}
-                <View style={[styles.nodeOuter, { width: nodeSize, height: nodeSize }]}>
-                    <ProgressRing progress={continent.unlocked ? continent.progress : 0} size={nodeSize} color={continent.color} />
-
-                    {/* Inner content */}
-                    <LinearGradient
-                        colors={continent.unlocked ? [`${continent.color}60`, `${continent.color}30`] : ['#374151', '#1f2937']}
-                        style={[styles.nodeInner, { width: nodeSize - 16, height: nodeSize - 16, borderRadius: (nodeSize - 16) / 2 }]}
-                    >
-                        {continent.unlocked ? (
-                            <Text style={[styles.nodeEmoji, { fontSize: nodeSize * 0.4 }]}>{continent.emoji}</Text>
-                        ) : (
-                            <Text style={styles.lockIcon}>🔒</Text>
-                        )}
-                    </LinearGradient>
-
-                    {/* Progress badge */}
-                    {continent.unlocked && (
-                        <View style={[styles.progressBadge, { backgroundColor: `${continent.color}40`, borderColor: continent.color }]}>
-                            <Text style={[styles.progressBadgeText, { color: continent.color }]}>{continent.progress}%</Text>
-                        </View>
-                    )}
+                <View style={[styles.ringContainer, { width: ringSize, height: ringSize }]}>
+                    <Svg width={ringSize} height={ringSize}>
+                        {/* Background ring */}
+                        <Circle cx={ringSize / 2} cy={ringSize / 2} r={(ringSize - 8) / 2} stroke={`${continent.color}30`} strokeWidth={5} fill="none" />
+                        {/* Progress arc */}
+                        <Circle
+                            cx={ringSize / 2}
+                            cy={ringSize / 2}
+                            r={(ringSize - 8) / 2}
+                            stroke={continent.color}
+                            strokeWidth={5}
+                            fill="none"
+                            strokeDasharray={`${((ringSize - 8) * Math.PI * continent.progress) / 100} ${(ringSize - 8) * Math.PI}`}
+                            strokeLinecap="round"
+                            rotation="-90"
+                            origin={`${ringSize / 2}, ${ringSize / 2}`}
+                        />
+                    </Svg>
                 </View>
 
-                {/* Continent name */}
-                <Text style={styles.nodeName}>{continent.name}</Text>
+                {/* Inner circle with emoji */}
+                <LinearGradient
+                    colors={continent.locked ? ['#374151', '#1f2937'] : [`${continent.color}50`, `${continent.color}25`]}
+                    style={[styles.innerCircle, { width: size - 8, height: size - 8, borderRadius: (size - 8) / 2 }]}
+                >
+                    <Text style={{ fontSize: size * 0.42 }}>{continent.locked ? '🔒' : continent.emoji}</Text>
+                </LinearGradient>
 
-                {/* Complete badge */}
+                {/* Progress percentage badge */}
+                {!continent.locked && !continent.complete && (
+                    <View style={[styles.percentBadge, { backgroundColor: `${continent.color}35`, borderColor: continent.color }]}>
+                        <Text style={[styles.percentText, { color: continent.color }]}>{continent.progress}%</Text>
+                    </View>
+                )}
+
+                {/* Continent name */}
+                <Text style={styles.continentName}>{continent.name}</Text>
+
+                {/* COMPLETE badge for Africa */}
                 {continent.complete && (
-                    <View style={styles.completeBadge}>
-                        <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={styles.completeBadgeInner}>
-                            <Text style={styles.starIcon}>★</Text>
+                    <View style={styles.completeBadgeContainer}>
+                        <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={styles.completeBadge}>
+                            <Text style={styles.starText}>★</Text>
                             <Text style={styles.completeText}>COMPLETE</Text>
                         </LinearGradient>
+                        <Text style={styles.completeProgress}>{continent.progress}% progress</Text>
                     </View>
                 )}
             </TouchableOpacity>
@@ -327,44 +306,41 @@ const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number; 
     );
 };
 
-// Bottom stats panel
+// ============================================================================
+// STATS PANEL
+// ============================================================================
+
 const StatsPanel = () => {
+    const translateY = useRef(new Animated.Value(100)).current;
     const opacity = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(80)).current;
 
     useEffect(() => {
-        Animated.sequence([
-            Animated.delay(800),
-            Animated.parallel([
-                Animated.timing(opacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-                Animated.timing(translateY, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-            ]),
+        Animated.parallel([
+            Animated.timing(translateY, { toValue: 0, duration: 600, delay: 900, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            Animated.timing(opacity, { toValue: 1, duration: 600, delay: 900, useNativeDriver: true }),
         ]).start();
     }, []);
 
-    const statItems = [
-        { icon: '🌍', value: `${stats.totalProgress}%`, label: 'Complete' },
-        { icon: '🗺️', value: `${stats.continentsExplored}/${stats.totalContinents}`, label: 'Explored' },
-        { icon: '❓', value: stats.questionsAnswered.toString(), label: 'Questions' },
-        { icon: '🔥', value: stats.currentStreak.toString(), label: 'Streak' },
+    const items = [
+        { icon: '🌍', value: '42%', label: 'Complete' },
+        { icon: '🗺️', value: '5/7', label: 'Explored' },
+        { icon: '❓', value: '847', label: 'Questions' },
+        { icon: '🔥', value: '47', label: 'Streak' },
     ];
 
     return (
-        <Animated.View style={[styles.statsPanel, { opacity, transform: [{ translateY }] }]}>
-            <LinearGradient
-                colors={['rgba(17, 29, 50, 0.95)', 'rgba(10, 22, 40, 0.98)']}
-                style={styles.statsPanelInner}
-            >
-                {statItems.map((stat, i) => (
+        <Animated.View style={[styles.statsPanel, { transform: [{ translateY }], opacity }]}>
+            <LinearGradient colors={['rgba(15, 23, 42, 0.97)', 'rgba(10, 18, 35, 1)']} style={styles.statsPanelGradient}>
+                {items.map((item, i) => (
                     <React.Fragment key={i}>
                         <View style={styles.statItem}>
-                            <View style={styles.statRow}>
-                                <Text style={styles.statIcon}>{stat.icon}</Text>
-                                <Text style={styles.statValue}>{stat.value}</Text>
+                            <View style={styles.statTop}>
+                                <Text style={styles.statIcon}>{item.icon}</Text>
+                                <Text style={styles.statValue}>{item.value}</Text>
                             </View>
-                            <Text style={styles.statLabel}>{stat.label}</Text>
+                            <Text style={styles.statLabel}>{item.label}</Text>
                         </View>
-                        {i < statItems.length - 1 && <View style={styles.statDivider} />}
+                        {i < items.length - 1 && <View style={styles.statDivider} />}
                     </React.Fragment>
                 ))}
             </LinearGradient>
@@ -373,55 +349,52 @@ const StatsPanel = () => {
 };
 
 // ============================================================================
+// HEADER
+// ============================================================================
+
+const Header = () => {
+    const opacity = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.timing(opacity, { toValue: 1, duration: 600, useNativeDriver: true }).start();
+    }, []);
+
+    return (
+        <Animated.View style={[styles.header, { opacity }]}>
+            <Text style={styles.headerTitle}>World Map</Text>
+            <Text style={styles.headerSubtitle}>Explore knowledge across continents</Text>
+        </Animated.View>
+    );
+};
+
+// ============================================================================
 // MAIN SCREEN
 // ============================================================================
 
-const WorldMapScreen: React.FC = () => {
-    const handleContinentPress = (continent: typeof continents[0]) => {
-        if (!continent.unlocked) return;
-        console.log(`Selected: ${continent.name}`);
-    };
+const WorldMapScreen: React.FC = () => (
+    <View style={styles.container}>
+        <LinearGradient colors={['#030712', '#0a1628', '#0f172a', '#0a1628']} style={StyleSheet.absoluteFill} />
 
-    return (
-        <View style={styles.container}>
-            {/* Deep space background */}
-            <LinearGradient
-                colors={['#030712', '#0a1628', '#111d32', '#0a1628']}
-                locations={[0, 0.3, 0.6, 1]}
-                style={StyleSheet.absoluteFill}
-            />
+        {/* Ambient glow orbs */}
+        <View style={[styles.glowOrb, { top: '8%', right: '-8%', backgroundColor: colors.accent.purple }]} />
+        <View style={[styles.glowOrb, styles.glowOrbLarge, { top: '45%', left: '-20%', backgroundColor: colors.accent.indigo }]} />
+        <View style={[styles.glowOrb, { bottom: '25%', right: '-12%', backgroundColor: colors.accent.cyan }]} />
 
-            {/* Animated glow orbs */}
-            <View style={[styles.glowOrb, { top: '5%', right: '5%', backgroundColor: colors.accent.purple }]} />
-            <View style={[styles.glowOrb, styles.glowOrbLarge, { top: '50%', left: '-15%', backgroundColor: colors.accent.indigo }]} />
-            <View style={[styles.glowOrb, { bottom: '25%', right: '-10%', backgroundColor: colors.accent.cyan }]} />
+        <SafeAreaView style={styles.safeArea}>
+            <Header />
 
-            {/* World map silhouette */}
-            <WorldMapSilhouette />
+            <View style={styles.mapArea}>
+                <WorldMapBackground />
+                <ConnectionLines />
+                {continents.map((c, i) => (
+                    <ContinentNode key={c.id} continent={c} index={i} />
+                ))}
+            </View>
 
-            {/* Connection lines */}
-            <ConnectionLines />
-
-            <SafeAreaView style={styles.safeArea}>
-                <Header />
-
-                {/* Map area with continent nodes */}
-                <View style={styles.mapContainer}>
-                    {continents.map((continent, i) => (
-                        <ContinentNode
-                            key={continent.id}
-                            continent={continent}
-                            index={i}
-                            onPress={() => handleContinentPress(continent)}
-                        />
-                    ))}
-                </View>
-
-                <StatsPanel />
-            </SafeAreaView>
-        </View>
-    );
-};
+            <StatsPanel />
+        </SafeAreaView>
+    </View>
+);
 
 // ============================================================================
 // STYLES
@@ -431,62 +404,41 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#030712' },
     safeArea: { flex: 1 },
 
-    glowOrb: { position: 'absolute', width: 200, height: 200, borderRadius: 100, opacity: 0.15 },
-    glowOrbLarge: { width: 300, height: 300, borderRadius: 150, opacity: 0.1 },
+    glowOrb: { position: 'absolute', width: 200, height: 200, borderRadius: 100, opacity: 0.18 },
+    glowOrbLarge: { width: 300, height: 300, borderRadius: 150, opacity: 0.12 },
 
-    mapSilhouette: { ...StyleSheet.absoluteFillObject, top: 80 },
-    connectionLines: { ...StyleSheet.absoluteFillObject, top: 80 },
-
-    header: { paddingHorizontal: spacing[4], paddingTop: spacing[4], paddingBottom: spacing[2], alignItems: 'center' },
-    headerCenter: { alignItems: 'center' },
-    headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text.white, letterSpacing: -0.5 },
+    header: { alignItems: 'center', paddingTop: 16, paddingBottom: 8 },
+    headerTitle: { fontSize: 26, fontWeight: '800', color: colors.text.white },
     headerSubtitle: { fontSize: 14, color: colors.text.muted, marginTop: 4 },
 
-    mapContainer: { flex: 1, position: 'relative' },
+    mapArea: { flex: 1, position: 'relative' },
+    mapBackground: { position: 'absolute', top: 0, left: 0, right: 0, height: MAP_HEIGHT },
+    linesContainer: { position: 'absolute', top: 0, left: 0, right: 0, height: MAP_HEIGHT },
 
-    continentNode: { position: 'absolute', alignItems: 'center' },
-    completeGlow: { position: 'absolute', width: '120%', height: '120%', borderRadius: 100, opacity: 0.3, top: '-10%', left: '-10%' },
-    nodeOuter: { justifyContent: 'center', alignItems: 'center', position: 'relative' },
-    nodeInner: { justifyContent: 'center', alignItems: 'center', position: 'absolute' },
-    nodeEmoji: {},
-    lockIcon: { fontSize: 28 },
-    progressRing: { position: 'absolute' },
+    nodeContainer: { position: 'absolute', alignItems: 'center' },
+    glowRing: { position: 'absolute', top: -15, left: -15, opacity: 0.25 },
+    ringContainer: { position: 'absolute', top: -4, left: -4 },
+    innerCircle: { justifyContent: 'center', alignItems: 'center' },
 
-    progressBadge: {
-        position: 'absolute',
-        top: -5,
-        right: -5,
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-        borderRadius: 12,
-        borderWidth: 2,
-    },
-    progressBadgeText: { fontSize: 11, fontWeight: '800' },
+    percentBadge: { position: 'absolute', top: -8, right: -8, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12, borderWidth: 2 },
+    percentText: { fontSize: 11, fontWeight: '800' },
 
-    nodeName: { fontSize: 13, color: colors.text.primary, fontWeight: '600', marginTop: spacing[2], textAlign: 'center' },
+    continentName: { marginTop: 8, fontSize: 12, fontWeight: '600', color: colors.text.primary, textAlign: 'center' },
 
-    completeBadge: { marginTop: spacing[1], borderRadius: 10, overflow: 'hidden' },
-    completeBadgeInner: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8, paddingVertical: 3, gap: 3 },
-    starIcon: { fontSize: 10, color: '#1A1A1A' },
-    completeText: { fontSize: 9, fontWeight: '800', color: '#1A1A1A', letterSpacing: 0.5 },
+    completeBadgeContainer: { alignItems: 'center', marginTop: 4 },
+    completeBadge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, gap: 4 },
+    starText: { fontSize: 11, color: '#1a1a1a' },
+    completeText: { fontSize: 10, fontWeight: '800', color: '#1a1a1a', letterSpacing: 0.5 },
+    completeProgress: { fontSize: 10, color: colors.accent.gold, marginTop: 2 },
 
     statsPanel: { position: 'absolute', bottom: 0, left: 0, right: 0 },
-    statsPanelInner: {
-        flexDirection: 'row',
-        paddingVertical: spacing[4],
-        paddingHorizontal: spacing[3],
-        paddingBottom: 36,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.08)',
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-    },
+    statsPanelGradient: { flexDirection: 'row', paddingVertical: 16, paddingHorizontal: 12, paddingBottom: 36, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
     statItem: { flex: 1, alignItems: 'center' },
-    statRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-    statIcon: { fontSize: 16 },
+    statTop: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+    statIcon: { fontSize: 18 },
     statValue: { fontSize: 20, fontWeight: '800', color: colors.text.white },
-    statLabel: { fontSize: 11, color: colors.text.muted, marginTop: 2 },
-    statDivider: { width: 1, height: 40, backgroundColor: 'rgba(255,255,255,0.1)' },
+    statLabel: { fontSize: 11, color: colors.text.muted, marginTop: 3 },
+    statDivider: { width: 1, height: 45, backgroundColor: 'rgba(255,255,255,0.1)' },
 });
 
 export default WorldMapScreen;
