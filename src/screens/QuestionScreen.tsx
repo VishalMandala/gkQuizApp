@@ -1,367 +1,387 @@
 /**
- * Global Quest - Question Screen Component
- * The core quiz experience with animations and feedback
+ * Global Quest - Premium Question Screen
+ * Interactive quiz with animations and feedback
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Animated,
-    Dimensions,
-    ScrollView,
-} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors, spacing, borders, typography, animation } from '../theme';
-import type { Question, Continent, CONTINENTS } from '../types';
+import { useNavigation } from '@react-navigation/native';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
-// ============================================================================
-// TYPES
-// ============================================================================
-
-interface QuestionScreenProps {
-    question: Question;
-    questionNumber: number;
-    totalQuestions: number;
-    continent: Continent;
-    onAnswer: (answer: 'a' | 'b' | 'c' | 'd', timeTakenMs: number) => void;
-    onContinue: () => void;
-}
-
-type AnswerState = 'unanswered' | 'selected' | 'confirmed' | 'revealed';
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // ============================================================================
-// CONTINENT INFO (would come from constants in real app)
+// DESIGN TOKENS
 // ============================================================================
 
-const CONTINENT_DISPLAY: Record<Continent, { name: string; emoji: string; color: string }> = {
-    ASIA: { name: 'Asia', emoji: '🌏', color: '#F472B6' },
-    AFRICA: { name: 'Africa', emoji: '🦁', color: '#FBBF24' },
-    EUROPE: { name: 'Europe', emoji: '🏰', color: '#60A5FA' },
-    NORTH_AMERICA: { name: 'North America', emoji: '🗽', color: '#34D399' },
-    SOUTH_AMERICA: { name: 'South America', emoji: '🌎', color: '#A78BFA' },
-    AUSTRALIA_OCEANIA: { name: 'Australia', emoji: '🦘', color: '#FB923C' },
-    ANTARCTICA: { name: 'Antarctica', emoji: '🐧', color: '#67E8F9' },
+const colors = {
+    bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942' },
+    accent: { indigo: '#6366F1', indigoLight: '#818CF8', purple: '#8B5CF6', gold: '#FBBF24', green: '#10B981', red: '#EF4444', cyan: '#06B6D4' },
+    text: { white: '#FFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B' },
 };
 
+const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
+
 // ============================================================================
-// OPTION CARD COMPONENT
+// MOCK DATA
 // ============================================================================
 
-interface OptionCardProps {
-    option: { id: 'a' | 'b' | 'c' | 'd'; text: string };
-    isSelected: boolean;
-    isCorrect: boolean | null; // null = not revealed yet
-    isRevealed: boolean;
-    onSelect: () => void;
-    disabled: boolean;
-    index: number;
-}
+const sampleQuestions = [
+    {
+        id: '1',
+        continent: 'Africa',
+        continentEmoji: '🦁',
+        category: 'History',
+        difficulty: 3,
+        hook: "The walls of this palace tell the story of a conquering lion...",
+        question: "Which African emperor built the iconic rock-hewn churches of Lalibela?",
+        options: [
+            { id: 'A', text: 'Menelik II' },
+            { id: 'B', text: 'Haile Selassie' },
+            { id: 'C', text: 'King Lalibela' },
+            { id: 'D', text: 'Tewodros II' },
+        ],
+        correctAnswer: 'C',
+        explanation: "King Lalibela of Ethiopia commissioned 11 monolithic churches carved from solid rock in the 12th century. Legend says angels helped complete the work at night. These churches remain active places of worship today, drawing pilgrims from around the world.",
+        xpReward: 50,
+        timeLimit: 30,
+    },
+    {
+        id: '2',
+        continent: 'Asia',
+        continentEmoji: '🌏',
+        category: 'Geography',
+        difficulty: 2,
+        hook: "A sea that keeps getting saltier, shrinking every year...",
+        question: "The Dead Sea borders which two countries?",
+        options: [
+            { id: 'A', text: 'Israel and Egypt' },
+            { id: 'B', text: 'Israel and Jordan' },
+            { id: 'C', text: 'Jordan and Saudi Arabia' },
+            { id: 'D', text: 'Syria and Lebanon' },
+        ],
+        correctAnswer: 'B',
+        explanation: "The Dead Sea, Earth's lowest point on land at 430m below sea level, lies between Israel and Jordan. Its extreme salinity (34.2%) allows swimmers to float effortlessly. Sadly, it's shrinking by about 1 meter per year.",
+        xpReward: 35,
+        timeLimit: 25,
+    },
+];
 
-const OptionCard: React.FC<OptionCardProps> = ({
-    option,
-    isSelected,
-    isCorrect,
-    isRevealed,
-    onSelect,
-    disabled,
-    index,
-}) => {
-    const scaleAnim = useRef(new Animated.Value(0)).current;
-    const opacityAnim = useRef(new Animated.Value(0)).current;
+// ============================================================================
+// ANIMATION HOOKS
+// ============================================================================
+
+const useEntranceAnimation = (delay: number = 0) => {
+    const opacity = useRef(new Animated.Value(0)).current;
+    const translateY = useRef(new Animated.Value(30)).current;
 
     useEffect(() => {
-        // Stagger animation on mount
-        Animated.parallel([
-            Animated.timing(scaleAnim, {
-                toValue: 1,
-                duration: animation.duration.normal,
-                delay: index * 50, // Stagger by 50ms
-                useNativeDriver: true,
-            }),
-            Animated.timing(opacityAnim, {
-                toValue: 1,
-                duration: animation.duration.normal,
-                delay: index * 50,
-                useNativeDriver: true,
-            }),
+        Animated.sequence([
+            Animated.delay(delay),
+            Animated.parallel([
+                Animated.timing(opacity, { toValue: 1, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            ]),
         ]).start();
     }, []);
 
-    const getCardStyle = () => {
-        if (!isRevealed) {
-            return isSelected ? styles.optionSelected : styles.optionDefault;
+    return { opacity, translateY };
+};
+
+const useOptionAnimation = (index: number) => {
+    const opacity = useRef(new Animated.Value(0)).current;
+    const translateX = useRef(new Animated.Value(-50)).current;
+    const scale = useRef(new Animated.Value(0.9)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.delay(300 + index * 100),
+            Animated.parallel([
+                Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+                Animated.spring(translateX, { toValue: 0, friction: 8, tension: 80, useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, friction: 8, tension: 80, useNativeDriver: true }),
+            ]),
+        ]).start();
+    }, []);
+
+    return { opacity, translateX, scale };
+};
+
+const useTimerAnimation = (duration: number, onComplete: () => void) => {
+    const progress = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        Animated.timing(progress, {
+            toValue: 0,
+            duration: duration * 1000,
+            easing: Easing.linear,
+            useNativeDriver: false,
+        }).start(({ finished }) => {
+            if (finished) onComplete();
+        });
+    }, []);
+
+    return progress;
+};
+
+// ============================================================================
+// COMPONENTS
+// ============================================================================
+
+const Header: React.FC<{ question: typeof sampleQuestions[0]; currentIndex: number; total: number; onClose: () => void }> = ({ question, currentIndex, total, onClose }) => {
+    const { opacity, translateY } = useEntranceAnimation(0);
+
+    return (
+        <Animated.View style={[styles.header, { opacity, transform: [{ translateY }] }]}>
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+                <Text style={styles.closeIcon}>✕</Text>
+            </TouchableOpacity>
+            <View style={styles.headerCenter}>
+                <View style={styles.continentBadge}>
+                    <Text style={styles.continentEmoji}>{question.continentEmoji}</Text>
+                    <Text style={styles.continentName}>{question.continent}</Text>
+                </View>
+                <Text style={styles.progressText}>{currentIndex + 1} of {total}</Text>
+            </View>
+            <View style={styles.xpBadge}>
+                <Text style={styles.xpText}>+{question.xpReward} XP</Text>
+            </View>
+        </Animated.View>
+    );
+};
+
+const ProgressBar: React.FC<{ currentIndex: number; total: number }> = ({ currentIndex, total }) => {
+    const { opacity } = useEntranceAnimation(100);
+    const progress = ((currentIndex + 1) / total) * 100;
+
+    return (
+        <Animated.View style={[styles.progressBarContainer, { opacity }]}>
+            <View style={styles.progressBarTrack}>
+                <LinearGradient
+                    colors={['#6366F1', '#4F46E5']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={[styles.progressBarFill, { width: `${progress}%` }]}
+                />
+            </View>
+        </Animated.View>
+    );
+};
+
+const TimerBar: React.FC<{ duration: number; onTimeUp: () => void; isPaused: boolean }> = ({ duration, onTimeUp, isPaused }) => {
+    const progress = useTimerAnimation(duration, onTimeUp);
+
+    return (
+        <View style={styles.timerContainer}>
+            <Animated.View style={[styles.timerBar, { width: progress.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }) }]}>
+                <LinearGradient colors={['#10B981', '#059669']} style={styles.timerGradient} />
+            </Animated.View>
+            <Text style={styles.timerIcon}>⏱️</Text>
+        </View>
+    );
+};
+
+const QuestionCard: React.FC<{ question: typeof sampleQuestions[0] }> = ({ question }) => {
+    const { opacity, translateY } = useEntranceAnimation(150);
+
+    return (
+        <Animated.View style={[styles.questionCard, { opacity, transform: [{ translateY }] }]}>
+            <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.questionCardInner}>
+                <View style={styles.categoryBadge}>
+                    <Text style={styles.categoryText}>{question.category}</Text>
+                    <View style={styles.difficultyDots}>
+                        {[1, 2, 3].map(d => (
+                            <View key={d} style={[styles.difficultyDot, d <= question.difficulty && styles.difficultyDotActive]} />
+                        ))}
+                    </View>
+                </View>
+                <Text style={styles.hookText}>{question.hook}</Text>
+                <Text style={styles.questionText}>{question.question}</Text>
+            </LinearGradient>
+        </Animated.View>
+    );
+};
+
+const OptionCard: React.FC<{
+    option: { id: string; text: string };
+    index: number;
+    isSelected: boolean;
+    isCorrect: boolean | null;
+    showResult: boolean;
+    onSelect: () => void;
+}> = ({ option, index, isSelected, isCorrect, showResult, onSelect }) => {
+    const { opacity, translateX, scale } = useOptionAnimation(index);
+    const pulseAnim = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        if (isSelected && !showResult) {
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(pulseAnim, { toValue: 1.02, duration: 300, useNativeDriver: true }),
+                    Animated.timing(pulseAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+                ])
+            ).start();
         }
-        if (isCorrect === true) {
-            return styles.optionCorrect;
-        }
-        if (isCorrect === false && isSelected) {
-            return styles.optionIncorrect;
-        }
-        return styles.optionDefault;
+    }, [isSelected]);
+
+    const getBackgroundColor = () => {
+        if (!showResult) return isSelected ? 'rgba(99, 102, 241, 0.3)' : 'transparent';
+        if (isCorrect === true) return 'rgba(16, 185, 129, 0.3)';
+        if (isCorrect === false && isSelected) return 'rgba(239, 68, 68, 0.3)';
+        return 'transparent';
     };
 
-    const getOptionLabel = () => {
-        return option.id.toUpperCase();
+    const getBorderColor = () => {
+        if (!showResult) return isSelected ? colors.accent.indigo : 'rgba(255,255,255,0.1)';
+        if (isCorrect === true) return colors.accent.green;
+        if (isCorrect === false && isSelected) return colors.accent.red;
+        return 'rgba(255,255,255,0.1)';
     };
 
     return (
-        <Animated.View
-            style={[
-                {
-                    transform: [{ scale: scaleAnim }],
-                    opacity: opacityAnim,
-                },
-            ]}
-        >
+        <Animated.View style={{ opacity, transform: [{ translateX }, { scale: Animated.multiply(scale, pulseAnim) }] }}>
             <TouchableOpacity
-                style={[styles.optionCard, getCardStyle()]}
                 onPress={onSelect}
-                disabled={disabled}
+                disabled={showResult}
                 activeOpacity={0.8}
+                style={[styles.optionCard, { backgroundColor: getBackgroundColor(), borderColor: getBorderColor() }]}
             >
-                <View style={styles.optionLabelContainer}>
-                    <Text style={styles.optionLabel}>[{getOptionLabel()}]</Text>
+                <View style={[styles.optionLetter, { backgroundColor: getBorderColor() }]}>
+                    <Text style={styles.optionLetterText}>{option.id}</Text>
                 </View>
                 <Text style={styles.optionText}>{option.text}</Text>
-                {isRevealed && isCorrect === true && (
-                    <Text style={styles.optionIcon}>✓</Text>
-                )}
-                {isRevealed && isCorrect === false && isSelected && (
-                    <Text style={styles.optionIcon}>✗</Text>
-                )}
+                {showResult && isCorrect === true && <Text style={styles.resultIcon}>✓</Text>}
+                {showResult && isCorrect === false && isSelected && <Text style={styles.resultIcon}>✗</Text>}
             </TouchableOpacity>
         </Animated.View>
     );
 };
 
-// ============================================================================
-// EXPLANATION CARD COMPONENT
-// ============================================================================
-
-interface ExplanationCardProps {
-    isCorrect: boolean;
-    explanation: string;
-    onContinue: () => void;
-    xpEarned: number;
-}
-
-const ExplanationCard: React.FC<ExplanationCardProps> = ({
-    isCorrect,
-    explanation,
-    onContinue,
-    xpEarned,
-}) => {
-    const slideAnim = useRef(new Animated.Value(50)).current;
-    const opacityAnim = useRef(new Animated.Value(0)).current;
+const ExplanationPanel: React.FC<{ explanation: string; isCorrect: boolean; xp: number; onNext: () => void }> = ({ explanation, isCorrect, xp, onNext }) => {
+    const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
     useEffect(() => {
-        Animated.parallel([
-            Animated.spring(slideAnim, {
-                toValue: 0,
-                tension: 50,
-                friction: 8,
-                useNativeDriver: true,
-            }),
-            Animated.timing(opacityAnim, {
-                toValue: 1,
-                duration: animation.duration.normal,
-                useNativeDriver: true,
-            }),
-        ]).start();
+        Animated.spring(slideAnim, { toValue: 0, friction: 10, tension: 50, useNativeDriver: true }).start();
     }, []);
 
     return (
-        <Animated.View
-            style={[
-                styles.explanationCard,
-                {
-                    transform: [{ translateY: slideAnim }],
-                    opacity: opacityAnim,
-                },
-            ]}
-        >
-            {/* Header */}
-            <View style={styles.explanationHeader}>
-                {isCorrect ? (
-                    <>
-                        <Text style={styles.explanationEmoji}>✨</Text>
-                        <Text style={styles.explanationTitle}>CORRECT!</Text>
-                        <Text style={styles.explanationEmoji}>✨</Text>
-                    </>
-                ) : (
-                    <>
-                        <Text style={styles.explanationEmoji}>💡</Text>
-                        <Text style={styles.explanationTitleLearn}>HERE'S SOMETHING AMAZING...</Text>
-                    </>
-                )}
-            </View>
-
-            {/* XP Earned (if correct) */}
-            {isCorrect && (
-                <View style={styles.xpContainer}>
-                    <Text style={styles.xpText}>+{xpEarned} XP</Text>
+        <Animated.View style={[styles.explanationPanel, { transform: [{ translateY: slideAnim }] }]}>
+            <LinearGradient colors={[colors.bg.cardLight, colors.bg.card]} style={styles.explanationContent}>
+                <View style={[styles.resultBadge, { backgroundColor: isCorrect ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)' }]}>
+                    <Text style={styles.resultEmoji}>{isCorrect ? '🎉' : '😔'}</Text>
+                    <Text style={[styles.resultText, { color: isCorrect ? colors.accent.green : colors.accent.red }]}>
+                        {isCorrect ? 'Correct!' : 'Not quite!'}
+                    </Text>
+                    {isCorrect && <Text style={styles.xpEarned}>+{xp} XP</Text>}
                 </View>
-            )}
-
-            {/* Divider */}
-            <View style={styles.divider}>
-                <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>
-                    {isCorrect ? 'EXPLANATION' : 'NOW YOU KNOW'}
-                </Text>
-                <View style={styles.dividerLine} />
-            </View>
-
-            {/* Explanation Text */}
-            <ScrollView style={styles.explanationScroll} showsVerticalScrollIndicator={false}>
-                <Text style={styles.explanationText}>{explanation}</Text>
-            </ScrollView>
-
-            {/* Continue Button */}
-            <TouchableOpacity
-                style={styles.continueButton}
-                onPress={onContinue}
-                activeOpacity={0.8}
-            >
-                <LinearGradient
-                    colors={[colors.primary[500], colors.primary[600]]}
-                    style={styles.continueButtonGradient}
-                >
-                    <Text style={styles.continueButtonText}>CONTINUE</Text>
-                </LinearGradient>
-            </TouchableOpacity>
+                <ScrollView style={styles.explanationScroll} showsVerticalScrollIndicator={false}>
+                    <Text style={styles.explanationTitle}>💡 Did you know?</Text>
+                    <Text style={styles.explanationText}>{explanation}</Text>
+                </ScrollView>
+                <TouchableOpacity onPress={onNext} style={styles.nextButton}>
+                    <LinearGradient colors={['#6366F1', '#4F46E5']} style={styles.nextButtonGradient}>
+                        <Text style={styles.nextButtonText}>Continue</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </LinearGradient>
         </Animated.View>
     );
 };
 
 // ============================================================================
-// MAIN COMPONENT
+// MAIN SCREEN
 // ============================================================================
 
-const QuestionScreen: React.FC<QuestionScreenProps> = ({
-    question,
-    questionNumber,
-    totalQuestions,
-    continent,
-    onAnswer,
-    onContinue,
-}) => {
-    const [answerState, setAnswerState] = useState<AnswerState>('unanswered');
-    const [selectedAnswer, setSelectedAnswer] = useState<'a' | 'b' | 'c' | 'd' | null>(null);
-    const [startTime] = useState(Date.now());
+const QuestionScreen: React.FC = () => {
+    const navigation = useNavigation();
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+    const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+    const [score, setScore] = useState(0);
 
-    const continentInfo = CONTINENT_DISPLAY[continent];
-    const progress = (questionNumber / totalQuestions) * 100;
+    const currentQuestion = sampleQuestions[currentQuestionIndex];
 
-    const handleSelectOption = (optionId: 'a' | 'b' | 'c' | 'd') => {
-        if (answerState === 'unanswered' || answerState === 'selected') {
-            setSelectedAnswer(optionId);
-            setAnswerState('selected');
+    const handleSelectAnswer = (optionId: string) => {
+        if (showResult) return;
+        setSelectedAnswer(optionId);
+    };
+
+    const handleConfirm = () => {
+        if (!selectedAnswer) return;
+        const correct = selectedAnswer === currentQuestion.correctAnswer;
+        setIsCorrect(correct);
+        setShowResult(true);
+        if (correct) setScore(prev => prev + currentQuestion.xpReward);
+    };
+
+    const handleNext = () => {
+        if (currentQuestionIndex < sampleQuestions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setSelectedAnswer(null);
+            setShowResult(false);
+            setIsCorrect(null);
+        } else {
+            navigation.goBack();
         }
     };
 
-    const handleConfirmAnswer = () => {
-        if (selectedAnswer) {
-            const timeTaken = Date.now() - startTime;
-            const correct = selectedAnswer === question.correctAnswer;
-            setIsCorrect(correct);
-            setAnswerState('revealed');
-            onAnswer(selectedAnswer, timeTaken);
+    const handleTimeUp = () => {
+        if (!showResult) {
+            setIsCorrect(false);
+            setShowResult(true);
         }
     };
 
-    const handleContinue = () => {
-        onContinue();
-    };
-
-    const getXPEarned = () => {
-        if (!isCorrect) return 0;
-        // Base XP + difficulty bonus
-        return 20 + Math.floor(question.difficulty * 10);
-    };
+    const handleClose = () => navigation.goBack();
 
     return (
         <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <View style={styles.continentBadge}>
-                    <Text style={styles.continentEmoji}>{continentInfo.emoji}</Text>
-                    <Text style={styles.continentName}>{continentInfo.name.toUpperCase()}</Text>
-                </View>
-                <Text style={styles.questionCounter}>
-                    Question {questionNumber} of {totalQuestions}
-                </Text>
-            </View>
+            <LinearGradient colors={['#030712', '#0a1628', '#111d32']} style={StyleSheet.absoluteFill} />
+            <View style={[styles.glowOrb, { top: '10%', right: '-10%', backgroundColor: colors.accent.purple }]} />
+            <View style={[styles.glowOrb, { bottom: '30%', left: '-15%', backgroundColor: colors.accent.indigo }]} />
 
-            {/* Progress Bar */}
-            <View style={styles.progressContainer}>
-                <View style={styles.progressBar}>
-                    <View style={[styles.progressFill, { width: `${progress}%` }]} />
-                </View>
-            </View>
+            <SafeAreaView style={styles.safeArea}>
+                <Header question={currentQuestion} currentIndex={currentQuestionIndex} total={sampleQuestions.length} onClose={handleClose} />
+                <ProgressBar currentIndex={currentQuestionIndex} total={sampleQuestions.length} />
+                {!showResult && <TimerBar duration={currentQuestion.timeLimit} onTimeUp={handleTimeUp} isPaused={showResult} />}
 
-            {/* Question Card */}
-            <View style={styles.questionCard}>
-                <Text style={styles.questionText}>{question.hookText}</Text>
-            </View>
+                <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+                    <QuestionCard question={currentQuestion} />
 
-            {/* Options */}
-            <View style={styles.optionsContainer}>
-                {question.options.map((option, index) => (
-                    <OptionCard
-                        key={option.id}
-                        option={option}
-                        isSelected={selectedAnswer === option.id}
-                        isCorrect={
-                            answerState === 'revealed'
-                                ? option.id === question.correctAnswer
-                                    ? true
-                                    : option.id === selectedAnswer
-                                        ? false
-                                        : null
-                                : null
-                        }
-                        isRevealed={answerState === 'revealed'}
-                        onSelect={() => handleSelectOption(option.id)}
-                        disabled={answerState === 'revealed'}
-                        index={index}
+                    <View style={styles.optionsContainer}>
+                        {currentQuestion.options.map((option, index) => (
+                            <OptionCard
+                                key={option.id}
+                                option={option}
+                                index={index}
+                                isSelected={selectedAnswer === option.id}
+                                isCorrect={showResult ? option.id === currentQuestion.correctAnswer : null}
+                                showResult={showResult}
+                                onSelect={() => handleSelectAnswer(option.id)}
+                            />
+                        ))}
+                    </View>
+
+                    {!showResult && selectedAnswer && (
+                        <TouchableOpacity onPress={handleConfirm} style={styles.confirmButton}>
+                            <LinearGradient colors={['#6366F1', '#4F46E5']} style={styles.confirmButtonGradient}>
+                                <Text style={styles.confirmButtonText}>Confirm Answer</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
+                </ScrollView>
+
+                {showResult && (
+                    <ExplanationPanel
+                        explanation={currentQuestion.explanation}
+                        isCorrect={isCorrect!}
+                        xp={currentQuestion.xpReward}
+                        onNext={handleNext}
                     />
-                ))}
-            </View>
-
-            {/* Confirm Button (only show when answer selected, not revealed) */}
-            {answerState === 'selected' && (
-                <TouchableOpacity
-                    style={styles.confirmButton}
-                    onPress={handleConfirmAnswer}
-                    activeOpacity={0.8}
-                >
-                    <LinearGradient
-                        colors={[colors.primary[500], colors.primary[600]]}
-                        style={styles.confirmButtonGradient}
-                    >
-                        <Text style={styles.confirmButtonText}>CONFIRM ANSWER</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-            )}
-
-            {/* Explanation Overlay */}
-            {answerState === 'revealed' && isCorrect !== null && (
-                <View style={styles.explanationOverlay}>
-                    <ExplanationCard
-                        isCorrect={isCorrect}
-                        explanation={question.explanation}
-                        onContinue={handleContinue}
-                        xpEarned={getXPEarned()}
-                    />
-                </View>
-            )}
+                )}
+            </SafeAreaView>
         </View>
     );
 };
@@ -371,240 +391,66 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({
 // ============================================================================
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.primary,
-        padding: spacing[4],
-    },
+    container: { flex: 1, backgroundColor: '#030712' },
+    safeArea: { flex: 1 },
+    glowOrb: { position: 'absolute', width: 250, height: 250, borderRadius: 125, opacity: 0.12 },
 
-    // Header
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: spacing[4],
-    },
-    continentBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.background.secondary,
-        paddingVertical: spacing[1],
-        paddingHorizontal: spacing[3],
-        borderRadius: borders.radius.full,
-    },
-    continentEmoji: {
-        fontSize: 16,
-        marginRight: spacing[1],
-    },
-    continentName: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.xs,
-        fontWeight: typography.fontWeight.semibold as any,
-        color: colors.text.secondary,
-        letterSpacing: 1,
-    },
-    questionCounter: {
-        fontFamily: typography.fontFamily.body,
-        fontSize: typography.fontSize.sm,
-        color: colors.text.tertiary,
-    },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacing[4], paddingVertical: spacing[3] },
+    closeBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' },
+    closeIcon: { fontSize: 18, color: colors.text.muted },
+    headerCenter: { alignItems: 'center' },
+    continentBadge: { flexDirection: 'row', alignItems: 'center', gap: spacing[2], backgroundColor: 'rgba(255,255,255,0.1)', paddingHorizontal: spacing[3], paddingVertical: spacing[1], borderRadius: 20 },
+    continentEmoji: { fontSize: 18 },
+    continentName: { fontSize: 14, color: colors.text.primary, fontWeight: '600' },
+    progressText: { fontSize: 12, color: colors.text.muted, marginTop: 4 },
+    xpBadge: { backgroundColor: 'rgba(251, 191, 36, 0.2)', paddingHorizontal: spacing[3], paddingVertical: spacing[1], borderRadius: 12 },
+    xpText: { fontSize: 14, color: colors.accent.gold, fontWeight: '700' },
 
-    // Progress
-    progressContainer: {
-        marginBottom: spacing[6],
-    },
-    progressBar: {
-        height: 4,
-        backgroundColor: colors.background.tertiary,
-        borderRadius: borders.radius.full,
-        overflow: 'hidden',
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: colors.primary[500],
-        borderRadius: borders.radius.full,
-    },
+    progressBarContainer: { paddingHorizontal: spacing[4], marginBottom: spacing[2] },
+    progressBarTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' },
+    progressBarFill: { height: '100%', borderRadius: 2 },
 
-    // Question
-    questionCard: {
-        backgroundColor: colors.background.secondary,
-        borderRadius: borders.radius.xl,
-        padding: spacing[6],
-        marginBottom: spacing[6],
-    },
-    questionText: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.xl,
-        fontWeight: typography.fontWeight.medium as any,
-        color: colors.text.primary,
-        lineHeight: typography.fontSize.xl * typography.lineHeight.relaxed,
-        textAlign: 'center',
-    },
+    timerContainer: { flexDirection: 'row', alignItems: 'center', marginHorizontal: spacing[4], marginBottom: spacing[3], height: 24, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 12, overflow: 'hidden' },
+    timerBar: { height: '100%', position: 'absolute', left: 0 },
+    timerGradient: { flex: 1 },
+    timerIcon: { position: 'absolute', right: spacing[2], fontSize: 14 },
 
-    // Options
-    optionsContainer: {
-        gap: spacing[3],
-    },
-    optionCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.background.secondary,
-        borderRadius: borders.radius.lg,
-        padding: spacing[4],
-        borderWidth: 2,
-        borderColor: 'transparent',
-    },
-    optionDefault: {
-        borderColor: colors.border.subtle,
-    },
-    optionSelected: {
-        borderColor: colors.primary[500],
-        backgroundColor: colors.primary[500] + '20', // 20% opacity
-    },
-    optionCorrect: {
-        borderColor: colors.success[500],
-        backgroundColor: colors.success[500] + '20',
-    },
-    optionIncorrect: {
-        borderColor: colors.error[500],
-        backgroundColor: colors.error[500] + '20',
-    },
-    optionLabelContainer: {
-        marginRight: spacing[3],
-    },
-    optionLabel: {
-        fontFamily: typography.fontFamily.mono,
-        fontSize: typography.fontSize.sm,
-        color: colors.text.tertiary,
-    },
-    optionText: {
-        flex: 1,
-        fontFamily: typography.fontFamily.body,
-        fontSize: typography.fontSize.base,
-        color: colors.text.primary,
-        lineHeight: typography.fontSize.base * typography.lineHeight.normal,
-    },
-    optionIcon: {
-        fontSize: 20,
-        marginLeft: spacing[2],
-    },
+    content: { flex: 1 },
+    contentContainer: { padding: spacing[4], paddingBottom: 120 },
 
-    // Confirm Button
-    confirmButton: {
-        marginTop: spacing[6],
-    },
-    confirmButtonGradient: {
-        borderRadius: borders.radius.lg,
-        paddingVertical: spacing[4],
-        alignItems: 'center',
-    },
-    confirmButtonText: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.base,
-        fontWeight: typography.fontWeight.bold as any,
-        color: colors.text.primary,
-        letterSpacing: 1,
-    },
+    questionCard: { marginBottom: spacing[5] },
+    questionCardInner: { padding: spacing[5], borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+    categoryBadge: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[3] },
+    categoryText: { fontSize: 12, color: colors.accent.indigoLight, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1 },
+    difficultyDots: { flexDirection: 'row', gap: 4 },
+    difficultyDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.2)' },
+    difficultyDotActive: { backgroundColor: colors.accent.gold },
+    hookText: { fontSize: 14, color: colors.text.muted, fontStyle: 'italic', marginBottom: spacing[3], lineHeight: 20 },
+    questionText: { fontSize: 20, color: colors.text.white, fontWeight: '700', lineHeight: 28 },
 
-    // Explanation Overlay
-    explanationOverlay: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: colors.background.primary,
-        borderTopLeftRadius: borders.radius['2xl'],
-        borderTopRightRadius: borders.radius['2xl'],
-        padding: spacing[4],
-        paddingTop: spacing[6],
-        maxHeight: '60%',
-        // Shadow
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 10,
-    },
-    explanationCard: {},
-    explanationHeader: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: spacing[3],
-    },
-    explanationEmoji: {
-        fontSize: 24,
-    },
-    explanationTitle: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize['2xl'],
-        fontWeight: typography.fontWeight.bold as any,
-        color: colors.success[500],
-        marginHorizontal: spacing[2],
-    },
-    explanationTitleLearn: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.lg,
-        fontWeight: typography.fontWeight.bold as any,
-        color: colors.primary[400],
-        marginLeft: spacing[2],
-    },
-    xpContainer: {
-        alignSelf: 'center',
-        backgroundColor: colors.secondary[500] + '30',
-        paddingVertical: spacing[1],
-        paddingHorizontal: spacing[4],
-        borderRadius: borders.radius.full,
-        marginBottom: spacing[3],
-    },
-    xpText: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.lg,
-        fontWeight: typography.fontWeight.bold as any,
-        color: colors.secondary[400],
-    },
-    divider: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: spacing[3],
-    },
-    dividerLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: colors.border.default,
-    },
-    dividerText: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.xs,
-        color: colors.text.muted,
-        marginHorizontal: spacing[2],
-        letterSpacing: 1,
-    },
-    explanationScroll: {
-        maxHeight: 150,
-        marginBottom: spacing[4],
-    },
-    explanationText: {
-        fontFamily: typography.fontFamily.body,
-        fontSize: typography.fontSize.base,
-        color: colors.text.secondary,
-        lineHeight: typography.fontSize.base * typography.lineHeight.relaxed,
-    },
-    continueButton: {
-        marginTop: spacing[2],
-    },
-    continueButtonGradient: {
-        borderRadius: borders.radius.lg,
-        paddingVertical: spacing[4],
-        alignItems: 'center',
-    },
-    continueButtonText: {
-        fontFamily: typography.fontFamily.display,
-        fontSize: typography.fontSize.base,
-        fontWeight: typography.fontWeight.bold as any,
-        color: colors.text.primary,
-        letterSpacing: 1,
-    },
+    optionsContainer: { gap: spacing[3] },
+    optionCard: { flexDirection: 'row', alignItems: 'center', padding: spacing[4], borderRadius: 16, borderWidth: 2, gap: spacing[3] },
+    optionLetter: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
+    optionLetterText: { fontSize: 16, fontWeight: '700', color: colors.text.white },
+    optionText: { flex: 1, fontSize: 16, color: colors.text.primary, fontWeight: '500' },
+    resultIcon: { fontSize: 20, color: colors.text.white },
+
+    confirmButton: { marginTop: spacing[5], borderRadius: 16, overflow: 'hidden' },
+    confirmButtonGradient: { paddingVertical: spacing[4], alignItems: 'center', borderRadius: 16 },
+    confirmButtonText: { fontSize: 16, fontWeight: '700', color: colors.text.white },
+
+    explanationPanel: { position: 'absolute', bottom: 0, left: 0, right: 0, maxHeight: SCREEN_HEIGHT * 0.55 },
+    explanationContent: { padding: spacing[5], paddingBottom: 40, borderTopLeftRadius: 32, borderTopRightRadius: 32 },
+    resultBadge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing[2], paddingVertical: spacing[3], borderRadius: 16, marginBottom: spacing[4] },
+    resultEmoji: { fontSize: 24 },
+    resultText: { fontSize: 20, fontWeight: '800' },
+    xpEarned: { fontSize: 16, color: colors.accent.gold, fontWeight: '700' },
+    explanationScroll: { maxHeight: 150, marginBottom: spacing[4] },
+    explanationTitle: { fontSize: 14, color: colors.accent.gold, fontWeight: '600', marginBottom: spacing[2] },
+    explanationText: { fontSize: 15, color: colors.text.secondary, lineHeight: 24 },
+    nextButton: { borderRadius: 16, overflow: 'hidden' },
+    nextButtonGradient: { paddingVertical: spacing[4], alignItems: 'center', borderRadius: 16 },
+    nextButtonText: { fontSize: 16, fontWeight: '700', color: colors.text.white },
 });
 
 export default QuestionScreen;
