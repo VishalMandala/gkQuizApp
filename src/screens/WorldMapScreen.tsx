@@ -1,16 +1,31 @@
 /**
- * Global Quest - Premium World Map Screen V3
- * Precise matching to Gemini 3 Pro mockup
+ * Global Quest - Premium World Map Screen V4
+ * Fully responsive for iPhone AND iPad
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Line, Path, G, Defs, RadialGradient, Stop } from 'react-native-svg';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const MAP_HEIGHT = SCREEN_HEIGHT - 250;
+// ============================================================================
+// RESPONSIVE HOOK
+// ============================================================================
+
+const useResponsive = () => {
+    const { width, height } = useWindowDimensions();
+    const isTablet = width >= 768;
+    const isLargeTablet = width >= 1024;
+
+    // Scale factor - reduced for tablets to prevent overlap
+    const scale = isLargeTablet ? 1.15 : isTablet ? 1.1 : 1;
+
+    // Map area height (header + stats panel + tab bar space)
+    const mapHeight = height - (isTablet ? 200 : 220);
+
+    return { width, height, isTablet, isLargeTablet, scale, mapHeight };
+};
 
 // ============================================================================
 // DESIGN TOKENS
@@ -24,20 +39,20 @@ const colors = {
 };
 
 // ============================================================================
-// CONTINENT DATA - Positioned to match mockup layout
+// CONTINENT DATA - Percentage-based positioning
 // ============================================================================
 
-const continents = [
-    { id: 'N_AMERICA', name: 'N. America', emoji: '🗽', progress: 28, color: '#34D399', x: 75, y: MAP_HEIGHT * 0.22, size: 72 },
-    { id: 'S_AMERICA', name: 'S. America', emoji: '🌎', progress: 15, color: '#A78BFA', x: 95, y: MAP_HEIGHT * 0.52, size: 68 },
-    { id: 'EUROPE', name: 'Europe', emoji: '🏰', progress: 65, color: '#60A5FA', x: SCREEN_WIDTH * 0.42, y: MAP_HEIGHT * 0.18, size: 68 },
-    { id: 'AFRICA', name: 'Africa', emoji: '🦁', progress: 80, color: '#FBBF24', x: SCREEN_WIDTH * 0.45, y: MAP_HEIGHT * 0.45, size: 88, complete: true },
-    { id: 'ASIA', name: 'Asia', emoji: '🌏', progress: 32, color: '#EC4899', x: SCREEN_WIDTH * 0.72, y: MAP_HEIGHT * 0.25, size: 72 },
-    { id: 'OCEANIA', name: 'Oceania', emoji: '🦘', progress: 72, color: '#FB923C', x: SCREEN_WIDTH * 0.78, y: MAP_HEIGHT * 0.58, size: 68 },
-    { id: 'ANTARCTICA', name: 'Antarctica', emoji: '🐧', progress: 0, color: '#64748B', x: SCREEN_WIDTH * 0.45, y: MAP_HEIGHT * 0.82, size: 60, locked: true },
+const continentData = [
+    { id: 'N_AMERICA', name: 'N. America', emoji: '🗽', progress: 28, color: '#34D399', xPercent: 15, yPercent: 18, sizeBase: 68 },
+    { id: 'S_AMERICA', name: 'S. America', emoji: '🌎', progress: 15, color: '#A78BFA', xPercent: 18, yPercent: 55, sizeBase: 62 },
+    { id: 'EUROPE', name: 'Europe', emoji: '🏰', progress: 65, color: '#60A5FA', xPercent: 42, yPercent: 10, sizeBase: 62 },
+    { id: 'AFRICA', name: 'Africa', emoji: '🦁', progress: 80, color: '#FBBF24', xPercent: 45, yPercent: 40, sizeBase: 80, complete: true },
+    { id: 'ASIA', name: 'Asia', emoji: '🌏', progress: 32, color: '#EC4899', xPercent: 78, yPercent: 15, sizeBase: 68 },
+    { id: 'OCEANIA', name: 'Oceania', emoji: '🦘', progress: 72, color: '#FB923C', xPercent: 82, yPercent: 50, sizeBase: 62 },
+    { id: 'ANTARCTICA', name: 'Antarctica', emoji: '🐧', progress: 0, color: '#64748B', xPercent: 50, yPercent: 75, sizeBase: 52, locked: true },
 ];
 
-// Connection pairs
+// Connection pairs (by ID)
 const connections: [string, string][] = [
     ['N_AMERICA', 'EUROPE'],
     ['N_AMERICA', 'S_AMERICA'],
@@ -88,10 +103,10 @@ const usePulse = (delay: number = 0, max: number = 1.06) => {
 };
 
 // ============================================================================
-// WORLD MAP SVG - More detailed silhouette
+// WORLD MAP BACKGROUND - Responsive SVG
 // ============================================================================
 
-const WorldMapBackground = () => {
+const WorldMapBackground: React.FC<{ width: number; height: number }> = ({ width, height }) => {
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -100,7 +115,7 @@ const WorldMapBackground = () => {
 
     return (
         <Animated.View style={[styles.mapBackground, { opacity }]}>
-            <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT} viewBox={`0 0 ${SCREEN_WIDTH} ${MAP_HEIGHT}`}>
+            <Svg width={width} height={height} viewBox={`0 0 100 100`} preserveAspectRatio="xMidYMid slice">
                 <Defs>
                     <RadialGradient id="landGrad" cx="50%" cy="50%" r="60%">
                         <Stop offset="0%" stopColor={colors.map.landLight} />
@@ -108,121 +123,63 @@ const WorldMapBackground = () => {
                     </RadialGradient>
                 </Defs>
 
-                {/* North America */}
-                <Path
-                    d={`M30 ${MAP_HEIGHT * 0.12} 
-              Q60 ${MAP_HEIGHT * 0.08} 100 ${MAP_HEIGHT * 0.1}
-              Q130 ${MAP_HEIGHT * 0.15} 120 ${MAP_HEIGHT * 0.25}
-              Q110 ${MAP_HEIGHT * 0.35} 80 ${MAP_HEIGHT * 0.38}
-              Q50 ${MAP_HEIGHT * 0.4} 40 ${MAP_HEIGHT * 0.32}
-              Q25 ${MAP_HEIGHT * 0.22} 30 ${MAP_HEIGHT * 0.12}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                {/* North America - percentage based */}
+                <Path d="M8 8 Q18 5 25 10 Q28 18 24 28 Q18 32 12 28 Q6 22 8 8 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* South America */}
-                <Path
-                    d={`M70 ${MAP_HEIGHT * 0.42}
-              Q100 ${MAP_HEIGHT * 0.4} 120 ${MAP_HEIGHT * 0.48}
-              Q130 ${MAP_HEIGHT * 0.58} 110 ${MAP_HEIGHT * 0.72}
-              Q90 ${MAP_HEIGHT * 0.78} 75 ${MAP_HEIGHT * 0.68}
-              Q60 ${MAP_HEIGHT * 0.55} 70 ${MAP_HEIGHT * 0.42}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                <Path d="M15 42 Q25 40 28 48 Q30 60 24 72 Q18 75 14 65 Q10 52 15 42 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* Europe */}
-                <Path
-                    d={`M${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.08}
-              Q${SCREEN_WIDTH * 0.48} ${MAP_HEIGHT * 0.06} ${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.1}
-              Q${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.18} ${SCREEN_WIDTH * 0.48} ${MAP_HEIGHT * 0.25}
-              Q${SCREEN_WIDTH * 0.42} ${MAP_HEIGHT * 0.28} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.22}
-              Q${SCREEN_WIDTH * 0.35} ${MAP_HEIGHT * 0.15} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.08}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                <Path d="M40 6 Q52 4 55 12 Q56 22 50 28 Q44 30 40 24 Q38 15 40 6 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* Africa */}
-                <Path
-                    d={`M${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.32}
-              Q${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.3} ${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.38}
-              Q${SCREEN_WIDTH * 0.58} ${MAP_HEIGHT * 0.52} ${SCREEN_WIDTH * 0.52} ${MAP_HEIGHT * 0.65}
-              Q${SCREEN_WIDTH * 0.45} ${MAP_HEIGHT * 0.7} ${SCREEN_WIDTH * 0.4} ${MAP_HEIGHT * 0.62}
-              Q${SCREEN_WIDTH * 0.35} ${MAP_HEIGHT * 0.48} ${SCREEN_WIDTH * 0.38} ${MAP_HEIGHT * 0.32}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                <Path d="M40 32 Q55 30 58 42 Q60 58 52 70 Q44 72 40 62 Q36 48 40 32 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* Asia */}
-                <Path
-                    d={`M${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.08}
-              Q${SCREEN_WIDTH * 0.85} ${MAP_HEIGHT * 0.05} ${SCREEN_WIDTH * 0.92} ${MAP_HEIGHT * 0.15}
-              Q${SCREEN_WIDTH * 0.95} ${MAP_HEIGHT * 0.3} ${SCREEN_WIDTH * 0.88} ${MAP_HEIGHT * 0.4}
-              Q${SCREEN_WIDTH * 0.75} ${MAP_HEIGHT * 0.45} ${SCREEN_WIDTH * 0.6} ${MAP_HEIGHT * 0.38}
-              Q${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.25} ${SCREEN_WIDTH * 0.55} ${MAP_HEIGHT * 0.08}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                <Path d="M58 5 Q88 3 94 18 Q96 35 88 45 Q75 50 62 42 Q56 28 58 5 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* Australia/Oceania */}
-                <Path
-                    d={`M${SCREEN_WIDTH * 0.72} ${MAP_HEIGHT * 0.52}
-              Q${SCREEN_WIDTH * 0.88} ${MAP_HEIGHT * 0.5} ${SCREEN_WIDTH * 0.92} ${MAP_HEIGHT * 0.58}
-              Q${SCREEN_WIDTH * 0.9} ${MAP_HEIGHT * 0.7} ${SCREEN_WIDTH * 0.8} ${MAP_HEIGHT * 0.72}
-              Q${SCREEN_WIDTH * 0.7} ${MAP_HEIGHT * 0.68} ${SCREEN_WIDTH * 0.72} ${MAP_HEIGHT * 0.52}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.6}
-                />
+                <Path d="M72 52 Q90 50 94 60 Q92 72 82 75 Q72 72 72 52 Z" fill="url(#landGrad)" opacity={0.55} />
 
                 {/* Antarctica */}
-                <Path
-                    d={`M${SCREEN_WIDTH * 0.2} ${MAP_HEIGHT * 0.88}
-              Q${SCREEN_WIDTH * 0.5} ${MAP_HEIGHT * 0.82} ${SCREEN_WIDTH * 0.8} ${MAP_HEIGHT * 0.88}
-              Q${SCREEN_WIDTH * 0.7} ${MAP_HEIGHT * 0.95} ${SCREEN_WIDTH * 0.3} ${MAP_HEIGHT * 0.95}
-              Q${SCREEN_WIDTH * 0.15} ${MAP_HEIGHT * 0.92} ${SCREEN_WIDTH * 0.2} ${MAP_HEIGHT * 0.88}
-              Z`}
-                    fill="url(#landGrad)"
-                    opacity={0.35}
-                />
+                <Path d="M20 88 Q50 82 80 88 Q75 96 25 96 Q18 94 20 88 Z" fill="url(#landGrad)" opacity={0.35} />
             </Svg>
         </Animated.View>
     );
 };
 
 // ============================================================================
-// CONNECTION LINES - Solid glowing lines
+// CONNECTION LINES - Responsive
 // ============================================================================
 
-const ConnectionLines = () => {
+const ConnectionLines: React.FC<{ width: number; height: number; scale: number }> = ({ width, height, scale }) => {
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        Animated.timing(opacity, { toValue: 0.6, duration: 1200, delay: 300, useNativeDriver: true }).start();
+        Animated.timing(opacity, { toValue: 0.7, duration: 1200, delay: 300, useNativeDriver: true }).start();
     }, []);
 
     const getPos = (id: string) => {
-        const c = continents.find(c => c.id === id);
-        return c ? { x: c.x, y: c.y } : { x: 0, y: 0 };
+        const c = continentData.find(c => c.id === id);
+        if (!c) return { x: 0, y: 0 };
+        return {
+            x: (c.xPercent / 100) * width,
+            y: (c.yPercent / 100) * height,
+        };
     };
 
     return (
         <Animated.View style={[styles.linesContainer, { opacity }]}>
-            <Svg width={SCREEN_WIDTH} height={MAP_HEIGHT}>
+            <Svg width={width} height={height}>
                 {connections.map(([from, to], i) => {
                     const start = getPos(from);
                     const end = getPos(to);
                     return (
                         <G key={i}>
-                            {/* Glow line */}
-                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={3} strokeOpacity={0.3} />
-                            {/* Core line */}
-                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={1.5} strokeOpacity={0.7} />
+                            {/* Glow */}
+                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={3 * scale} strokeOpacity={0.25} />
+                            {/* Core */}
+                            <Line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke={colors.map.line} strokeWidth={1.5 * scale} strokeOpacity={0.65} />
                         </G>
                     );
                 })}
@@ -232,38 +189,59 @@ const ConnectionLines = () => {
 };
 
 // ============================================================================
-// CONTINENT NODE
+// CONTINENT NODE - Responsive
 // ============================================================================
 
-const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number }> = ({ continent, index }) => {
+interface ContinentNodeProps {
+    continent: typeof continentData[0];
+    index: number;
+    mapWidth: number;
+    mapHeight: number;
+    scale: number;
+}
+
+const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidth, mapHeight, scale }) => {
     const { scale: entryScale, opacity } = useNodeAnimation(400 + index * 100);
     const pulseScale = usePulse(600 + index * 50, continent.complete ? 1.1 : 1.05);
-    const size = continent.size;
+
+    // Scale size based on device
+    const size = continent.sizeBase * scale;
     const ringSize = size + 8;
+
+    // Calculate position from percentages
+    const x = (continent.xPercent / 100) * mapWidth - size / 2;
+    const y = (continent.yPercent / 100) * mapHeight - size / 2;
 
     return (
         <Animated.View
             style={[
                 styles.nodeContainer,
-                { left: continent.x - size / 2, top: continent.y - size / 2, opacity, transform: [{ scale: Animated.multiply(entryScale, pulseScale) }] },
+                { left: x, top: y, opacity, transform: [{ scale: Animated.multiply(entryScale, pulseScale) }] },
             ]}
         >
             <TouchableOpacity activeOpacity={0.85} disabled={continent.locked}>
                 {/* Outer glow for complete */}
-                {continent.complete && <View style={[styles.glowRing, { width: size + 30, height: size + 30, borderRadius: (size + 30) / 2, backgroundColor: continent.color }]} />}
+                {continent.complete && (
+                    <View style={[styles.glowRing, {
+                        width: size + 30 * scale,
+                        height: size + 30 * scale,
+                        borderRadius: (size + 30 * scale) / 2,
+                        backgroundColor: continent.color,
+                        top: -15 * scale,
+                        left: -15 * scale,
+                    }]} />
+                )}
 
                 {/* Progress ring */}
-                <View style={[styles.ringContainer, { width: ringSize, height: ringSize }]}>
+                <View style={[styles.ringContainer, { width: ringSize, height: ringSize, top: -4, left: -4 }]}>
                     <Svg width={ringSize} height={ringSize}>
-                        {/* Background ring */}
-                        <Circle cx={ringSize / 2} cy={ringSize / 2} r={(ringSize - 8) / 2} stroke={`${continent.color}30`} strokeWidth={5} fill="none" />
-                        {/* Progress arc */}
+                        <Circle cx={ringSize / 2} cy={ringSize / 2} r={(ringSize - 8) / 2} stroke={`${continent.color}30`} strokeWidth={5 * scale} fill="none" />
                         <Circle
                             cx={ringSize / 2}
                             cy={ringSize / 2}
                             r={(ringSize - 8) / 2}
                             stroke={continent.color}
-                            strokeWidth={5}
+                            strokeWidth={5 * scale}
                             fill="none"
                             strokeDasharray={`${((ringSize - 8) * Math.PI * continent.progress) / 100} ${(ringSize - 8) * Math.PI}`}
                             strokeLinecap="round"
@@ -283,22 +261,29 @@ const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number }
 
                 {/* Progress percentage badge */}
                 {!continent.locked && !continent.complete && (
-                    <View style={[styles.percentBadge, { backgroundColor: `${continent.color}35`, borderColor: continent.color }]}>
-                        <Text style={[styles.percentText, { color: continent.color }]}>{continent.progress}%</Text>
+                    <View style={[styles.percentBadge, {
+                        backgroundColor: `${continent.color}35`,
+                        borderColor: continent.color,
+                        top: -8 * scale,
+                        right: -8 * scale,
+                        paddingHorizontal: 8 * scale,
+                        paddingVertical: 3 * scale,
+                    }]}>
+                        <Text style={[styles.percentText, { color: continent.color, fontSize: 11 * scale }]}>{continent.progress}%</Text>
                     </View>
                 )}
 
                 {/* Continent name */}
-                <Text style={styles.continentName}>{continent.name}</Text>
+                <Text style={[styles.continentName, { fontSize: 12 * scale, marginTop: 8 * scale }]}>{continent.name}</Text>
 
                 {/* COMPLETE badge for Africa */}
                 {continent.complete && (
-                    <View style={styles.completeBadgeContainer}>
-                        <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={styles.completeBadge}>
-                            <Text style={styles.starText}>★</Text>
-                            <Text style={styles.completeText}>COMPLETE</Text>
+                    <View style={[styles.completeBadgeContainer, { marginTop: 4 * scale }]}>
+                        <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={[styles.completeBadge, { paddingHorizontal: 10 * scale, paddingVertical: 4 * scale, borderRadius: 12 * scale }]}>
+                            <Text style={[styles.starText, { fontSize: 11 * scale }]}>★</Text>
+                            <Text style={[styles.completeText, { fontSize: 10 * scale }]}>COMPLETE</Text>
                         </LinearGradient>
-                        <Text style={styles.completeProgress}>{continent.progress}% progress</Text>
+                        <Text style={[styles.completeProgress, { fontSize: 10 * scale }]}>{continent.progress}% progress</Text>
                     </View>
                 )}
             </TouchableOpacity>
@@ -307,10 +292,10 @@ const ContinentNode: React.FC<{ continent: typeof continents[0]; index: number }
 };
 
 // ============================================================================
-// STATS PANEL
+// STATS PANEL - Responsive
 // ============================================================================
 
-const StatsPanel = () => {
+const StatsPanel: React.FC<{ scale: number; isTablet: boolean }> = ({ scale, isTablet }) => {
     const translateY = useRef(new Animated.Value(100)).current;
     const opacity = useRef(new Animated.Value(0)).current;
 
@@ -330,17 +315,26 @@ const StatsPanel = () => {
 
     return (
         <Animated.View style={[styles.statsPanel, { transform: [{ translateY }], opacity }]}>
-            <LinearGradient colors={['rgba(15, 23, 42, 0.97)', 'rgba(10, 18, 35, 1)']} style={styles.statsPanelGradient}>
+            <LinearGradient
+                colors={['rgba(15, 23, 42, 0.97)', 'rgba(10, 18, 35, 1)']}
+                style={[styles.statsPanelGradient, {
+                    paddingVertical: 16 * scale,
+                    paddingBottom: isTablet ? 24 : 36,
+                    maxWidth: isTablet ? 600 : '100%',
+                    alignSelf: 'center',
+                    width: '100%',
+                }]}
+            >
                 {items.map((item, i) => (
                     <React.Fragment key={i}>
                         <View style={styles.statItem}>
                             <View style={styles.statTop}>
-                                <Text style={styles.statIcon}>{item.icon}</Text>
-                                <Text style={styles.statValue}>{item.value}</Text>
+                                <Text style={[styles.statIcon, { fontSize: 18 * scale }]}>{item.icon}</Text>
+                                <Text style={[styles.statValue, { fontSize: 20 * scale }]}>{item.value}</Text>
                             </View>
-                            <Text style={styles.statLabel}>{item.label}</Text>
+                            <Text style={[styles.statLabel, { fontSize: 11 * scale }]}>{item.label}</Text>
                         </View>
-                        {i < items.length - 1 && <View style={styles.statDivider} />}
+                        {i < items.length - 1 && <View style={[styles.statDivider, { height: 45 * scale }]} />}
                     </React.Fragment>
                 ))}
             </LinearGradient>
@@ -349,10 +343,10 @@ const StatsPanel = () => {
 };
 
 // ============================================================================
-// HEADER
+// HEADER - Responsive
 // ============================================================================
 
-const Header = () => {
+const Header: React.FC<{ scale: number }> = ({ scale }) => {
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -360,9 +354,9 @@ const Header = () => {
     }, []);
 
     return (
-        <Animated.View style={[styles.header, { opacity }]}>
-            <Text style={styles.headerTitle}>World Map</Text>
-            <Text style={styles.headerSubtitle}>Explore knowledge across continents</Text>
+        <Animated.View style={[styles.header, { opacity, paddingTop: 16 * scale }]}>
+            <Text style={[styles.headerTitle, { fontSize: 26 * scale }]}>World Map</Text>
+            <Text style={[styles.headerSubtitle, { fontSize: 14 * scale }]}>Explore knowledge across continents</Text>
         </Animated.View>
     );
 };
@@ -371,30 +365,41 @@ const Header = () => {
 // MAIN SCREEN
 // ============================================================================
 
-const WorldMapScreen: React.FC = () => (
-    <View style={styles.container}>
-        <LinearGradient colors={['#030712', '#0a1628', '#0f172a', '#0a1628']} style={StyleSheet.absoluteFill} />
+const WorldMapScreen: React.FC = () => {
+    const { width, height, isTablet, isLargeTablet, scale, mapHeight } = useResponsive();
 
-        {/* Ambient glow orbs */}
-        <View style={[styles.glowOrb, { top: '8%', right: '-8%', backgroundColor: colors.accent.purple }]} />
-        <View style={[styles.glowOrb, styles.glowOrbLarge, { top: '45%', left: '-20%', backgroundColor: colors.accent.indigo }]} />
-        <View style={[styles.glowOrb, { bottom: '25%', right: '-12%', backgroundColor: colors.accent.cyan }]} />
+    return (
+        <View style={styles.container}>
+            <LinearGradient colors={['#030712', '#0a1628', '#0f172a', '#0a1628']} style={StyleSheet.absoluteFill} />
 
-        <SafeAreaView style={styles.safeArea}>
-            <Header />
+            {/* Ambient glow orbs - scaled */}
+            <View style={[styles.glowOrb, { top: '8%', right: '-8%', backgroundColor: colors.accent.purple, width: 200 * scale, height: 200 * scale, borderRadius: 100 * scale }]} />
+            <View style={[styles.glowOrb, { top: '45%', left: '-20%', backgroundColor: colors.accent.indigo, width: 300 * scale, height: 300 * scale, borderRadius: 150 * scale, opacity: 0.1 }]} />
+            <View style={[styles.glowOrb, { bottom: '25%', right: '-12%', backgroundColor: colors.accent.cyan, width: 200 * scale, height: 200 * scale, borderRadius: 100 * scale }]} />
 
-            <View style={styles.mapArea}>
-                <WorldMapBackground />
-                <ConnectionLines />
-                {continents.map((c, i) => (
-                    <ContinentNode key={c.id} continent={c} index={i} />
-                ))}
-            </View>
+            <SafeAreaView style={styles.safeArea}>
+                <Header scale={scale} />
 
-            <StatsPanel />
-        </SafeAreaView>
-    </View>
-);
+                <View style={[styles.mapArea, { height: mapHeight }]}>
+                    <WorldMapBackground width={width} height={mapHeight} />
+                    <ConnectionLines width={width} height={mapHeight} scale={scale} />
+                    {continentData.map((c, i) => (
+                        <ContinentNode
+                            key={c.id}
+                            continent={c}
+                            index={i}
+                            mapWidth={width}
+                            mapHeight={mapHeight}
+                            scale={scale}
+                        />
+                    ))}
+                </View>
+
+                <StatsPanel scale={scale} isTablet={isTablet} />
+            </SafeAreaView>
+        </View>
+    );
+};
 
 // ============================================================================
 // STYLES
@@ -404,41 +409,40 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#030712' },
     safeArea: { flex: 1 },
 
-    glowOrb: { position: 'absolute', width: 200, height: 200, borderRadius: 100, opacity: 0.18 },
-    glowOrbLarge: { width: 300, height: 300, borderRadius: 150, opacity: 0.12 },
+    glowOrb: { position: 'absolute', opacity: 0.18 },
 
-    header: { alignItems: 'center', paddingTop: 16, paddingBottom: 8 },
-    headerTitle: { fontSize: 26, fontWeight: '800', color: colors.text.white },
-    headerSubtitle: { fontSize: 14, color: colors.text.muted, marginTop: 4 },
+    header: { alignItems: 'center', paddingBottom: 8 },
+    headerTitle: { fontWeight: '800', color: colors.text.white },
+    headerSubtitle: { color: colors.text.muted, marginTop: 4 },
 
     mapArea: { flex: 1, position: 'relative' },
-    mapBackground: { position: 'absolute', top: 0, left: 0, right: 0, height: MAP_HEIGHT },
-    linesContainer: { position: 'absolute', top: 0, left: 0, right: 0, height: MAP_HEIGHT },
+    mapBackground: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
+    linesContainer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 
     nodeContainer: { position: 'absolute', alignItems: 'center' },
-    glowRing: { position: 'absolute', top: -15, left: -15, opacity: 0.25 },
-    ringContainer: { position: 'absolute', top: -4, left: -4 },
+    glowRing: { position: 'absolute', opacity: 0.25 },
+    ringContainer: { position: 'absolute' },
     innerCircle: { justifyContent: 'center', alignItems: 'center' },
 
-    percentBadge: { position: 'absolute', top: -8, right: -8, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12, borderWidth: 2 },
-    percentText: { fontSize: 11, fontWeight: '800' },
+    percentBadge: { position: 'absolute', borderRadius: 12, borderWidth: 2 },
+    percentText: { fontWeight: '800' },
 
-    continentName: { marginTop: 8, fontSize: 12, fontWeight: '600', color: colors.text.primary, textAlign: 'center' },
+    continentName: { fontWeight: '600', color: colors.text.primary, textAlign: 'center' },
 
-    completeBadgeContainer: { alignItems: 'center', marginTop: 4 },
-    completeBadge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, gap: 4 },
-    starText: { fontSize: 11, color: '#1a1a1a' },
-    completeText: { fontSize: 10, fontWeight: '800', color: '#1a1a1a', letterSpacing: 0.5 },
-    completeProgress: { fontSize: 10, color: colors.accent.gold, marginTop: 2 },
+    completeBadgeContainer: { alignItems: 'center' },
+    completeBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    starText: { color: '#1a1a1a' },
+    completeText: { fontWeight: '800', color: '#1a1a1a', letterSpacing: 0.5 },
+    completeProgress: { color: colors.accent.gold, marginTop: 2 },
 
     statsPanel: { position: 'absolute', bottom: 0, left: 0, right: 0 },
-    statsPanelGradient: { flexDirection: 'row', paddingVertical: 16, paddingHorizontal: 12, paddingBottom: 36, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
+    statsPanelGradient: { flexDirection: 'row', paddingHorizontal: 12, borderTopLeftRadius: 24, borderTopRightRadius: 24, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)' },
     statItem: { flex: 1, alignItems: 'center' },
     statTop: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-    statIcon: { fontSize: 18 },
-    statValue: { fontSize: 20, fontWeight: '800', color: colors.text.white },
-    statLabel: { fontSize: 11, color: colors.text.muted, marginTop: 3 },
-    statDivider: { width: 1, height: 45, backgroundColor: 'rgba(255,255,255,0.1)' },
+    statIcon: {},
+    statValue: { fontWeight: '800', color: colors.text.white },
+    statLabel: { color: colors.text.muted, marginTop: 3 },
+    statDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.1)' },
 });
 
 export default WorldMapScreen;
