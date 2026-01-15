@@ -1,19 +1,12 @@
 /**
- * Global Quest - Progress Screen
- * Track learning journey across continents and categories
+ * Global Quest - Premium Progress Screen
+ * Matching Gemini 3 Pro mockup quality
  */
 
-import React from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-    Dimensions,
-} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -22,11 +15,10 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 // ============================================================================
 
 const colors = {
-    primary: { 500: '#6366F1', 600: '#4F46E5' },
-    secondary: { 400: '#FBBF24', 500: '#F59E0B' },
-    success: { 500: '#10B981' },
-    background: { primary: '#0F172A', secondary: '#1E293B', tertiary: '#334155' },
-    text: { primary: '#F8FAFC', secondary: '#CBD5E1', tertiary: '#94A3B8', muted: '#64748B' },
+    bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942' },
+    accent: { indigo: '#6366F1', indigoLight: '#818CF8', purple: '#8B5CF6', gold: '#FBBF24', pink: '#EC4899', green: '#34D399', cyan: '#06B6D4', orange: '#FB923C' },
+    text: { white: '#FFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B' },
+    gradients: { indigo: ['#6366F1', '#4F46E5', '#4338CA'], fire: ['#F97316', '#EA580C', '#DC2626'] },
 };
 
 const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
@@ -36,425 +28,265 @@ const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
 // ============================================================================
 
 const mockData = {
+    level: 23,
+    title: 'Knowledge Seeker',
+    currentXP: 1250,
+    nextLevelXP: 2000,
     totalXP: 12500,
-    currentLevel: 23,
-    xpToNextLevel: 2000,
-    xpProgress: 1250,
-    questionsAnswered: 847,
-    accuracy: 72,
-    longestStreak: 47,
-    currentStreak: 12,
-    hoursLearned: 28.5,
-    continents: [
-        { id: 'ASIA', name: 'Asia', emoji: '🌏', progress: 32, color: '#F472B6', questions: 384 },
-        { id: 'AFRICA', name: 'Africa', emoji: '🦁', progress: 80, color: '#FBBF24', questions: 480 },
-        { id: 'EUROPE', name: 'Europe', emoji: '🏰', progress: 65, color: '#60A5FA', questions: 520 },
-        { id: 'NORTH_AMERICA', name: 'N. America', emoji: '🗽', progress: 28, color: '#34D399', questions: 140 },
-        { id: 'SOUTH_AMERICA', name: 'S. America', emoji: '🌎', progress: 15, color: '#A78BFA', questions: 60 },
-        { id: 'AUSTRALIA', name: 'Australia', emoji: '🦘', progress: 72, color: '#FB923C', questions: 252 },
-        { id: 'ANTARCTICA', name: 'Antarctica', emoji: '🐧', progress: 0, color: '#67E8F9', questions: 0 },
+    stats: [
+        { icon: '📝', value: '847', label: 'Questions', subLabel: 'Answered' },
+        { icon: '🎯', value: '72%', label: 'Accuracy', subLabel: '' },
+        { icon: '🔥', value: '47', label: 'Best Streak', subLabel: '' },
+        { icon: '⏱️', value: '28.5h', label: 'Time Learned', subLabel: '' },
     ],
     weeklyActivity: [
-        { day: 'Mon', questions: 45, correct: 32 },
-        { day: 'Tue', questions: 38, correct: 28 },
-        { day: 'Wed', questions: 52, correct: 41 },
-        { day: 'Thu', questions: 28, correct: 22 },
-        { day: 'Fri', questions: 67, correct: 51 },
-        { day: 'Sat', questions: 42, correct: 30 },
-        { day: 'Sun', questions: 55, correct: 43 },
+        { day: 'M', value: 45, max: 67 },
+        { day: 'T', value: 38, max: 67 },
+        { day: 'W', value: 52, max: 67 },
+        { day: 'T', value: 28, max: 67 },
+        { day: 'F', value: 67, max: 67, highlight: true },
+        { day: 'S', value: 42, max: 67 },
+        { day: 'S', value: 55, max: 67 },
     ],
+    continents: [
+        { emoji: '🌏', name: 'Asia', progress: 32, color: '#EC4899' },
+        { emoji: '🦁', name: 'Africa', progress: 80, color: '#FBBF24' },
+        { emoji: '🏰', name: 'Europe', progress: 65, color: '#60A5FA' },
+        { emoji: '🗽', name: 'N. America', progress: 28, color: '#34D399' },
+        { emoji: '🌎', name: 'S. America', progress: 15, color: '#A78BFA' },
+        { emoji: '🦘', name: 'Australia', progress: 72, color: '#FB923C' },
+        { emoji: '🐧', name: 'Antarctica', progress: 0, color: '#64748B' },
+    ],
+};
+
+// ============================================================================
+// ANIMATION HOOKS
+// ============================================================================
+
+const useEntranceAnimation = (delay: number = 0) => {
+    const opacity = useRef(new Animated.Value(0)).current;
+    const translateY = useRef(new Animated.Value(30)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.delay(delay),
+            Animated.parallel([
+                Animated.timing(opacity, { toValue: 1, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+            ]),
+        ]).start();
+    }, []);
+
+    return { opacity, translateY };
+};
+
+const useProgressAnimation = (targetProgress: number, delay: number = 0) => {
+    const progress = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.delay(delay),
+            Animated.timing(progress, { toValue: targetProgress, duration: 1000, easing: Easing.out(Easing.cubic), useNativeDriver: false }),
+        ]).start();
+    }, []);
+
+    return progress;
 };
 
 // ============================================================================
 // COMPONENTS
 // ============================================================================
 
-interface CircularProgressProps {
-    progress: number;
-    size: number;
-    strokeWidth: number;
-    color: string;
-    children?: React.ReactNode;
-}
-
-const CircularProgress: React.FC<CircularProgressProps> = ({
-    progress,
-    size,
-    strokeWidth,
-    color,
-    children,
-}) => {
+const AnimatedCircularProgress: React.FC<{ progress: number; size: number; strokeWidth: number }> = ({ progress, size, strokeWidth }) => {
+    const animatedProgress = useProgressAnimation(progress, 500);
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
-    const strokeDashoffset = circumference - (progress / 100) * circumference;
 
     return (
         <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
             <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
+                {/* Background ring */}
+                <Circle cx={size / 2} cy={size / 2} r={radius} stroke="rgba(99, 102, 241, 0.2)" strokeWidth={strokeWidth} fill="none" />
+                {/* Progress ring */}
                 <Circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={colors.background.tertiary}
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                />
-                <Circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={color}
-                    strokeWidth={strokeWidth}
-                    fill="none"
+                    cx={size / 2} cy={size / 2} r={radius}
+                    stroke="url(#gradient)" strokeWidth={strokeWidth} fill="none"
                     strokeDasharray={`${circumference} ${circumference}`}
-                    strokeDashoffset={strokeDashoffset}
-                    strokeLinecap="round"
-                    rotation="-90"
-                    origin={`${size / 2}, ${size / 2}`}
+                    strokeDashoffset={circumference - (progress / 100) * circumference}
+                    strokeLinecap="round" rotation="-90" origin={`${size / 2}, ${size / 2}`}
                 />
             </Svg>
-            {children}
+            {/* Center content */}
+            <View style={styles.levelCenter}>
+                <Text style={styles.xpProgress}>{mockData.currentXP.toLocaleString()} / {mockData.nextLevelXP.toLocaleString()} XP</Text>
+                <Text style={styles.levelNumber}>Level {mockData.level}</Text>
+                <Text style={styles.levelTitle}>{mockData.title}</Text>
+            </View>
         </View>
     );
 };
 
-const LevelCard = () => (
-    <View style={styles.levelCard}>
-        <CircularProgress
-            progress={(mockData.xpProgress / mockData.xpToNextLevel) * 100}
-            size={120}
-            strokeWidth={8}
-            color={colors.primary[500]}
-        >
-            <View style={styles.levelCenter}>
-                <Text style={styles.levelNumber}>{mockData.currentLevel}</Text>
-                <Text style={styles.levelLabel}>LEVEL</Text>
-            </View>
-        </CircularProgress>
+const Header = () => {
+    const { opacity, translateY } = useEntranceAnimation(100);
+    return (
+        <Animated.View style={[styles.header, { opacity, transform: [{ translateY }] }]}>
+            <Text style={styles.headerTitle}>Your Progress</Text>
+            <TouchableOpacity style={styles.shareBtn}>
+                <Text style={styles.shareIcon}>↗️</Text>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+};
 
-        <View style={styles.levelInfo}>
-            <Text style={styles.levelTitle}>Knowledge Seeker</Text>
-            <Text style={styles.xpText}>
-                {mockData.xpProgress.toLocaleString()} / {mockData.xpToNextLevel.toLocaleString()} XP
-            </Text>
-            <Text style={styles.totalXP}>
-                Total: {mockData.totalXP.toLocaleString()} XP
-            </Text>
-        </View>
-    </View>
-);
-
-const StatsGrid = () => (
-    <View style={styles.statsGrid}>
-        <View style={styles.statCard}>
-            <Text style={styles.statEmoji}>📝</Text>
-            <Text style={styles.statValue}>{mockData.questionsAnswered}</Text>
-            <Text style={styles.statLabel}>Questions</Text>
-        </View>
-        <View style={styles.statCard}>
-            <Text style={styles.statEmoji}>🎯</Text>
-            <Text style={styles.statValue}>{mockData.accuracy}%</Text>
-            <Text style={styles.statLabel}>Accuracy</Text>
-        </View>
-        <View style={styles.statCard}>
-            <Text style={styles.statEmoji}>🔥</Text>
-            <Text style={styles.statValue}>{mockData.longestStreak}</Text>
-            <Text style={styles.statLabel}>Best Streak</Text>
-        </View>
-        <View style={styles.statCard}>
-            <Text style={styles.statEmoji}>⏱️</Text>
-            <Text style={styles.statValue}>{mockData.hoursLearned}h</Text>
-            <Text style={styles.statLabel}>Time Learned</Text>
-        </View>
-    </View>
-);
-
-const WeeklyActivity = () => {
-    const maxQuestions = Math.max(...mockData.weeklyActivity.map(d => d.questions));
+const LevelRing = () => {
+    const { opacity, translateY } = useEntranceAnimation(200);
+    const xpProgress = (mockData.currentXP / mockData.nextLevelXP) * 100;
 
     return (
-        <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>📊 This Week's Activity</Text>
-            <View style={styles.activityChart}>
-                {mockData.weeklyActivity.map((day, index) => (
-                    <View key={day.day} style={styles.activityBar}>
-                        <View style={styles.barContainer}>
-                            <View
-                                style={[
-                                    styles.barFill,
-                                    {
-                                        height: `${(day.questions / maxQuestions) * 100}%`,
-                                        backgroundColor: index === 4 ? colors.primary[500] : colors.primary[600],
-                                    },
-                                ]}
-                            />
-                        </View>
-                        <Text style={styles.barLabel}>{day.day}</Text>
-                        <Text style={styles.barValue}>{day.questions}</Text>
-                    </View>
-                ))}
-            </View>
-        </View>
+        <Animated.View style={[styles.levelCard, { opacity, transform: [{ translateY }] }]}>
+            <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.levelCardInner}>
+                <AnimatedCircularProgress progress={xpProgress} size={180} strokeWidth={10} />
+            </LinearGradient>
+        </Animated.View>
     );
 };
 
-const ContinentProgress = () => (
-    <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>🌍 Continent Mastery</Text>
-        {mockData.continents.map((continent) => (
-            <TouchableOpacity key={continent.id} style={styles.continentRow}>
-                <Text style={styles.continentEmoji}>{continent.emoji}</Text>
-                <View style={styles.continentInfo}>
-                    <Text style={styles.continentName}>{continent.name}</Text>
-                    <View style={styles.progressBarContainer}>
-                        <View
-                            style={[
-                                styles.progressBarFill,
-                                { width: `${continent.progress}%`, backgroundColor: continent.color }
-                            ]}
-                        />
-                    </View>
+const StatsGrid = () => {
+    const { opacity, translateY } = useEntranceAnimation(300);
+
+    return (
+        <Animated.View style={[styles.statsGrid, { opacity, transform: [{ translateY }] }]}>
+            {mockData.stats.map((stat, i) => (
+                <View key={i} style={styles.statCard}>
+                    <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.statCardInner}>
+                        <Text style={styles.statIcon}>{stat.icon}</Text>
+                        <Text style={styles.statValue}>{stat.value}</Text>
+                        <Text style={styles.statLabel}>{stat.label}</Text>
+                        {stat.subLabel ? <Text style={styles.statSubLabel}>{stat.subLabel}</Text> : null}
+                    </LinearGradient>
                 </View>
-                <Text style={[styles.continentPercent, { color: continent.color }]}>
-                    {continent.progress}%
-                </Text>
-            </TouchableOpacity>
-        ))}
-    </View>
-);
+            ))}
+        </Animated.View>
+    );
+};
+
+const WeeklyActivity = () => {
+    const { opacity, translateY } = useEntranceAnimation(400);
+
+    return (
+        <Animated.View style={[styles.sectionCard, { opacity, transform: [{ translateY }] }]}>
+            <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.sectionCardInner}>
+                <Text style={styles.sectionTitle}>Weekly Activity</Text>
+                <View style={styles.chartContainer}>
+                    {mockData.weeklyActivity.map((day, i) => (
+                        <View key={i} style={styles.barWrapper}>
+                            <View style={styles.barTrack}>
+                                <LinearGradient
+                                    colors={day.highlight ? colors.gradients.fire : colors.gradients.indigo}
+                                    style={[styles.barFill, { height: `${(day.value / day.max) * 100}%` }]}
+                                />
+                                {day.highlight && <Text style={styles.fireEmoji}>🔥</Text>}
+                            </View>
+                            <Text style={styles.dayLabel}>{day.day}</Text>
+                        </View>
+                    ))}
+                </View>
+            </LinearGradient>
+        </Animated.View>
+    );
+};
+
+const ContinentMastery = () => {
+    const { opacity, translateY } = useEntranceAnimation(500);
+
+    return (
+        <Animated.View style={[styles.sectionCard, { opacity, transform: [{ translateY }] }]}>
+            <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.sectionCardInner}>
+                <Text style={styles.sectionTitle}>Continent Mastery</Text>
+                {mockData.continents.map((continent, i) => (
+                    <View key={i} style={styles.continentRow}>
+                        <Text style={styles.continentEmoji}>{continent.emoji}</Text>
+                        <View style={styles.continentInfo}>
+                            <View style={styles.progressTrack}>
+                                <Animated.View style={[styles.progressFill, { width: `${continent.progress}%`, backgroundColor: continent.color }]} />
+                            </View>
+                        </View>
+                        <Text style={[styles.continentPercent, { color: continent.color }]}>{continent.progress}%</Text>
+                    </View>
+                ))}
+            </LinearGradient>
+        </Animated.View>
+    );
+};
 
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 
-const ProgressScreen: React.FC = () => {
-    return (
-        <View style={styles.container}>
-            <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-            >
-                {/* Header */}
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Your Progress</Text>
-                    <TouchableOpacity style={styles.shareButton}>
-                        <Text style={styles.shareText}>Share</Text>
-                    </TouchableOpacity>
-                </View>
+const ProgressScreen: React.FC = () => (
+    <View style={styles.container}>
+        {/* Background */}
+        <LinearGradient colors={['#030712', '#0a1628', '#111d32']} style={StyleSheet.absoluteFill} />
+        <View style={[styles.glowOrb, { top: '5%', right: '10%', backgroundColor: colors.accent.purple }]} />
+        <View style={[styles.glowOrb, { bottom: '30%', left: '-10%', backgroundColor: colors.accent.indigo }]} />
 
-                {/* Level Card */}
-                <LevelCard />
-
-                {/* Stats Grid */}
-                <StatsGrid />
-
-                {/* Weekly Activity */}
-                <WeeklyActivity />
-
-                {/* Continent Progress */}
-                <ContinentProgress />
-            </ScrollView>
-        </View>
-    );
-};
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <Header />
+            <LevelRing />
+            <StatsGrid />
+            <WeeklyActivity />
+            <ContinentMastery />
+        </ScrollView>
+    </View>
+);
 
 // ============================================================================
 // STYLES
 // ============================================================================
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.primary,
-    },
-    scrollView: {
-        flex: 1,
-    },
-    scrollContent: {
-        padding: spacing[4],
-        paddingBottom: spacing[8],
-    },
+    container: { flex: 1, backgroundColor: '#030712' },
+    scroll: { flex: 1 },
+    content: { padding: spacing[4], paddingBottom: 100 },
+    glowOrb: { position: 'absolute', width: 250, height: 250, borderRadius: 125, opacity: 0.12 },
 
-    // Header
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: spacing[4],
-    },
-    headerTitle: {
-        fontSize: 28,
-        fontWeight: '700',
-        color: colors.text.primary,
-    },
-    shareButton: {
-        paddingVertical: spacing[2],
-        paddingHorizontal: spacing[4],
-        backgroundColor: colors.background.secondary,
-        borderRadius: 20,
-    },
-    shareText: {
-        fontSize: 14,
-        color: colors.primary[500],
-        fontWeight: '600',
-    },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing[4] },
+    headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text.white },
+    shareBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(99,102,241,0.2)', justifyContent: 'center', alignItems: 'center' },
+    shareIcon: { fontSize: 18 },
 
-    // Level Card
-    levelCard: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.background.secondary,
-        borderRadius: 20,
-        padding: spacing[4],
-        marginBottom: spacing[4],
-    },
-    levelCenter: {
-        alignItems: 'center',
-    },
-    levelNumber: {
-        fontSize: 36,
-        fontWeight: '800',
-        color: colors.text.primary,
-    },
-    levelLabel: {
-        fontSize: 10,
-        fontWeight: '600',
-        color: colors.text.tertiary,
-        letterSpacing: 1,
-    },
-    levelInfo: {
-        marginLeft: spacing[4],
-        flex: 1,
-    },
-    levelTitle: {
-        fontSize: 20,
-        fontWeight: '700',
-        color: colors.text.primary,
-        marginBottom: spacing[1],
-    },
-    xpText: {
-        fontSize: 14,
-        color: colors.text.secondary,
-    },
-    totalXP: {
-        fontSize: 12,
-        color: colors.text.muted,
-        marginTop: spacing[1],
-    },
+    levelCard: { alignItems: 'center', marginBottom: spacing[4] },
+    levelCardInner: { borderRadius: 20, padding: spacing[6], borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+    levelCenter: { alignItems: 'center' },
+    xpProgress: { fontSize: 12, color: colors.text.muted, marginBottom: 4 },
+    levelNumber: { fontSize: 42, fontWeight: '900', color: colors.text.white },
+    levelTitle: { fontSize: 14, color: colors.accent.indigoLight, fontWeight: '600' },
 
-    // Stats Grid
-    statsGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: spacing[3],
-        marginBottom: spacing[4],
-    },
-    statCard: {
-        width: (SCREEN_WIDTH - spacing[4] * 2 - spacing[3]) / 2 - 1,
-        backgroundColor: colors.background.secondary,
-        borderRadius: 16,
-        padding: spacing[4],
-        alignItems: 'center',
-    },
-    statEmoji: {
-        fontSize: 24,
-        marginBottom: spacing[2],
-    },
-    statValue: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: colors.text.primary,
-    },
-    statLabel: {
-        fontSize: 12,
-        color: colors.text.tertiary,
-        marginTop: spacing[1],
-    },
+    statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing[3], marginBottom: spacing[4] },
+    statCard: { width: (SCREEN_WIDTH - spacing[4] * 2 - spacing[3]) / 2 - 1, borderRadius: 16, overflow: 'hidden' },
+    statCardInner: { padding: spacing[4], alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', borderRadius: 16 },
+    statIcon: { fontSize: 28, marginBottom: spacing[2] },
+    statValue: { fontSize: 28, fontWeight: '800', color: colors.text.white },
+    statLabel: { fontSize: 12, color: colors.text.secondary, marginTop: 2 },
+    statSubLabel: { fontSize: 10, color: colors.text.muted },
 
-    // Section Card
-    sectionCard: {
-        backgroundColor: colors.background.secondary,
-        borderRadius: 20,
-        padding: spacing[4],
-        marginBottom: spacing[4],
-    },
-    sectionTitle: {
-        fontSize: 16,
-        fontWeight: '700',
-        color: colors.text.primary,
-        marginBottom: spacing[4],
-    },
+    sectionCard: { marginBottom: spacing[4], borderRadius: 20, overflow: 'hidden' },
+    sectionCardInner: { padding: spacing[4], borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', borderRadius: 20 },
+    sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text.white, marginBottom: spacing[4] },
 
-    // Activity Chart
-    activityChart: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        height: 120,
-    },
-    activityBar: {
-        alignItems: 'center',
-        flex: 1,
-    },
-    barContainer: {
-        flex: 1,
-        width: 24,
-        backgroundColor: colors.background.tertiary,
-        borderRadius: 12,
-        overflow: 'hidden',
-        justifyContent: 'flex-end',
-    },
-    barFill: {
-        width: '100%',
-        borderRadius: 12,
-    },
-    barLabel: {
-        fontSize: 10,
-        color: colors.text.muted,
-        marginTop: spacing[1],
-    },
-    barValue: {
-        fontSize: 10,
-        color: colors.text.tertiary,
-        fontWeight: '600',
-    },
+    chartContainer: { flexDirection: 'row', justifyContent: 'space-between', height: 120, alignItems: 'flex-end' },
+    barWrapper: { flex: 1, alignItems: 'center', gap: spacing[1] },
+    barTrack: { width: 24, height: 100, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 12, overflow: 'hidden', justifyContent: 'flex-end', position: 'relative' },
+    barFill: { width: '100%', borderRadius: 12 },
+    fireEmoji: { position: 'absolute', top: -20, alignSelf: 'center', fontSize: 16 },
+    dayLabel: { fontSize: 11, color: colors.text.muted, fontWeight: '500' },
 
-    // Continent Progress
-    continentRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: spacing[3],
-    },
-    continentEmoji: {
-        fontSize: 24,
-        marginRight: spacing[3],
-    },
-    continentInfo: {
-        flex: 1,
-    },
-    continentName: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: colors.text.primary,
-        marginBottom: spacing[1],
-    },
-    progressBarContainer: {
-        height: 6,
-        backgroundColor: colors.background.tertiary,
-        borderRadius: 3,
-        overflow: 'hidden',
-    },
-    progressBarFill: {
-        height: '100%',
-        borderRadius: 3,
-    },
-    continentPercent: {
-        fontSize: 14,
-        fontWeight: '700',
-        marginLeft: spacing[3],
-        minWidth: 40,
-        textAlign: 'right',
-    },
+    continentRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing[3] },
+    continentEmoji: { fontSize: 24, marginRight: spacing[3], width: 30 },
+    continentInfo: { flex: 1 },
+    progressTrack: { height: 10, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 5, overflow: 'hidden' },
+    progressFill: { height: '100%', borderRadius: 5 },
+    continentPercent: { fontSize: 14, fontWeight: '700', marginLeft: spacing[3], width: 45, textAlign: 'right' },
 });
 
 export default ProgressScreen;
