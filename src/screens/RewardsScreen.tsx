@@ -1,10 +1,11 @@
 /**
- * Global Quest - Premium Rewards Screen
- * Matching Gemini 3 Pro mockup quality
+ * Global Quest - Premium Rewards Screen V2
+ * Matching Gemini 3 Pro mockup exactly
  */
 
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Animated, Easing } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -14,13 +15,18 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 // ============================================================================
 
 const colors = {
-    bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942' },
-    accent: { indigo: '#6366F1', purple: '#8B5CF6', gold: '#FBBF24', green: '#10B981', red: '#EF4444' },
+    bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942', glass: 'rgba(17, 24, 39, 0.9)' },
+    accent: {
+        indigo: '#6366F1',
+        purple: '#8B5CF6',
+        gold: '#FBBF24',
+        goldDark: '#D97706',
+        green: '#10B981',
+        red: '#EF4444',
+    },
     text: { white: '#FFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B' },
     rarity: { common: '#9CA3AF', rare: '#60A5FA', epic: '#A78BFA', legendary: '#FBBF24' },
 };
-
-const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
 
 // ============================================================================
 // MOCK DATA
@@ -50,14 +56,14 @@ const artifacts = [
 
 const useEntranceAnimation = (delay: number = 0) => {
     const opacity = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(30)).current;
+    const translateY = useRef(new Animated.Value(20)).current;
 
     useEffect(() => {
         Animated.sequence([
             Animated.delay(delay),
             Animated.parallel([
-                Animated.timing(opacity, { toValue: 1, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                Animated.timing(translateY, { toValue: 0, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
             ]),
         ]).start();
     }, []);
@@ -67,19 +73,128 @@ const useEntranceAnimation = (delay: number = 0) => {
 
 const useStaggeredAnimation = (index: number) => {
     const opacity = useRef(new Animated.Value(0)).current;
-    const translateX = useRef(new Animated.Value(-30)).current;
+    const translateY = useRef(new Animated.Value(20)).current;
+    const scale = useRef(new Animated.Value(0.9)).current;
 
     useEffect(() => {
         Animated.sequence([
-            Animated.delay(300 + index * 80),
+            Animated.delay(200 + index * 60),
             Animated.parallel([
-                Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-                Animated.timing(translateX, { toValue: 0, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 350, useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, friction: 6, tension: 100, useNativeDriver: true }),
             ]),
         ]).start();
     }, []);
 
-    return { opacity, translateX };
+    return { opacity, translateY, scale };
+};
+
+// Pulse animation for XP coins - creates excitement
+const usePulseAnimation = () => {
+    const scale = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        const pulse = Animated.loop(
+            Animated.sequence([
+                Animated.timing(scale, { toValue: 1.08, duration: 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+                Animated.timing(scale, { toValue: 1, duration: 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+            ])
+        );
+        pulse.start();
+        return () => pulse.stop();
+    }, []);
+
+    return scale;
+};
+
+// Press scale animation for tactile feedback
+const usePressAnimation = () => {
+    const scale = useRef(new Animated.Value(1)).current;
+
+    const onPressIn = () => {
+        Animated.spring(scale, { toValue: 0.96, friction: 8, tension: 200, useNativeDriver: true }).start();
+    };
+
+    const onPressOut = () => {
+        Animated.spring(scale, { toValue: 1, friction: 6, tension: 150, useNativeDriver: true }).start();
+    };
+
+    return { scale, onPressIn, onPressOut };
+};
+
+// Icon bounce for unlocked achievements - celebration effect
+const useIconBounce = (isUnlocked: boolean) => {
+    const scale = useRef(new Animated.Value(1)).current;
+    const rotate = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        if (isUnlocked) {
+            const bounce = Animated.loop(
+                Animated.sequence([
+                    Animated.delay(2000), // Wait before bouncing
+                    Animated.parallel([
+                        Animated.sequence([
+                            Animated.spring(scale, { toValue: 1.2, friction: 3, tension: 300, useNativeDriver: true }),
+                            Animated.spring(scale, { toValue: 1, friction: 4, useNativeDriver: true }),
+                        ]),
+                        Animated.sequence([
+                            Animated.timing(rotate, { toValue: 1, duration: 100, useNativeDriver: true }),
+                            Animated.timing(rotate, { toValue: -1, duration: 100, useNativeDriver: true }),
+                            Animated.timing(rotate, { toValue: 0, duration: 100, useNativeDriver: true }),
+                        ]),
+                    ]),
+                ])
+            );
+            bounce.start();
+            return () => bounce.stop();
+        }
+    }, [isUnlocked]);
+
+    const rotateInterpolate = rotate.interpolate({
+        inputRange: [-1, 0, 1],
+        outputRange: ['-5deg', '0deg', '5deg'],
+    });
+
+    return { scale, rotate: rotateInterpolate };
+};
+
+// Shimmer animation for gold elements
+const useShimmer = () => {
+    const shimmer = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const loop = Animated.loop(
+            Animated.sequence([
+                Animated.timing(shimmer, { toValue: 1, duration: 2000, easing: Easing.linear, useNativeDriver: true }),
+                Animated.delay(1000),
+                Animated.timing(shimmer, { toValue: 0, duration: 0, useNativeDriver: true }),
+            ])
+        );
+        loop.start();
+        return () => loop.stop();
+    }, []);
+
+    return shimmer;
+};
+
+// Animated progress bar fill
+const useProgressAnimation = (targetProgress: number, delay: number = 0) => {
+    const progress = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.delay(delay + 400),
+            Animated.timing(progress, {
+                toValue: targetProgress,
+                duration: 800,
+                easing: Easing.out(Easing.cubic),
+                useNativeDriver: false, // width animation requires this
+            }),
+        ]).start();
+    }, [targetProgress, delay]);
+
+    return progress;
 };
 
 // ============================================================================
@@ -88,112 +203,213 @@ const useStaggeredAnimation = (index: number) => {
 
 type TabType = 'achievements' | 'artifacts';
 
+// Header matching mockup
 const Header: React.FC<{ unlockedCount: number; ownedCount: number }> = ({ unlockedCount, ownedCount }) => {
-    const { opacity, translateY } = useEntranceAnimation(100);
+    const { opacity, translateY } = useEntranceAnimation(50);
 
     return (
         <Animated.View style={[styles.header, { opacity, transform: [{ translateY }] }]}>
             <Text style={styles.headerTitle}>Rewards</Text>
             <View style={styles.headerBadges}>
-                <View style={styles.badge}><Text style={styles.badgeText}>🏆 {unlockedCount}/{achievements.length}</Text></View>
-                <View style={styles.badge}><Text style={styles.badgeText}>✨ {ownedCount}/{artifacts.length}</Text></View>
+                <View style={styles.badgeGold}>
+                    <Text style={styles.badgeText}>🏆 {unlockedCount}/{achievements.length}</Text>
+                </View>
+                <View style={styles.badgeGold}>
+                    <Text style={styles.badgeText}>✨ {ownedCount}/{artifacts.length}</Text>
+                </View>
             </View>
         </Animated.View>
     );
 };
 
+// Total XP Summary - shows total earned XP with celebration
+const TotalXPSummary: React.FC = () => {
+    const { opacity, translateY } = useEntranceAnimation(75);
+    const pulseScale = usePulseAnimation();
+    const totalXP = achievements.filter(a => a.unlocked).reduce((sum, a) => sum + a.xp, 0);
+    const [displayXP, setDisplayXP] = useState(0);
+
+    // Animate the XP count up
+    useEffect(() => {
+        const duration = 1500;
+        const steps = 30;
+        const increment = totalXP / steps;
+        let current = 0;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= totalXP) {
+                setDisplayXP(totalXP);
+                clearInterval(timer);
+            } else {
+                setDisplayXP(Math.floor(current));
+            }
+        }, duration / steps);
+        return () => clearInterval(timer);
+    }, [totalXP]);
+
+    return (
+        <Animated.View style={[styles.xpSummary, { opacity, transform: [{ translateY }] }]}>
+            <LinearGradient
+                colors={['rgba(251, 191, 36, 0.15)', 'rgba(217, 119, 6, 0.1)']}
+                style={styles.xpSummaryInner}
+            >
+                <View style={styles.xpSummaryLeft}>
+                    <Text style={styles.xpSummaryLabel}>Total XP Earned</Text>
+                    <Text style={styles.xpSummaryValue}>{displayXP.toLocaleString()}</Text>
+                </View>
+                <Animated.View style={{ transform: [{ scale: pulseScale }] }}>
+                    <LinearGradient colors={['#FBBF24', '#F59E0B', '#D97706']} style={styles.xpSummaryCoin}>
+                        <Text style={styles.xpSummaryCoinText}>⭐</Text>
+                    </LinearGradient>
+                </Animated.View>
+            </LinearGradient>
+        </Animated.View>
+    );
+};
+
+// Tab selector with gold active state
 const TabSelector: React.FC<{ activeTab: TabType; onTabChange: (tab: TabType) => void }> = ({ activeTab, onTabChange }) => {
-    const { opacity, translateY } = useEntranceAnimation(150);
+    const { opacity, translateY } = useEntranceAnimation(100);
 
     return (
         <Animated.View style={[styles.tabContainer, { opacity, transform: [{ translateY }] }]}>
-            <TouchableOpacity style={[styles.tab, activeTab === 'achievements' && styles.tabActive]} onPress={() => onTabChange('achievements')}>
-                <Text style={[styles.tabText, activeTab === 'achievements' && styles.tabTextActive]}>🏆 Achievements</Text>
+            <TouchableOpacity
+                style={[styles.tab, activeTab === 'achievements' && styles.tabActive]}
+                onPress={() => onTabChange('achievements')}
+            >
+                {activeTab === 'achievements' ? (
+                    <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={styles.tabActiveGradient}>
+                        <Text style={styles.tabTextActive}>🏆 Achievements</Text>
+                    </LinearGradient>
+                ) : (
+                    <Text style={styles.tabText}>🏆 Achievements</Text>
+                )}
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.tab, activeTab === 'artifacts' && styles.tabActive]} onPress={() => onTabChange('artifacts')}>
-                <Text style={[styles.tabText, activeTab === 'artifacts' && styles.tabTextActive]}>✨ Artifacts</Text>
+            <TouchableOpacity
+                style={[styles.tab, activeTab === 'artifacts' && styles.tabActive]}
+                onPress={() => onTabChange('artifacts')}
+            >
+                {activeTab === 'artifacts' ? (
+                    <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={styles.tabActiveGradient}>
+                        <Text style={styles.tabTextActive}>✨ Artifacts</Text>
+                    </LinearGradient>
+                ) : (
+                    <Text style={styles.tabText}>✨ Artifacts</Text>
+                )}
             </TouchableOpacity>
         </Animated.View>
     );
 };
 
+// Achievement Card - with interactive animations
 const AchievementCard: React.FC<{ achievement: typeof achievements[0]; index: number }> = ({ achievement, index }) => {
-    const { opacity, translateX } = useStaggeredAnimation(index);
+    const { opacity, translateY, scale: entranceScale } = useStaggeredAnimation(index);
+    const pulseScale = usePulseAnimation();
+    const { scale: pressScale, onPressIn, onPressOut } = usePressAnimation();
 
     return (
-        <Animated.View style={[styles.achievementCard, { opacity, transform: [{ translateX }] }]}>
-            <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.achievementCardInner}>
-                {/* Icon */}
-                <View style={[styles.achievementIcon, achievement.unlocked && styles.achievementIconUnlocked]}>
-                    <Text style={styles.achievementEmoji}>{achievement.icon}</Text>
-                    {achievement.unlocked && (
-                        <View style={styles.checkBadge}><Text style={styles.checkText}>✓</Text></View>
-                    )}
-                </View>
-
-                {/* Info */}
-                <View style={styles.achievementInfo}>
-                    <Text style={styles.achievementName}>{achievement.name}</Text>
-                    <Text style={styles.achievementDesc} numberOfLines={2}>{achievement.desc}</Text>
-                    {!achievement.unlocked && (
-                        <View style={styles.progressContainer}>
-                            <View style={styles.progressTrack}>
-                                <LinearGradient
-                                    colors={['#6366F1', '#4F46E5']}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 0 }}
-                                    style={[styles.progressFill, { width: `${achievement.progress}%` }]}
-                                />
-                            </View>
-                            <Text style={styles.progressLabel}>{achievement.progressLabel || `${achievement.progress}%`}</Text>
+        <Animated.View style={[
+            styles.achievementCard,
+            { opacity, transform: [{ translateY }, { scale: entranceScale }] }
+        ]}>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+            >
+                <Animated.View style={{ transform: [{ scale: pressScale }] }}>
+                    <LinearGradient
+                        colors={['rgba(17, 29, 50, 0.95)', 'rgba(26, 41, 66, 0.9)']}
+                        style={styles.achievementCardInner}
+                    >
+                        {/* Icon with warm/gold tint for unlocked */}
+                        <View style={[
+                            styles.achievementIcon,
+                            achievement.unlocked && styles.achievementIconUnlocked
+                        ]}>
+                            <Text style={styles.achievementEmoji}>{achievement.icon}</Text>
+                            {achievement.unlocked && (
+                                <View style={styles.checkBadge}>
+                                    <Text style={styles.checkText}>✓</Text>
+                                </View>
+                            )}
                         </View>
-                    )}
-                </View>
 
-                {/* XP Badge */}
-                <View style={styles.xpBadge}>
-                    <LinearGradient colors={['#FBBF24', '#F59E0B']} style={styles.xpBadgeInner}>
-                        <Text style={styles.xpValue}>+{achievement.xp}</Text>
-                        <Text style={styles.xpLabel}>XP</Text>
+                        {/* Info */}
+                        <View style={styles.achievementInfo}>
+                            <Text style={styles.achievementName}>{achievement.name}</Text>
+                            <Text style={styles.achievementDesc} numberOfLines={2}>{achievement.desc}</Text>
+                            {!achievement.unlocked && (
+                                <View style={styles.progressContainer}>
+                                    <View style={styles.progressTrack}>
+                                        <LinearGradient
+                                            colors={[colors.accent.gold, colors.accent.goldDark]}
+                                            start={{ x: 0, y: 0 }}
+                                            end={{ x: 1, y: 0 }}
+                                            style={[styles.progressFill, { width: `${achievement.progress}%` }]}
+                                        />
+                                    </View>
+                                    <Text style={styles.progressLabel}>{achievement.progressLabel || `${achievement.progress}%`}</Text>
+                                </View>
+                            )}
+                        </View>
+
+                        {/* XP Coin Badge - pulsing for excitement */}
+                        <Animated.View style={[styles.xpCoin, { transform: [{ scale: pulseScale }] }]}>
+                            <LinearGradient colors={['#FBBF24', '#F59E0B', '#D97706']} style={styles.xpCoinInner}>
+                                <Text style={styles.xpValue}>+{achievement.xp}</Text>
+                                <Text style={styles.xpLabel}>XP</Text>
+                            </LinearGradient>
+                        </Animated.View>
                     </LinearGradient>
-                </View>
-            </LinearGradient>
+                </Animated.View>
+            </TouchableOpacity>
         </Animated.View>
     );
 };
 
+// Artifact Card - with interactive animations
 const ArtifactCard: React.FC<{ artifact: typeof artifacts[0]; index: number }> = ({ artifact, index }) => {
-    const { opacity, translateX } = useStaggeredAnimation(index);
+    const { opacity, translateY, scale: entranceScale } = useStaggeredAnimation(index);
+    const { scale: pressScale, onPressIn, onPressOut } = usePressAnimation();
     const rarityColor = colors.rarity[artifact.rarity as keyof typeof colors.rarity];
 
     return (
-        <Animated.View style={[styles.artifactCard, { opacity, transform: [{ translateX }] }]}>
-            <LinearGradient
-                colors={[colors.bg.card, colors.bg.cardLight]}
-                style={[styles.artifactCardInner, artifact.owned && { borderColor: rarityColor, borderWidth: 2 }]}
+        <Animated.View style={[styles.artifactCard, { opacity, transform: [{ translateY }, { scale: entranceScale }] }]}>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
             >
-                <View style={[styles.artifactIconContainer, { backgroundColor: `${rarityColor}30` }]}>
-                    <Text style={styles.artifactEmoji}>{artifact.icon}</Text>
-                </View>
-                <Text style={styles.artifactName}>{artifact.name}</Text>
-                <Text style={[styles.artifactRarity, { color: rarityColor }]}>{artifact.rarity.toUpperCase()}</Text>
-
-                {!artifact.owned && artifact.progress !== undefined && (
-                    <View style={styles.artifactProgressContainer}>
-                        <View style={styles.artifactProgressTrack}>
-                            <View style={[styles.artifactProgressFill, { width: `${artifact.progress}%`, backgroundColor: rarityColor }]} />
+                <Animated.View style={{ transform: [{ scale: pressScale }] }}>
+                    <LinearGradient
+                        colors={['rgba(17, 29, 50, 0.95)', 'rgba(26, 41, 66, 0.9)']}
+                        style={[styles.artifactCardInner, artifact.owned && { borderColor: rarityColor, borderWidth: 2 }]}
+                    >
+                        <View style={[styles.artifactIconContainer, { backgroundColor: `${rarityColor}30` }]}>
+                            <Text style={styles.artifactEmoji}>{artifact.icon}</Text>
                         </View>
-                        <Text style={styles.artifactProgressText}>{artifact.progress}%</Text>
-                    </View>
-                )}
+                        <Text style={styles.artifactName}>{artifact.name}</Text>
+                        <Text style={[styles.artifactRarity, { color: rarityColor }]}>{artifact.rarity.toUpperCase()}</Text>
 
-                {artifact.equipped && <Text style={styles.equippedText}>EQUIPPED</Text>}
-                {artifact.owned && !artifact.equipped && (
-                    <TouchableOpacity style={[styles.equipBtn, { backgroundColor: rarityColor }]}>
-                        <Text style={styles.equipBtnText}>EQUIP</Text>
-                    </TouchableOpacity>
-                )}
-            </LinearGradient>
+                        {!artifact.owned && artifact.progress !== undefined && (
+                            <View style={styles.artifactProgressContainer}>
+                                <View style={styles.artifactProgressTrack}>
+                                    <View style={[styles.artifactProgressFill, { width: `${artifact.progress}%`, backgroundColor: rarityColor }]} />
+                                </View>
+                                <Text style={styles.artifactProgressText}>{artifact.progress}%</Text>
+                            </View>
+                        )}
+
+                        {artifact.equipped && <Text style={styles.equippedText}>EQUIPPED</Text>}
+                        {artifact.owned && !artifact.equipped && (
+                            <TouchableOpacity style={[styles.equipBtn, { backgroundColor: rarityColor }]}>
+                                <Text style={styles.equipBtnText}>EQUIP</Text>
+                            </TouchableOpacity>
+                        )}
+                    </LinearGradient>
+                </Animated.View>
+            </TouchableOpacity>
         </Animated.View>
     );
 };
@@ -211,24 +427,29 @@ const RewardsScreen: React.FC = () => {
         <View style={styles.container}>
             {/* Background */}
             <LinearGradient colors={['#030712', '#0a1628', '#111d32']} style={StyleSheet.absoluteFill} />
-            <View style={[styles.glowOrb, { top: '10%', right: '-5%', backgroundColor: colors.accent.gold }]} />
-            <View style={[styles.glowOrb, { bottom: '20%', left: '-10%', backgroundColor: colors.accent.purple }]} />
+            <View style={[styles.glowOrb, styles.glowOrbTop]} />
+            <View style={[styles.glowOrb, styles.glowOrbBottom]} />
 
-            <Header unlockedCount={unlockedCount} ownedCount={ownedCount} />
-            <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
+            <SafeAreaView style={styles.safeArea} edges={[]}>
+                <Header unlockedCount={unlockedCount} ownedCount={ownedCount} />
+                <TabSelector activeTab={activeTab} onTabChange={setActiveTab} />
 
-            <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-                {activeTab === 'achievements' && (
-                    <View style={styles.list}>
-                        {achievements.map((a, i) => <AchievementCard key={a.id} achievement={a} index={i} />)}
-                    </View>
-                )}
-                {activeTab === 'artifacts' && (
-                    <View style={styles.artifactsGrid}>
-                        {artifacts.map((a, i) => <ArtifactCard key={a.id} artifact={a} index={i} />)}
-                    </View>
-                )}
-            </ScrollView>
+                <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+                    {activeTab === 'achievements' && (
+                        <>
+                            <TotalXPSummary />
+                            <View style={styles.list}>
+                                {achievements.map((a, i) => <AchievementCard key={a.id} achievement={a} index={i} />)}
+                            </View>
+                        </>
+                    )}
+                    {activeTab === 'artifacts' && (
+                        <View style={styles.artifactsGrid}>
+                            {artifacts.map((a, i) => <ArtifactCard key={a.id} artifact={a} index={i} />)}
+                        </View>
+                    )}
+                </ScrollView>
+            </SafeAreaView>
         </View>
     );
 };
@@ -239,56 +460,141 @@ const RewardsScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#030712' },
+    safeArea: { flex: 1 },
     scroll: { flex: 1 },
-    content: { padding: spacing[4], paddingBottom: 100 },
+    content: { paddingHorizontal: 16, paddingTop: 0, paddingBottom: 120 },
     glowOrb: { position: 'absolute', width: 250, height: 250, borderRadius: 125, opacity: 0.12 },
+    glowOrbTop: { top: '10%', right: '-5%', backgroundColor: colors.accent.gold },
+    glowOrbBottom: { bottom: '20%', left: '-10%', backgroundColor: colors.accent.purple },
 
-    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing[4], paddingBottom: 0 },
-    headerTitle: { fontSize: 28, fontWeight: '800', color: colors.text.white },
-    headerBadges: { flexDirection: 'row', gap: spacing[2] },
-    badge: { backgroundColor: 'rgba(99,102,241,0.2)', paddingHorizontal: spacing[3], paddingVertical: spacing[1], borderRadius: 20 },
-    badgeText: { fontSize: 13, color: colors.text.primary, fontWeight: '600' },
+    // Header - matching mockup
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8, paddingBottom: 2 },
+    headerTitle: { fontSize: 22, fontWeight: '800', color: colors.text.white },
+    headerBadges: { flexDirection: 'row', gap: 8 },
+    badgeGold: {
+        backgroundColor: 'rgba(251, 191, 36, 0.25)',
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: 'rgba(251, 191, 36, 0.4)',
+    },
+    badgeText: { fontSize: 12, color: colors.accent.gold, fontWeight: '700' },
 
-    tabContainer: { flexDirection: 'row', padding: spacing[4], gap: spacing[2] },
-    tab: { flex: 1, paddingVertical: spacing[3], borderRadius: 16, backgroundColor: 'rgba(30,41,59,0.8)', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-    tabActive: { backgroundColor: colors.accent.indigo, borderColor: colors.accent.indigo },
-    tabText: { fontSize: 14, color: colors.text.muted, fontWeight: '600' },
-    tabTextActive: { color: colors.text.white },
+    // Tab selector - gold active state
+    tabContainer: { flexDirection: 'row', paddingHorizontal: 16, paddingTop: 2, paddingBottom: 4, gap: 8 },
+    tab: {
+        flex: 1,
+        borderRadius: 20,
+        overflow: 'hidden',
+        backgroundColor: 'rgba(30, 41, 59, 0.8)',
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.08)',
+    },
+    tabActive: { borderColor: colors.accent.gold },
+    tabActiveGradient: {
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderRadius: 20,
+    },
+    tabText: { fontSize: 13, color: colors.text.muted, fontWeight: '600', textAlign: 'center', paddingVertical: 10 },
+    tabTextActive: { fontSize: 13, color: '#1A1A1A', fontWeight: '700' },
 
-    list: { gap: spacing[3] },
-    achievementCard: { borderRadius: 16, overflow: 'hidden' },
-    achievementCardInner: { flexDirection: 'row', alignItems: 'center', padding: spacing[4], borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
-    achievementIcon: { width: 56, height: 56, borderRadius: 28, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center', marginRight: spacing[3], position: 'relative' },
-    achievementIconUnlocked: { backgroundColor: 'rgba(16, 185, 129, 0.2)' },
-    achievementEmoji: { fontSize: 28 },
-    checkBadge: { position: 'absolute', bottom: -4, right: -4, width: 22, height: 22, borderRadius: 11, backgroundColor: colors.accent.green, justifyContent: 'center', alignItems: 'center' },
-    checkText: { fontSize: 12, color: colors.text.white, fontWeight: '700' },
+    // Achievement list - tight spacing
+    list: { gap: 6 },
+    achievementCard: { borderRadius: 14, overflow: 'hidden' },
+    achievementCardInner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 12,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: 'rgba(255,255,255,0.08)',
+    },
+    achievementIcon: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: 'rgba(139, 92, 246, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+        position: 'relative',
+    },
+    achievementIconUnlocked: { backgroundColor: 'rgba(16, 185, 129, 0.25)' },
+    achievementEmoji: { fontSize: 24 },
+    checkBadge: {
+        position: 'absolute',
+        bottom: -2,
+        right: -2,
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+        backgroundColor: colors.accent.green,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#111d32',
+    },
+    checkText: { fontSize: 10, color: colors.text.white, fontWeight: '800' },
     achievementInfo: { flex: 1 },
-    achievementName: { fontSize: 16, fontWeight: '700', color: colors.text.white },
-    achievementDesc: { fontSize: 12, color: colors.text.muted, marginTop: 2, lineHeight: 16 },
-    progressContainer: { flexDirection: 'row', alignItems: 'center', marginTop: spacing[2], gap: spacing[2] },
-    progressTrack: { flex: 1, height: 6, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' },
+    achievementName: { fontSize: 15, fontWeight: '700', color: colors.text.white },
+    achievementDesc: { fontSize: 11, color: colors.text.muted, marginTop: 2, lineHeight: 14 },
+    progressContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 6, gap: 8 },
+    progressTrack: { flex: 1, height: 5, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 3, overflow: 'hidden' },
     progressFill: { height: '100%', borderRadius: 3 },
-    progressLabel: { fontSize: 11, color: colors.text.muted, fontWeight: '500', minWidth: 60 },
-    xpBadge: { marginLeft: spacing[3] },
-    xpBadgeInner: { paddingHorizontal: spacing[3], paddingVertical: spacing[2], borderRadius: 12, alignItems: 'center' },
-    xpValue: { fontSize: 16, fontWeight: '800', color: '#1A1A1A' },
-    xpLabel: { fontSize: 10, fontWeight: '700', color: '#1A1A1A', marginTop: -2 },
+    progressLabel: { fontSize: 10, color: colors.text.muted, fontWeight: '600', minWidth: 55, textAlign: 'right' },
 
-    artifactsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing[3] },
-    artifactCard: { width: (SCREEN_WIDTH - spacing[4] * 2 - spacing[3]) / 2 - 1, borderRadius: 16, overflow: 'hidden' },
-    artifactCardInner: { padding: spacing[4], alignItems: 'center', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
-    artifactIconContainer: { width: 70, height: 70, borderRadius: 35, justifyContent: 'center', alignItems: 'center', marginBottom: spacing[3] },
-    artifactEmoji: { fontSize: 36 },
-    artifactName: { fontSize: 14, fontWeight: '700', color: colors.text.white, textAlign: 'center' },
-    artifactRarity: { fontSize: 10, fontWeight: '700', letterSpacing: 1, marginTop: 2 },
-    artifactProgressContainer: { width: '100%', marginTop: spacing[3] },
+    // XP Coin - circular like mockup
+    xpCoin: { marginLeft: 10 },
+    xpCoinInner: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    xpValue: { fontSize: 13, fontWeight: '800', color: '#1A1A1A' },
+    xpLabel: { fontSize: 9, fontWeight: '700', color: '#1A1A1A', marginTop: -2 },
+
+    // Artifacts grid
+    artifactsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+    artifactCard: { width: (SCREEN_WIDTH - 32 - 10) / 2, borderRadius: 14, overflow: 'hidden' },
+    artifactCardInner: { padding: 14, alignItems: 'center', borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+    artifactIconContainer: { width: 60, height: 60, borderRadius: 30, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
+    artifactEmoji: { fontSize: 30 },
+    artifactName: { fontSize: 13, fontWeight: '700', color: colors.text.white, textAlign: 'center' },
+    artifactRarity: { fontSize: 9, fontWeight: '700', letterSpacing: 1, marginTop: 2 },
+    artifactProgressContainer: { width: '100%', marginTop: 10 },
     artifactProgressTrack: { height: 4, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' },
     artifactProgressFill: { height: '100%', borderRadius: 2 },
-    artifactProgressText: { fontSize: 10, color: colors.text.muted, textAlign: 'center', marginTop: 4 },
-    equippedText: { fontSize: 10, fontWeight: '700', color: colors.accent.green, marginTop: spacing[3] },
-    equipBtn: { marginTop: spacing[3], paddingVertical: spacing[2], paddingHorizontal: spacing[4], borderRadius: 10 },
-    equipBtnText: { fontSize: 11, fontWeight: '700', color: '#1A1A1A' },
+    artifactProgressText: { fontSize: 9, color: colors.text.muted, textAlign: 'center', marginTop: 4 },
+    equippedText: { fontSize: 9, fontWeight: '700', color: colors.accent.green, marginTop: 10 },
+    equipBtn: { marginTop: 10, paddingVertical: 6, paddingHorizontal: 14, borderRadius: 8 },
+    equipBtnText: { fontSize: 10, fontWeight: '700', color: '#1A1A1A' },
+
+    // Total XP Summary
+    xpSummary: { marginBottom: 10 },
+    xpSummaryInner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 12,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: 'rgba(251, 191, 36, 0.3)',
+    },
+    xpSummaryLeft: {},
+    xpSummaryLabel: { fontSize: 12, color: colors.accent.gold, fontWeight: '600' },
+    xpSummaryValue: { fontSize: 28, color: colors.text.white, fontWeight: '800' },
+    xpSummaryCoin: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    xpSummaryCoinText: { fontSize: 22 },
 });
 
 export default RewardsScreen;

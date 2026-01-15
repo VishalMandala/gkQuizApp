@@ -1,6 +1,6 @@
 /**
- * Global Quest - Premium Profile Screen
- * Matching Gemini 3 Pro mockup quality
+ * Global Quest - Premium Profile Screen V2
+ * Enhanced with micro-interactions and engaging UX
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -38,10 +38,10 @@ const user = {
 };
 
 const stats = [
-    { icon: '📝', value: '847', label: 'Questions' },
-    { icon: '🎯', value: '72%', label: 'Accuracy' },
-    { icon: '⏱️', value: '28.5', label: 'Hours' },
-    { icon: '⚔️', value: '12', label: 'Duels Won' },
+    { icon: '📝', value: 847, label: 'Questions', suffix: '' },
+    { icon: '🎯', value: 72, label: 'Accuracy', suffix: '%' },
+    { icon: '⏱️', value: 28.5, label: 'Hours', suffix: '', hasDecimal: true },
+    { icon: '⚔️', value: 12, label: 'Duels Won', suffix: '' },
 ];
 
 const initialSettings = [
@@ -69,9 +69,90 @@ const useEntranceAnimation = (delay: number = 0) => {
         Animated.sequence([
             Animated.delay(delay),
             Animated.parallel([
-                Animated.timing(opacity, { toValue: 1, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                Animated.timing(translateY, { toValue: 0, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
-                Animated.timing(scale, { toValue: 1, duration: 600, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 500, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, friction: 6, tension: 80, useNativeDriver: true }),
+            ]),
+        ]).start();
+    }, []);
+
+    return { opacity, translateY, scale };
+};
+
+// Pulse animation for avatar
+const usePulseAnimation = () => {
+    const scale = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        const pulse = Animated.loop(
+            Animated.sequence([
+                Animated.timing(scale, { toValue: 1.05, duration: 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+                Animated.timing(scale, { toValue: 1, duration: 1200, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+            ])
+        );
+        pulse.start();
+        return () => pulse.stop();
+    }, []);
+
+    return scale;
+};
+
+// Count-up animation for numbers
+const useCountUp = (targetValue: number, duration: number = 1200, delay: number = 0, hasDecimal: boolean = false) => {
+    const [displayValue, setDisplayValue] = useState(0);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            const multiplier = hasDecimal ? 10 : 1;
+            const target = targetValue * multiplier;
+            const steps = 30;
+            const increment = target / steps;
+            let current = 0;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    setDisplayValue(target);
+                    clearInterval(timer);
+                } else {
+                    setDisplayValue(Math.floor(current));
+                }
+            }, duration / steps);
+            return () => clearInterval(timer);
+        }, delay);
+        return () => clearTimeout(timeout);
+    }, [targetValue, duration, delay, hasDecimal]);
+
+    return hasDecimal ? (displayValue / 10).toFixed(1) : displayValue;
+};
+
+// Press animation for interactive elements
+const usePressAnimation = () => {
+    const scale = useRef(new Animated.Value(1)).current;
+
+    const onPressIn = () => {
+        Animated.spring(scale, { toValue: 0.97, friction: 8, tension: 200, useNativeDriver: true }).start();
+    };
+
+    const onPressOut = () => {
+        Animated.spring(scale, { toValue: 1, friction: 6, tension: 150, useNativeDriver: true }).start();
+    };
+
+    return { scale, onPressIn, onPressOut };
+};
+
+// Staggered animation for grid items
+const useStaggeredAnimation = (index: number) => {
+    const opacity = useRef(new Animated.Value(0)).current;
+    const translateY = useRef(new Animated.Value(20)).current;
+    const scale = useRef(new Animated.Value(0.9)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.delay(250 + index * 80),
+            Animated.parallel([
+                Animated.timing(opacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+                Animated.timing(translateY, { toValue: 0, duration: 400, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
+                Animated.spring(scale, { toValue: 1, friction: 6, tension: 100, useNativeDriver: true }),
             ]),
         ]).start();
     }, []);
@@ -85,75 +166,163 @@ const useEntranceAnimation = (delay: number = 0) => {
 
 const ProfileCard = () => {
     const { opacity, translateY, scale } = useEntranceAnimation(100);
+    const avatarPulse = usePulseAnimation();
+    const { scale: editScale, onPressIn, onPressOut } = usePressAnimation();
+
+    // Animated stats
+    const totalXP = useCountUp(user.totalXP, 1500, 400);
+    const streak = useCountUp(user.streak, 1200, 500);
+    const rank = useCountUp(user.rank, 1300, 600);
 
     return (
         <Animated.View style={[styles.profileCard, { opacity, transform: [{ translateY }, { scale }] }]}>
             <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.profileCardInner}>
-                {/* Avatar */}
-                <View style={styles.avatarContainer}>
+                {/* Avatar with pulse */}
+                <Animated.View style={[styles.avatarContainer, { transform: [{ scale: avatarPulse }] }]}>
                     <LinearGradient colors={[colors.accent.indigo, colors.accent.purple]} style={styles.avatar}>
                         <Text style={styles.avatarText}>{user.initial}</Text>
                     </LinearGradient>
                     <View style={styles.artifactBadge}>
                         <Text style={styles.artifactEmoji}>{user.equippedArtifact}</Text>
                     </View>
-                </View>
+                    {/* Glow behind avatar */}
+                    <View style={styles.avatarGlow} />
+                </Animated.View>
 
                 {/* Name & Title */}
                 <Text style={styles.userName}>{user.name}</Text>
                 <Text style={styles.userTitle}>Level {user.level} · {user.title}</Text>
 
-                {/* Stats Row */}
+                {/* Stats Row with animated count-up */}
                 <View style={styles.profileStats}>
-                    <View style={styles.profileStat}>
+                    <TouchableOpacity style={styles.profileStat} activeOpacity={0.7}>
                         <Text style={styles.profileStatIcon}>⭐</Text>
-                        <Text style={styles.profileStatValue}>{user.totalXP.toLocaleString()}</Text>
+                        <Text style={styles.profileStatValue}>{Number(totalXP).toLocaleString()}</Text>
                         <Text style={styles.profileStatLabel}>Total XP</Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.statDivider} />
-                    <View style={styles.profileStat}>
+                    <TouchableOpacity style={styles.profileStat} activeOpacity={0.7}>
                         <Text style={styles.profileStatIcon}>🔥</Text>
-                        <Text style={styles.profileStatValue}>{user.streak}</Text>
+                        <Text style={styles.profileStatValue}>{streak}</Text>
                         <Text style={styles.profileStatLabel}>Day Streak</Text>
-                    </View>
+                    </TouchableOpacity>
                     <View style={styles.statDivider} />
-                    <View style={styles.profileStat}>
+                    <TouchableOpacity style={styles.profileStat} activeOpacity={0.7}>
                         <Text style={styles.profileStatIcon}>🌍</Text>
-                        <Text style={styles.profileStatValue}>#{user.rank.toLocaleString()}</Text>
+                        <Text style={styles.profileStatValue}>#{Number(rank).toLocaleString()}</Text>
                         <Text style={styles.profileStatLabel}>World Rank</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
 
-                {/* Edit Button */}
-                <TouchableOpacity style={styles.editButton}>
-                    <Text style={styles.editButtonIcon}>✏️</Text>
-                    <Text style={styles.editButtonText}>Edit Profile</Text>
+                {/* Edit Button with press feedback */}
+                <TouchableOpacity
+                    onPressIn={onPressIn}
+                    onPressOut={onPressOut}
+                    activeOpacity={0.9}
+                >
+                    <Animated.View style={[styles.editButton, { transform: [{ scale: editScale }] }]}>
+                        <Text style={styles.editButtonIcon}>✏️</Text>
+                        <Text style={styles.editButtonText}>Edit Profile</Text>
+                    </Animated.View>
                 </TouchableOpacity>
             </LinearGradient>
         </Animated.View>
     );
 };
 
-const StatsGrid = () => {
-    const { opacity, translateY } = useEntranceAnimation(200);
+// Individual stat card with animations
+const StatCard: React.FC<{ stat: typeof stats[0]; index: number }> = ({ stat, index }) => {
+    const { opacity, translateY, scale } = useStaggeredAnimation(index);
+    const { scale: pressScale, onPressIn, onPressOut } = usePressAnimation();
+    const displayValue = useCountUp(stat.value, 1200, 300 + index * 100, stat.hasDecimal);
 
     return (
-        <Animated.View style={[styles.statsGrid, { opacity, transform: [{ translateY }] }]}>
-            {stats.map((stat, i) => (
-                <View key={i} style={styles.statCard}>
+        <Animated.View style={[styles.statCard, { opacity, transform: [{ translateY }, { scale }] }]}>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+            >
+                <Animated.View style={{ transform: [{ scale: pressScale }] }}>
                     <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.statCardInner}>
                         <Text style={styles.statIcon}>{stat.icon}</Text>
-                        <Text style={styles.statValue}>{stat.value}</Text>
+                        <Text style={styles.statValue}>{displayValue}{stat.suffix}</Text>
                         <Text style={styles.statLabel}>{stat.label}</Text>
                     </LinearGradient>
-                </View>
-            ))}
+                </Animated.View>
+            </TouchableOpacity>
         </Animated.View>
     );
 };
 
+const StatsGrid = () => (
+    <View style={styles.statsGrid}>
+        {stats.map((stat, i) => (
+            <StatCard key={i} stat={stat} index={i} />
+        ))}
+    </View>
+);
+
+// Setting row with press feedback
+const SettingRow: React.FC<{
+    setting: typeof initialSettings[0];
+    isLast: boolean;
+    onToggle: () => void
+}> = ({ setting, isLast, onToggle }) => {
+    const { scale, onPressIn, onPressOut } = usePressAnimation();
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.9}
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+            onPress={onToggle}
+        >
+            <Animated.View style={[
+                styles.settingRow,
+                !isLast && styles.settingBorder,
+                { transform: [{ scale }] }
+            ]}>
+                <Text style={styles.settingIcon}>{setting.icon}</Text>
+                <Text style={styles.settingLabel}>{setting.label}</Text>
+                <Switch
+                    value={setting.enabled}
+                    onValueChange={onToggle}
+                    trackColor={{ false: '#475569', true: colors.accent.green }}
+                    thumbColor="#FFF"
+                    ios_backgroundColor="#475569"
+                />
+            </Animated.View>
+        </TouchableOpacity>
+    );
+};
+
+// Link row with press feedback  
+const LinkRow: React.FC<{ link: typeof links[0]; isLast: boolean }> = ({ link, isLast }) => {
+    const { scale, onPressIn, onPressOut } = usePressAnimation();
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.9}
+            onPressIn={onPressIn}
+            onPressOut={onPressOut}
+        >
+            <Animated.View style={[
+                styles.settingRow,
+                !isLast && styles.settingBorder,
+                { transform: [{ scale }] }
+            ]}>
+                <Text style={styles.settingIcon}>{link.icon}</Text>
+                <Text style={styles.settingLabel}>{link.label}</Text>
+                {link.value ? <Text style={styles.settingValue}>{link.value}</Text> : null}
+                <Text style={styles.chevron}>›</Text>
+            </Animated.View>
+        </TouchableOpacity>
+    );
+};
+
 const SettingsSection = () => {
-    const { opacity, translateY } = useEntranceAnimation(300);
+    const { opacity, translateY, scale } = useEntranceAnimation(350);
     const [settings, setSettings] = useState(initialSettings);
 
     const toggleSetting = (id: string) => {
@@ -161,30 +330,22 @@ const SettingsSection = () => {
     };
 
     return (
-        <Animated.View style={[styles.settingsCard, { opacity, transform: [{ translateY }] }]}>
+        <Animated.View style={[styles.settingsCard, { opacity, transform: [{ translateY }, { scale }] }]}>
             <LinearGradient colors={[colors.bg.card, colors.bg.cardLight]} style={styles.settingsCardInner}>
                 {settings.map((setting, i) => (
-                    <View key={setting.id} style={[styles.settingRow, i !== settings.length - 1 && styles.settingBorder]}>
-                        <Text style={styles.settingIcon}>{setting.icon}</Text>
-                        <Text style={styles.settingLabel}>{setting.label}</Text>
-                        <Switch
-                            value={setting.enabled}
-                            onValueChange={() => toggleSetting(setting.id)}
-                            trackColor={{ false: '#475569', true: colors.accent.green }}
-                            thumbColor="#FFF"
-                            ios_backgroundColor="#475569"
-                        />
-                    </View>
+                    <SettingRow
+                        key={setting.id}
+                        setting={setting}
+                        isLast={i === settings.length - 1 && links.length === 0}
+                        onToggle={() => toggleSetting(setting.id)}
+                    />
                 ))}
                 {links.map((link, i) => (
-                    <TouchableOpacity key={link.label} style={[styles.settingRow, i !== links.length - 1 && styles.settingBorder]}>
-                        <Text style={styles.settingIcon}>{link.icon}</Text>
-                        <Text style={styles.settingLabel}>{link.label}</Text>
-                        {link.value ? (
-                            <Text style={styles.settingValue}>{link.value}</Text>
-                        ) : null}
-                        <Text style={styles.chevron}>›</Text>
-                    </TouchableOpacity>
+                    <LinkRow
+                        key={link.label}
+                        link={link}
+                        isLast={i === links.length - 1}
+                    />
                 ))}
             </LinearGradient>
         </Animated.View>
@@ -192,12 +353,20 @@ const SettingsSection = () => {
 };
 
 const Footer = () => {
-    const { opacity, translateY } = useEntranceAnimation(400);
+    const { opacity, translateY, scale } = useEntranceAnimation(450);
+    const { scale: logoutScale, onPressIn, onPressOut } = usePressAnimation();
 
     return (
-        <Animated.View style={[styles.footer, { opacity, transform: [{ translateY }] }]}>
-            <TouchableOpacity style={styles.logoutButton}>
-                <Text style={styles.logoutText}>Log Out</Text>
+        <Animated.View style={[styles.footer, { opacity, transform: [{ translateY }, { scale }] }]}>
+            <TouchableOpacity
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+                activeOpacity={0.9}
+                style={{ width: '100%' }}
+            >
+                <Animated.View style={[styles.logoutButton, { transform: [{ scale: logoutScale }] }]}>
+                    <Text style={styles.logoutText}>Log Out</Text>
+                </Animated.View>
             </TouchableOpacity>
             <Text style={styles.memberSince}>Member since {user.memberSince}</Text>
             <Text style={styles.version}>Global Quest v1.0.0</Text>
@@ -238,9 +407,20 @@ const styles = StyleSheet.create({
     profileCard: { marginBottom: spacing[4], borderRadius: 24, overflow: 'hidden' },
     profileCardInner: { alignItems: 'center', padding: spacing[6], borderRadius: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
     avatarContainer: { position: 'relative', marginBottom: spacing[4] },
-    avatar: { width: 100, height: 100, borderRadius: 50, justifyContent: 'center', alignItems: 'center' },
+    avatar: { width: 100, height: 100, borderRadius: 50, justifyContent: 'center', alignItems: 'center', zIndex: 2 },
+    avatarGlow: {
+        position: 'absolute',
+        top: -10,
+        left: -10,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: colors.accent.indigo,
+        opacity: 0.3,
+        zIndex: 1,
+    },
     avatarText: { fontSize: 42, fontWeight: '800', color: colors.text.white },
-    artifactBadge: { position: 'absolute', bottom: -4, right: -4, width: 40, height: 40, borderRadius: 20, backgroundColor: colors.bg.card, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderColor: colors.bg.deep },
+    artifactBadge: { position: 'absolute', bottom: -4, right: -4, width: 40, height: 40, borderRadius: 20, backgroundColor: colors.bg.card, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderColor: colors.bg.deep, zIndex: 3 },
     artifactEmoji: { fontSize: 22 },
     userName: { fontSize: 24, fontWeight: '800', color: colors.text.white },
     userTitle: { fontSize: 14, color: colors.text.muted, marginTop: 4 },
@@ -250,7 +430,7 @@ const styles = StyleSheet.create({
     profileStatValue: { fontSize: 18, fontWeight: '800', color: colors.text.white },
     profileStatLabel: { fontSize: 11, color: colors.text.muted, marginTop: 2 },
     statDivider: { width: 1, height: 50, backgroundColor: 'rgba(255,255,255,0.1)' },
-    editButton: { flexDirection: 'row', alignItems: 'center', marginTop: spacing[5], paddingVertical: spacing[3], paddingHorizontal: spacing[5], backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 20, gap: spacing[2] },
+    editButton: { flexDirection: 'row', alignItems: 'center', marginTop: spacing[5], paddingVertical: spacing[3], paddingHorizontal: spacing[5], backgroundColor: 'rgba(99, 102, 241, 0.2)', borderRadius: 20, gap: spacing[2], borderWidth: 1, borderColor: 'rgba(99, 102, 241, 0.3)' },
     editButtonIcon: { fontSize: 14 },
     editButtonText: { fontSize: 14, fontWeight: '600', color: colors.accent.indigoLight },
 

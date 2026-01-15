@@ -21,10 +21,10 @@ const colors = {
     accent: { indigo: '#6366F1', indigoLight: '#818CF8', purple: '#8B5CF6', gold: '#F59E0B', goldLight: '#FBBF24', orange: '#F97316', pink: '#EC4899', green: '#10B981', cyan: '#06B6D4', red: '#EF4444' },
     text: { white: '#FFFFFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B', accent: '#FBBF24' },
     gradients: {
-        dailyChallenge: ['#4338CA', '#5B21B6', '#7C3AED'],
-        streak: ['#F97316', '#EA580C', '#DC2626'],
-        gold: ['#FBBF24', '#F59E0B', '#D97706'],
-        button: ['#6366F1', '#4F46E5', '#4338CA'],
+        dailyChallenge: ['#4338CA', '#5B21B6', '#7C3AED'] as const,
+        streak: ['#F97316', '#EA580C', '#DC2626'] as const,
+        gold: ['#FBBF24', '#F59E0B', '#D97706'] as const,
+        button: ['#6366F1', '#4F46E5', '#4338CA'] as const,
     },
 };
 
@@ -165,7 +165,7 @@ const AnimatedStar: React.FC<{ delay: number; left: string; top: string; size: n
         ).start();
     }, []);
 
-    return <Animated.View style={[styles.star, { left, top, width: size, height: size, opacity }]} />;
+    return <Animated.View style={[styles.star, { left: left as any, top: top as any, width: size, height: size, opacity }]} />;
 };
 
 const StarryBackground = () => (
