@@ -369,12 +369,16 @@ const MilestoneNode: React.FC<MilestoneNodeProps> = ({ level, currentLevel, inde
     const isMinorMilestone = level % 50 === 0 && !isMajorMilestone;
     const isTinyMilestone = level % 25 === 0 && !isMinorMilestone && !isMajorMilestone;
 
-    const nodeSize = isMajorMilestone ? 85 : isMinorMilestone ? 70 : isTinyMilestone ? 55 : 45;
+    const nodeSize = isMajorMilestone ? 90 : isMinorMilestone ? 75 : isTinyMilestone ? 60 : 55;
     const glowSize = nodeSize * 2;
 
-    // Alternating position for visual interest (snake path effect)
-    const isLeft = index % 4 < 2;
-    const offset = isLeft ? -40 : 40;
+    // ZIG-ZAG WAVY PATTERN: More dramatic left-right movement
+    const pattern = index % 4;
+    let horizontalOffset = 0;
+    if (pattern === 0) horizontalOffset = -120;     // Far left
+    else if (pattern === 1) horizontalOffset = 0;   // Center
+    else if (pattern === 2) horizontalOffset = 120; // Far right
+    else horizontalOffset = 0;                      // Center
 
     const rotateInterpolate = rotateAnim.interpolate({
         inputRange: [0, 1],
@@ -388,7 +392,7 @@ const MilestoneNode: React.FC<MilestoneNodeProps> = ({ level, currentLevel, inde
                 {
                     transform: [
                         { scale: scaleAnim },
-                        { translateX: offset },
+                        { translateX: horizontalOffset },
                         { translateY: bounceAnim },
                     ],
                 },
@@ -566,98 +570,92 @@ const AnimatedPathLine: React.FC<{
 }> = ({ fromLevel, toLevel, currentLevel, index }) => {
     const isPast = toLevel <= currentLevel;
     const isCurrent = fromLevel <= currentLevel && toLevel > currentLevel;
-    const isFuture = fromLevel > currentLevel;
     const tier = getLevelTier(isPast ? toLevel : fromLevel);
     const tierColor = getTierColor(tier);
 
-    const heightAnim = useRef(new Animated.Value(0)).current;
-    const glowAnim = useRef(new Animated.Value(0)).current;
+    const progressAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        Animated.sequence([
-            Animated.delay(Math.min(index * 20 + 50, 300)),
-            Animated.parallel([
-                Animated.timing(heightAnim, {
-                    toValue: 1,
-                    duration: 250,
-                    easing: Easing.out(Easing.cubic),
-                    useNativeDriver: false,
-                }),
-                // Glow animation for completed paths
-                isPast && Animated.loop(
-                    Animated.sequence([
-                        Animated.timing(glowAnim, { toValue: 1, duration: 1000, useNativeDriver: true }),
-                        Animated.timing(glowAnim, { toValue: 0.5, duration: 1000, useNativeDriver: true }),
-                    ])
-                ),
-            ].filter(Boolean) as Animated.CompositeAnimation[]),
-        ]).start();
+        Animated.timing(progressAnim, {
+            toValue: 1,
+            duration: 300,
+            delay: Math.min(index * 15, 200),
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: false,
+        }).start();
     }, []);
 
+    // Calculate the direction based on zig-zag pattern
+    // Pattern: left(-80) → center-left(-30) → right(80) → center-right(30)
+    const fromPattern = index % 4;
+    const toPattern = (index + 1) % 4;
+
+    // Get horizontal positions - must match MilestoneNode offsets
+    const getOffset = (p: number) => {
+        if (p === 0) return -120;
+        if (p === 1) return 0;
+        if (p === 2) return 120;
+        return 0;
+    };
+
+    const fromX = getOffset(fromPattern);
+    const toX = getOffset(toPattern);
+    const deltaX = toX - fromX;
+
+    // Determine curve direction
+    const isMovingRight = deltaX > 0;
+    const curveIntensity = Math.abs(deltaX) > 50 ? 25 : 15;
+
     return (
-        <View style={styles.pathLineContainer}>
-            {/* Main vertical connecting line */}
-            <View style={styles.pathLineWrapper}>
+        <View style={[styles.curvedPathContainer]}>
+            {/* SVG S-curve wavy path */}
+            <Svg height="70" width={SCREEN_WIDTH - 40} style={styles.svgPath}>
+                <Defs>
+                    <RadialGradient id={`grad-${index}`} cx="50%" cy="50%" r="50%">
+                        <Stop offset="0%" stopColor={tierColor} stopOpacity="1" />
+                        <Stop offset="100%" stopColor={tierColor} stopOpacity="0.3" />
+                    </RadialGradient>
+                </Defs>
+
+                {/* S-curve wavy connecting path using cubic bezier */}
+                <Path
+                    d={`M ${SCREEN_WIDTH / 2 - 20 + fromX} 0 
+                        C ${SCREEN_WIDTH / 2 - 20 + fromX + (isMovingRight ? 40 : -40)} 20,
+                          ${SCREEN_WIDTH / 2 - 20 + toX + (isMovingRight ? -40 : 40)} 50,
+                          ${SCREEN_WIDTH / 2 - 20 + toX} 70`}
+                    stroke={isPast ? tierColor : isCurrent ? `${tierColor}80` : '#374151'}
+                    strokeWidth={isPast ? 6 : 3}
+                    strokeLinecap="round"
+                    strokeDasharray={isPast || isCurrent ? undefined : "8,8"}
+                    fill="none"
+                    opacity={isPast ? 1 : 0.5}
+                />
+
                 {/* Glow effect for completed paths */}
                 {isPast && (
-                    <Animated.View
-                        style={[
-                            styles.pathLineGlow,
-                            {
-                                backgroundColor: tierColor,
-                                opacity: glowAnim.interpolate({
-                                    inputRange: [0.5, 1],
-                                    outputRange: [0.2, 0.5],
-                                }),
-                            }
-                        ]}
+                    <Path
+                        d={`M ${SCREEN_WIDTH / 2 - 20 + fromX} 0 
+                            C ${SCREEN_WIDTH / 2 - 20 + fromX + (isMovingRight ? 40 : -40)} 20,
+                              ${SCREEN_WIDTH / 2 - 20 + toX + (isMovingRight ? -40 : 40)} 50,
+                              ${SCREEN_WIDTH / 2 - 20 + toX} 70`}
+                        stroke={tierColor}
+                        strokeWidth={14}
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity={0.25}
                     />
                 )}
 
-                {/* Solid line for completed, dotted for future */}
-                <Animated.View
-                    style={[
-                        styles.pathLineVertical,
-                        isPast ? {
-                            // Completed: Bold, solid, glowing
-                            backgroundColor: tierColor,
-                            width: 6,
-                            shadowColor: tierColor,
-                            shadowOpacity: 0.8,
-                            shadowRadius: 8,
-                            shadowOffset: { width: 0, height: 0 },
-                            elevation: 5,
-                        } : isCurrent ? {
-                            // Current: Animated gradient
-                            backgroundColor: `${tierColor}80`,
-                            width: 4,
-                        } : {
-                            // Future: Dotted line (using border)
-                            backgroundColor: 'transparent',
-                            borderLeftWidth: 3,
-                            borderLeftColor: '#4b5563',
-                            borderStyle: 'dashed',
-                            width: 3,
-                        },
-                        {
-                            height: heightAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [0, 60],
-                            }),
-                        },
-                    ]}
-                />
-            </View>
-
-            {/* Glowing orb at connection point for completed */}
-            {isPast && (
-                <View style={[styles.pathOrb, { backgroundColor: tierColor }]} />
-            )}
-
-            {/* Small dot for current path */}
-            {isCurrent && (
-                <View style={[styles.pathOrbSmall, { backgroundColor: tierColor }]} />
-            )}
+                {/* Orb at midpoint for completed */}
+                {isPast && (
+                    <Circle
+                        cx={SCREEN_WIDTH / 2 - 20 + fromX + deltaX / 2}
+                        cy={35}
+                        r={6}
+                        fill={tierColor}
+                    />
+                )}
+            </Svg>
         </View>
     );
 };
@@ -1001,7 +999,7 @@ const styles = StyleSheet.create({
     startBadge: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20 },
     startText: { fontSize: 12, fontWeight: '800', color: '#fff', letterSpacing: 1 },
 
-    milestoneContainer: { alignItems: 'center', marginVertical: 6 },
+    milestoneContainer: { alignItems: 'center', marginVertical: 12 },
     nodeTouchable: { alignItems: 'center' },
     outerRing: { position: 'absolute', borderWidth: 2, borderStyle: 'dashed' },
     nodeWrapper: {},
@@ -1056,8 +1054,18 @@ const styles = StyleSheet.create({
     },
     checkmarkText: { fontSize: 12, fontWeight: '800', color: '#fff' },
 
-    pathLineContainer: {
+    // Curved SVG path styles
+    curvedPathContainer: {
         height: 70,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    svgPath: {
+        alignSelf: 'center',
+    },
+
+    pathLineContainer: {
+        height: 100,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
