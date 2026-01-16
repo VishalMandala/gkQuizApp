@@ -206,13 +206,15 @@ const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidt
     const { scale: entryScale, opacity } = useNodeAnimation(400 + index * 100);
     const pulseScale = usePulse(600 + index * 50, continent.complete ? 1.1 : 1.05);
 
-    // Scale size based on device
-    const size = continent.sizeBase * scale;
-    const ringSize = size + 8;
+    // Core sizes - properly scaled
+    const innerSize = continent.sizeBase * scale * 0.75; // Inner emoji circle
+    const ringSize = innerSize + 16 * scale; // Ring around the inner circle
+    const outerSize = ringSize; // Total touchable area
+    const strokeWidth = 4 * scale;
 
-    // Calculate position from percentages
-    const x = (continent.xPercent / 100) * mapWidth - size / 2;
-    const y = (continent.yPercent / 100) * mapHeight - size / 2;
+    // Calculate position - center the node at the percentage point
+    const x = (continent.xPercent / 100) * mapWidth - outerSize / 2;
+    const y = (continent.yPercent / 100) * mapHeight - outerSize / 2;
 
     const handlePress = () => {
         if (!continent.locked) {
@@ -224,74 +226,140 @@ const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidt
         <Animated.View
             style={[
                 styles.nodeContainer,
-                { left: x, top: y, opacity, transform: [{ scale: Animated.multiply(entryScale, pulseScale) }] },
+                {
+                    left: x,
+                    top: y,
+                    width: outerSize,
+                    opacity,
+                    transform: [{ scale: Animated.multiply(entryScale, pulseScale) }]
+                },
             ]}
         >
-            <TouchableOpacity activeOpacity={0.85} disabled={continent.locked} onPress={handlePress}>
-                {/* Outer glow for complete */}
+            <TouchableOpacity
+                activeOpacity={0.85}
+                disabled={continent.locked}
+                onPress={handlePress}
+                style={{ alignItems: 'center' }}
+            >
+                {/* Outer glow for complete continents */}
                 {continent.complete && (
-                    <View style={[styles.glowRing, {
-                        width: size + 30 * scale,
-                        height: size + 30 * scale,
-                        borderRadius: (size + 30 * scale) / 2,
+                    <View style={{
+                        position: 'absolute',
+                        width: outerSize + 20 * scale,
+                        height: outerSize + 20 * scale,
+                        borderRadius: (outerSize + 20 * scale) / 2,
                         backgroundColor: continent.color,
-                        top: -15 * scale,
-                        left: -15 * scale,
-                    }]} />
+                        opacity: 0.25,
+                        top: -10 * scale,
+                        left: -10 * scale,
+                    }} />
                 )}
 
-                {/* Progress ring */}
-                <View style={[styles.ringContainer, { width: ringSize, height: ringSize, top: -4, left: -4 }]}>
-                    <Svg width={ringSize} height={ringSize}>
-                        <Circle cx={ringSize / 2} cy={ringSize / 2} r={(ringSize - 8) / 2} stroke={`${continent.color}30`} strokeWidth={5 * scale} fill="none" />
-                        <Circle
-                            cx={ringSize / 2}
-                            cy={ringSize / 2}
-                            r={(ringSize - 8) / 2}
-                            stroke={continent.color}
-                            strokeWidth={5 * scale}
-                            fill="none"
-                            strokeDasharray={`${((ringSize - 8) * Math.PI * continent.progress) / 100} ${(ringSize - 8) * Math.PI}`}
-                            strokeLinecap="round"
-                            rotation="-90"
-                            origin={`${ringSize / 2}, ${ringSize / 2}`}
-                        />
-                    </Svg>
+                {/* Container for ring + emoji - ensures centering */}
+                <View style={{
+                    width: outerSize,
+                    height: outerSize,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    {/* Progress ring SVG - absolutely positioned to wrap the inner circle */}
+                    <View style={{ position: 'absolute', width: ringSize, height: ringSize }}>
+                        <Svg width={ringSize} height={ringSize}>
+                            {/* Background ring */}
+                            <Circle
+                                cx={ringSize / 2}
+                                cy={ringSize / 2}
+                                r={(ringSize - strokeWidth) / 2}
+                                stroke={`${continent.color}30`}
+                                strokeWidth={strokeWidth}
+                                fill="none"
+                            />
+                            {/* Progress ring */}
+                            <Circle
+                                cx={ringSize / 2}
+                                cy={ringSize / 2}
+                                r={(ringSize - strokeWidth) / 2}
+                                stroke={continent.color}
+                                strokeWidth={strokeWidth}
+                                fill="none"
+                                strokeDasharray={`${((ringSize - strokeWidth) * Math.PI * continent.progress) / 100} ${(ringSize - strokeWidth) * Math.PI}`}
+                                strokeLinecap="round"
+                                rotation="-90"
+                                origin={`${ringSize / 2}, ${ringSize / 2}`}
+                            />
+                        </Svg>
+                    </View>
+
+                    {/* Inner circle with emoji - centered inside ring */}
+                    <LinearGradient
+                        colors={continent.locked ? ['#374151', '#1f2937'] : [`${continent.color}60`, `${continent.color}30`]}
+                        style={{
+                            width: innerSize,
+                            height: innerSize,
+                            borderRadius: innerSize / 2,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderWidth: 2,
+                            borderColor: continent.locked ? '#4b5563' : `${continent.color}80`,
+                        }}
+                    >
+                        <Text style={{ fontSize: innerSize * 0.5 }}>
+                            {continent.locked ? '🔒' : continent.emoji}
+                        </Text>
+                    </LinearGradient>
                 </View>
 
-                {/* Inner circle with emoji */}
-                <LinearGradient
-                    colors={continent.locked ? ['#374151', '#1f2937'] : [`${continent.color}50`, `${continent.color}25`]}
-                    style={[styles.innerCircle, { width: size - 8, height: size - 8, borderRadius: (size - 8) / 2 }]}
-                >
-                    <Text style={{ fontSize: size * 0.42 }}>{continent.locked ? '🔒' : continent.emoji}</Text>
-                </LinearGradient>
-
-                {/* Progress percentage badge */}
+                {/* Progress percentage badge - top right */}
                 {!continent.locked && !continent.complete && (
-                    <View style={[styles.percentBadge, {
-                        backgroundColor: `${continent.color}35`,
+                    <View style={{
+                        position: 'absolute',
+                        top: -4 * scale,
+                        right: -4 * scale,
+                        backgroundColor: `${continent.color}40`,
                         borderColor: continent.color,
-                        top: -8 * scale,
-                        right: -8 * scale,
-                        paddingHorizontal: 8 * scale,
-                        paddingVertical: 3 * scale,
-                    }]}>
-                        <Text style={[styles.percentText, { color: continent.color, fontSize: 11 * scale }]}>{continent.progress}%</Text>
+                        borderWidth: 2,
+                        borderRadius: 10 * scale,
+                        paddingHorizontal: 6 * scale,
+                        paddingVertical: 2 * scale,
+                    }}>
+                        <Text style={{
+                            color: continent.color,
+                            fontSize: 10 * scale,
+                            fontWeight: '800'
+                        }}>
+                            {continent.progress}%
+                        </Text>
                     </View>
                 )}
 
-                {/* Continent name */}
-                <Text style={[styles.continentName, { fontSize: 12 * scale, marginTop: 8 * scale }]}>{continent.name}</Text>
+                {/* Continent name - below the node */}
+                <Text style={{
+                    fontSize: 11 * scale,
+                    fontWeight: '600',
+                    color: colors.text.primary,
+                    marginTop: 6 * scale,
+                    textAlign: 'center',
+                }}>
+                    {continent.name}
+                </Text>
 
-                {/* COMPLETE badge for Africa */}
+                {/* COMPLETE badge */}
                 {continent.complete && (
-                    <View style={[styles.completeBadgeContainer, { marginTop: 4 * scale }]}>
-                        <LinearGradient colors={[colors.accent.gold, colors.accent.goldDark]} style={[styles.completeBadge, { paddingHorizontal: 10 * scale, paddingVertical: 4 * scale, borderRadius: 12 * scale }]}>
-                            <Text style={[styles.starText, { fontSize: 11 * scale }]}>★</Text>
-                            <Text style={[styles.completeText, { fontSize: 10 * scale }]}>COMPLETE</Text>
+                    <View style={{ alignItems: 'center', marginTop: 4 * scale }}>
+                        <LinearGradient
+                            colors={[colors.accent.gold, colors.accent.goldDark]}
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: 3,
+                                paddingHorizontal: 8 * scale,
+                                paddingVertical: 3 * scale,
+                                borderRadius: 10 * scale
+                            }}
+                        >
+                            <Text style={{ fontSize: 10 * scale, color: '#1a1a1a' }}>★</Text>
+                            <Text style={{ fontSize: 9 * scale, fontWeight: '800', color: '#1a1a1a' }}>COMPLETE</Text>
                         </LinearGradient>
-                        <Text style={[styles.completeProgress, { fontSize: 10 * scale }]}>{continent.progress}% progress</Text>
                     </View>
                 )}
             </TouchableOpacity>
