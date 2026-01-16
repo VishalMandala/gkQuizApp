@@ -318,20 +318,20 @@ const MilestoneNode: React.FC<MilestoneNodeProps> = ({ level, currentLevel, inde
     const bounceAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        // Staggered entrance animation
+        // Staggered entrance animation - faster for many nodes
         Animated.sequence([
-            Animated.delay(index * 80),
+            Animated.delay(Math.min(index * 30, 500)), // Cap max delay at 500ms
             Animated.parallel([
                 Animated.spring(scaleAnim, {
                     toValue: 1,
-                    friction: 5,
-                    tension: 60,
+                    friction: 6,
+                    tension: 80,
                     useNativeDriver: true,
                 }),
                 Animated.timing(rotateAnim, {
                     toValue: 1,
-                    duration: 600,
-                    easing: Easing.out(Easing.back(1.5)),
+                    duration: 400,
+                    easing: Easing.out(Easing.back(1.2)),
                     useNativeDriver: true,
                 }),
             ]),
@@ -573,10 +573,10 @@ const AnimatedPathLine: React.FC<{
 
     useEffect(() => {
         Animated.sequence([
-            Animated.delay(index * 80 + 200),
+            Animated.delay(Math.min(index * 25 + 100, 400)), // Faster path drawing
             Animated.timing(widthAnim, {
                 toValue: 1,
-                duration: 400,
+                duration: 300,
                 easing: Easing.out(Easing.cubic),
                 useNativeDriver: false,
             }),
@@ -746,33 +746,28 @@ const PuzzlePathScreen: React.FC = () => {
     const { currentLevel, totalXP } = mockUser;
     const scrollRef = useRef<ScrollView>(null);
 
-    // Generate milestone levels to display
-    const milestones = useMemo(() => {
-        const levels: number[] = [];
-        // Early milestones (1, 5, 10, etc.)
-        [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50].forEach(l => levels.push(l));
-        // Then every 25 from 50 onwards
-        for (let i = 75; i <= 1000; i += 25) {
-            levels.push(i);
+    // Generate sequential levels to display (show all levels 1 to current+20)
+    // This creates a proper level-by-level journey
+    const levels = useMemo(() => {
+        const maxLevel = Math.min(currentLevel + 20, 1000); // Show up to 20 levels ahead
+        const allLevels: number[] = [];
+        for (let i = 1; i <= maxLevel; i++) {
+            allLevels.push(i);
         }
-        // Include current level if not already
-        if (!levels.includes(currentLevel)) {
-            levels.push(currentLevel);
-            levels.sort((a, b) => a - b);
-        }
-        return levels;
+        return allLevels;
     }, [currentLevel]);
 
     // Auto-scroll to current level on mount
     useEffect(() => {
         const timer = setTimeout(() => {
-            const currentIndex = milestones.findIndex(l => l >= currentLevel);
+            const currentIndex = levels.findIndex(l => l === currentLevel);
             if (currentIndex > 3 && scrollRef.current) {
-                scrollRef.current.scrollTo({ y: currentIndex * 120 - 200, animated: true });
+                // Each node is approximately 100px tall
+                scrollRef.current.scrollTo({ y: currentIndex * 100 - 150, animated: true });
             }
-        }, 1000);
+        }, 800);
         return () => clearTimeout(timer);
-    }, [currentLevel, milestones]);
+    }, [currentLevel, levels]);
 
     // Floating particles - BIGGER and more colorful
     const particleColors = [
@@ -835,18 +830,18 @@ const PuzzlePathScreen: React.FC = () => {
                         </LinearGradient>
                     </View>
 
-                    {milestones.map((level, index) => (
+                    {levels.map((level: number, index: number) => (
                         <React.Fragment key={level}>
                             <MilestoneNode
                                 level={level}
                                 currentLevel={currentLevel}
                                 index={index}
-                                totalNodes={milestones.length}
+                                totalNodes={levels.length}
                             />
-                            {index < milestones.length - 1 && (
+                            {index < levels.length - 1 && (
                                 <AnimatedPathLine
                                     fromLevel={level}
-                                    toLevel={milestones[index + 1]}
+                                    toLevel={levels[index + 1]}
                                     currentLevel={currentLevel}
                                     index={index}
                                 />
