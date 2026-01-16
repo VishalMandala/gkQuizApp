@@ -545,6 +545,485 @@ const funFactsQuestions: Question[] = [
 ];
 
 // ============================================================================
+// EUROPE - BATCH 2: GEOGRAPHY (10 more questions)
+// ============================================================================
+
+const geographyBatch2: Question[] = [
+    {
+        id: 'europe-geo-007',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Capitals',
+        difficulty: 0.2, // Easy - Kids
+        fascinationScore: 0.85,
+        hookText: 'What is the capital of the United Kingdom?',
+        options: [
+            { id: 'a', text: 'Manchester' },
+            { id: 'b', text: 'Edinburgh' },
+            { id: 'c', text: 'London' },
+            { id: 'd', text: 'Birmingham' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'London is the capital of the UK and one of the world\'s most visited cities! Big Ben, Buckingham Palace, and the Tower of London are famous landmarks. Over 9 million people live there — more than the entire population of Ireland! 🇬🇧',
+        explanationShort: 'London: 9 million people — more than all of Ireland!',
+        source: 'Visit Britain',
+    },
+    {
+        id: 'europe-geo-008',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Peninsulas',
+        difficulty: 0.5,
+        fascinationScore: 0.87,
+        hookText: 'The Iberian Peninsula contains which two countries?',
+        options: [
+            { id: 'a', text: 'France and Belgium' },
+            { id: 'b', text: 'Spain and Portugal' },
+            { id: 'c', text: 'Italy and Greece' },
+            { id: 'd', text: 'Norway and Sweden' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Spain and Portugal share the Iberian Peninsula! It\'s the 2nd largest peninsula in Europe. Gibraltar (UK territory) is also there — where you can see Africa on clear days! The peninsula was once connected to Africa millions of years ago. 🏖️',
+        explanationShort: 'Iberian Peninsula: Spain + Portugal — see Africa from Gibraltar!',
+        source: 'National Geographic',
+    },
+    {
+        id: 'europe-geo-009',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Unique',
+        difficulty: 0.6,
+        fascinationScore: 0.92,
+        hookText: 'Prague\'s Astronomical Clock is the oldest working astronomical clock. How old is it?',
+        options: [
+            { id: 'a', text: 'About 400 years old' },
+            { id: 'b', text: 'About 600 years old' },
+            { id: 'c', text: 'About 800 years old' },
+            { id: 'd', text: 'About 1000 years old' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Prague\'s Astronomical Clock was installed in 1410 — over 600 years ago! It shows the sun, moon, zodiac constellations, and the 12 apostles appear every hour. It\'s the 3rd oldest astronomical clock in the world and one of the oldest still working! ⏰',
+        explanationShort: 'Prague Clock: 600+ years old — still ticking!',
+        source: 'Prague Tourism',
+    },
+    {
+        id: 'europe-geo-010',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Borders',
+        difficulty: 0.7, // Hard
+        fascinationScore: 0.88,
+        hookText: 'Which European country has the most neighbors, touching 9 other countries?',
+        options: [
+            { id: 'a', text: 'France' },
+            { id: 'b', text: 'Germany' },
+            { id: 'c', text: 'Russia' },
+            { id: 'd', text: 'Poland' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Germany borders 9 countries: Denmark, Poland, Czech Republic, Austria, Switzerland, France, Luxembourg, Belgium, and Netherlands! This central location made Germany a crossroads of European history and trade for centuries. 🗺️',
+        explanationShort: 'Germany: 9 neighbors — crossroads of Europe!',
+        source: 'European Commission',
+    },
+    {
+        id: 'europe-geo-011',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Islands',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Santorini, Greece was formed by one of the largest volcanic eruptions in history. When did it happen?',
+        options: [
+            { id: 'a', text: 'About 1,000 years ago' },
+            { id: 'b', text: 'About 2,000 years ago' },
+            { id: 'c', text: 'About 3,600 years ago' },
+            { id: 'd', text: 'About 10,000 years ago' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Santorini\'s massive volcanic eruption around 1600 BCE was one of the largest in recorded history! It may have destroyed the Minoan civilization and inspired the legend of Atlantis. The island\'s cliffs are the volcano\'s caldera rim! 🌋',
+        explanationShort: 'Santorini: Massive eruption 3,600 years ago — Atlantis legend?',
+        source: 'Smithsonian Volcano Program',
+    },
+];
+
+// ============================================================================
+// EUROPE - BATCH 2: NATURE & WILDLIFE (8 more questions)
+// ============================================================================
+
+const natureBatch2: Question[] = [
+    {
+        id: 'europe-nat-005',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Birds',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The puffin is called the "clown of the sea." Where can you see Europe\'s largest puffin colony?',
+        options: [
+            { id: 'a', text: 'Scotland' },
+            { id: 'b', text: 'Iceland' },
+            { id: 'c', text: 'Norway' },
+            { id: 'd', text: 'Ireland' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Iceland has about 60% of the world\'s Atlantic puffins — over 3 million breeding pairs! Their colorful beaks are brightest during mating season. They can carry up to 10 fish in their beaks at once using their special tongue! 🐧',
+        explanationShort: 'Iceland: 60% of world\'s puffins — 10 fish in one beak!',
+        source: 'Icelandic Institute of Natural History',
+    },
+    {
+        id: 'europe-nat-006',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Mammals',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'The Iberian lynx was the world\'s most endangered cat. How many were left by 2002?',
+        options: [
+            { id: 'a', text: 'About 500' },
+            { id: 'b', text: 'About 200' },
+            { id: 'c', text: 'About 100' },
+            { id: 'd', text: 'About 50' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Only about 100 Iberian lynx remained in 2002! Thanks to intense conservation, there are now over 1,500 in Spain and Portugal. They\'re famous for their ear tufts and spots. It\'s one of conservation\'s greatest success stories! 🐱',
+        explanationShort: 'Iberian lynx: From 100 to 1,500+ — conservation success!',
+        source: 'WWF Spain',
+    },
+    {
+        id: 'europe-nat-007',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Wolves',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'Wolves are returning to Europe! About how many wolves now live in European countries?',
+        options: [
+            { id: 'a', text: 'About 5,000' },
+            { id: 'b', text: 'About 12,000' },
+            { id: 'c', text: 'About 17,000' },
+            { id: 'd', text: 'About 25,000' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 17,000 wolves now roam Europe — up from just a few hundred in the 1970s! They\'ve returned to countries like Germany, France, and the Netherlands. Wolves were nearly extinct in Western Europe but are making an amazing comeback! 🐺',
+        explanationShort: 'European wolves: 17,000 and growing — back from near extinction!',
+        source: 'Large Carnivore Initiative for Europe',
+    },
+];
+
+// ============================================================================
+// EUROPE - BATCH 2: SPORTS (8 more questions)
+// ============================================================================
+
+const sportsBatch2: Question[] = [
+    {
+        id: 'europe-spo-006',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Football',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.92,
+        hookText: 'The English Premier League is the most-watched sports league in the world. How many people watch it globally?',
+        options: [
+            { id: 'a', text: 'About 1 billion' },
+            { id: 'b', text: 'About 2 billion' },
+            { id: 'c', text: 'About 3.2 billion' },
+            { id: 'd', text: 'About 4 billion' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Over 3.2 billion people watch the Premier League across 900 million homes in 189 countries! It\'s broadcast in 212 territories — more than the number of countries in the world. Manchester United has the most fans globally! ⚽',
+        explanationShort: 'Premier League: 3.2 billion viewers in 189 countries!',
+        source: 'Premier League Official',
+    },
+    {
+        id: 'europe-spo-007',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Motor Racing',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The Monaco Grand Prix is F1\'s most famous race. What makes it unique?',
+        options: [
+            { id: 'a', text: 'It\'s the longest race' },
+            { id: 'b', text: 'It\'s on public streets' },
+            { id: 'c', text: 'It has the most spectators' },
+            { id: 'd', text: 'It\'s the oldest F1 race' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Monaco GP races through the narrow streets of Monte Carlo — including through tunnels and past the famous casino! It\'s the slowest F1 race (average 160 km/h vs 240 km/h usually) but the most prestigious. Drivers can barely pass each other! 🏎️',
+        explanationShort: 'Monaco GP: Street circuit through tunnels and past casinos!',
+        source: 'Formula 1 Official',
+    },
+    {
+        id: 'europe-spo-008',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Rugby',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'The Six Nations rugby tournament involves how many European countries?',
+        options: [
+            { id: 'a', text: '4 countries' },
+            { id: 'b', text: '5 countries' },
+            { id: 'c', text: '6 countries' },
+            { id: 'd', text: '8 countries' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Six Nations includes England, Ireland, Wales, Scotland, France, and Italy! It\'s the oldest international rugby tournament (since 1883 as the Home Nations). England has won the most titles. The Grand Slam means beating all 5 other teams! 🏉',
+        explanationShort: 'Six Nations: 6 countries — oldest rugby tournament since 1883!',
+        source: 'Six Nations Rugby',
+    },
+    {
+        id: 'europe-spo-009',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Winter Sports',
+        difficulty: 0.5,
+        fascinationScore: 0.87,
+        hookText: 'Norway has won the most Winter Olympic medals ever. How many have they won?',
+        options: [
+            { id: 'a', text: 'About 200' },
+            { id: 'b', text: 'About 300' },
+            { id: 'c', text: 'About 400' },
+            { id: 'd', text: 'About 500' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Norway has won over 400 Winter Olympic medals — the most by any country! Cross-country skiing is practically a national religion there. Kids learn to ski before they can read. The saying goes: "Norwegians are born with skis on their feet"! ⛷️',
+        explanationShort: 'Norway: 400+ Winter medals — kids ski before reading!',
+        source: 'International Olympic Committee',
+    },
+];
+
+// ============================================================================
+// EUROPE - BATCH 2: SCIENCE & INVENTIONS (8 questions)
+// ============================================================================
+
+const scienceBatch2: Question[] = [
+    {
+        id: 'europe-sci-001',
+        continent: 'EUROPE',
+        category: 'SCIENCE',
+        subCategory: 'Inventions',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'The World Wide Web was invented at CERN in Switzerland. In what year?',
+        options: [
+            { id: 'a', text: '1979' },
+            { id: 'b', text: '1989' },
+            { id: 'c', text: '1995' },
+            { id: 'd', text: '1999' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Tim Berners-Lee invented the World Wide Web in 1989 at CERN to help scientists share information! He made it free for everyone — no patent, no royalties. If he had charged even a tiny fee per webpage, he\'d be the richest person ever! 🌐',
+        explanationShort: 'WWW: Invented 1989 at CERN — Tim Berners-Lee made it FREE!',
+        source: 'CERN Official',
+    },
+    {
+        id: 'europe-sci-002',
+        continent: 'EUROPE',
+        category: 'SCIENCE',
+        subCategory: 'Space',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'Yuri Gagarin became the first human in space. What did he say when he saw Earth from above?',
+        options: [
+            { id: 'a', text: '"We made it!"' },
+            { id: 'b', text: '"It\'s beautiful!"' },
+            { id: 'c', text: '"I see Earth. It is so beautiful!"' },
+            { id: 'd', text: '"Hello from space!"' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Russian cosmonaut Yuri Gagarin orbited Earth on April 12, 1961, saying "I see Earth. It is so beautiful!" His flight lasted just 108 minutes. He was only 27 years old. April 12 is now celebrated internationally as "Yuri\'s Night"! 🚀',
+        explanationShort: 'Gagarin 1961: First human in space — "Earth is so beautiful!"',
+        source: 'NASA History',
+    },
+    {
+        id: 'europe-sci-003',
+        continent: 'EUROPE',
+        category: 'SCIENCE',
+        subCategory: 'Medicine',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'Penicillin, the first antibiotic, was discovered by accident. What did Alexander Fleming find?',
+        options: [
+            { id: 'a', text: 'Mold killing bacteria in a petri dish' },
+            { id: 'b', text: 'A plant that cured infections' },
+            { id: 'c', text: 'Chemicals in soil' },
+            { id: 'd', text: 'A new type of fungus in bread' },
+        ],
+        correctAnswer: 'a',
+        explanation: 'In 1928, Scottish scientist Alexander Fleming noticed mold had killed bacteria in a petri dish he\'d accidentally left open! That mold was Penicillium, and it became penicillin. This "accident" has saved over 200 million lives! 💊',
+        explanationShort: 'Penicillin: Found by accident — saved 200 million lives!',
+        source: 'Nobel Prize Foundation',
+    },
+    {
+        id: 'europe-sci-004',
+        continent: 'EUROPE',
+        category: 'SCIENCE',
+        subCategory: 'Physics',
+        difficulty: 0.6,
+        fascinationScore: 0.93,
+        hookText: 'The Large Hadron Collider at CERN is the world\'s largest machine. How long is it?',
+        options: [
+            { id: 'a', text: 'About 10 km' },
+            { id: 'b', text: 'About 17 km' },
+            { id: 'c', text: 'About 27 km' },
+            { id: 'd', text: 'About 50 km' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Large Hadron Collider is 27 km in circumference — the largest machine humans have ever built! It smashes particles together at 99.9999991% the speed of light. In 2012, it discovered the Higgs boson, nicknamed the "God particle"! ⚛️',
+        explanationShort: 'LHC: 27 km ring — discovered "God particle" in 2012!',
+        source: 'CERN',
+    },
+];
+
+// ============================================================================
+// EUROPE - BATCH 2: FAMOUS PEOPLE (8 questions)
+// ============================================================================
+
+const famousPeopleBatch2: Question[] = [
+    {
+        id: 'europe-fam-001',
+        continent: 'EUROPE',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Artists',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.93,
+        hookText: 'Leonardo da Vinci painted the Mona Lisa. How long did he carry it around with him?',
+        options: [
+            { id: 'a', text: 'About 1 year' },
+            { id: 'b', text: 'About 5 years' },
+            { id: 'c', text: 'About 10 years' },
+            { id: 'd', text: 'About 16 years' },
+        ],
+        correctAnswer: 'd',
+        explanation: 'Leonardo da Vinci worked on the Mona Lisa for about 16 years, carrying it with him until he died! He never considered it finished. The painting is now the most famous artwork in the world — about 10 million people see it at the Louvre yearly! 🎨',
+        explanationShort: 'Mona Lisa: 16 years — Leonardo never finished it!',
+        source: 'Louvre Museum',
+    },
+    {
+        id: 'europe-fam-002',
+        continent: 'EUROPE',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Scientists',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Marie Curie won TWO Nobel Prizes. What makes her unique in Nobel Prize history?',
+        options: [
+            { id: 'a', text: 'First woman to win one' },
+            { id: 'b', text: 'Only person to win in two DIFFERENT sciences' },
+            { id: 'c', text: 'Youngest winner ever' },
+            { id: 'd', text: 'Won both in the same year' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Marie Curie won the Physics Nobel (1903) and Chemistry Nobel (1911) — the only person EVER to win in two different sciences! She discovered radium and polonium. She was also the first woman to win a Nobel and first woman professor in Paris! 👩‍🔬',
+        explanationShort: 'Marie Curie: Only person with Nobels in 2 different sciences!',
+        source: 'Nobel Prize Foundation',
+    },
+    {
+        id: 'europe-fam-003',
+        continent: 'EUROPE',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Writers',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'William Shakespeare invented over 1,700 words we still use today. Which one did he NOT invent?',
+        options: [
+            { id: 'a', text: 'Assassination' },
+            { id: 'b', text: 'Lonely' },
+            { id: 'c', text: 'Generous' },
+            { id: 'd', text: 'Bedroom' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Shakespeare invented "assassination," "lonely," "bedroom," "eyeball," "gossip," and 1,700+ more words! "Generous" existed before him. He also invented phrases like "break the ice," "wild goose chase," and "heart of gold." Language legend! 📚',
+        explanationShort: 'Shakespeare: Invented 1,700+ words — "break the ice" and more!',
+        source: 'Oxford English Dictionary',
+    },
+    {
+        id: 'europe-fam-004',
+        continent: 'EUROPE',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Musicians',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'Beethoven continued composing music after becoming completely deaf. At what age did he lose his hearing?',
+        options: [
+            { id: 'a', text: 'Around age 30' },
+            { id: 'b', text: 'Around age 40' },
+            { id: 'c', text: 'Around age 45' },
+            { id: 'd', text: 'Around age 55' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Beethoven was completely deaf by 45 but kept composing! He\'d put a rod in his teeth touching the piano to "feel" the vibrations. His 9th Symphony, with "Ode to Joy," was written when he couldn\'t hear a single note. Pure genius! 🎹',
+        explanationShort: 'Beethoven: Composed 9th Symphony completely deaf!',
+        source: 'Beethoven-Haus Bonn',
+    },
+];
+
+// ============================================================================
+// EUROPE - BATCH 2: FUN FACTS (8 more questions)
+// ============================================================================
+
+const funFactsBatch2: Question[] = [
+    {
+        id: 'europe-fun-005',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Unusual',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'In Spain, people throw tomatoes at each other in a famous festival. How many tomatoes are used?',
+        options: [
+            { id: 'a', text: 'About 50,000 kg' },
+            { id: 'b', text: 'About 100,000 kg' },
+            { id: 'c', text: 'About 150,000 kg' },
+            { id: 'd', text: 'About 200,000 kg' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'La Tomatina in Buñol, Spain uses about 150,000 kg of tomatoes — that\'s 150 tons! About 20,000 people throw overripe tomatoes at each other for 1 hour. Streets turn red with tomato juice. It\'s been happening since 1945! 🍅',
+        explanationShort: 'La Tomatina: 150,000 kg tomatoes — 1-hour food fight!',
+        source: 'Spain Tourism',
+    },
+    {
+        id: 'europe-fun-006',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Languages',
+        difficulty: 0.5,
+        fascinationScore: 0.87,
+        hookText: 'How many languages are spoken in Europe?',
+        options: [
+            { id: 'a', text: 'About 50 languages' },
+            { id: 'b', text: 'About 100 languages' },
+            { id: 'c', text: 'About 200 languages' },
+            { id: 'd', text: 'About 300 languages' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 200 languages are spoken in Europe! The EU alone has 24 official languages. Russian is the most spoken by native speakers, but English is the most common second language. Luxembourg has the most multilingual population! 🗣️',
+        explanationShort: 'Europe: 200 languages — most multilingual continent!',
+        source: 'European Commission',
+    },
+    {
+        id: 'europe-fun-007',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Records',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'The London Underground is the world\'s oldest underground railway. When did it open?',
+        options: [
+            { id: 'a', text: '1823' },
+            { id: 'b', text: '1863' },
+            { id: 'c', text: '1893' },
+            { id: 'd', text: '1903' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The London Underground opened in 1863 — 160+ years ago! The first trains were steam-powered (imagine the smoke underground!). Today it has 272 stations and carries 5 million passengers daily. Londoners call it "The Tube." 🚇',
+        explanationShort: 'London Tube: Opened 1863 — world\'s oldest underground!',
+        source: 'Transport for London',
+    },
+];
+
+// ============================================================================
 // COMBINE ALL EUROPE QUESTIONS
 // ============================================================================
 
@@ -555,6 +1034,14 @@ export const europeQuestionsExpanded: Question[] = [
     ...foodQuestions,
     ...recordsQuestions,
     ...funFactsQuestions,
+    // Batch 2
+    ...geographyBatch2,
+    ...natureBatch2,
+    ...sportsBatch2,
+    ...scienceBatch2,
+    ...famousPeopleBatch2,
+    ...funFactsBatch2,
 ];
 
 export default europeQuestionsExpanded;
+
