@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import allExpandedQuestions from '../data/questions';
 import type { Question } from '../types';
 
@@ -83,9 +83,17 @@ const transformQuestion = (q: Question): DisplayQuestion => ({
     timeLimit: Math.floor(20 + (1 - q.difficulty) * 15), // Easier = more time
 });
 
-// Get 5 random questions for a quiz session
-const getQuizQuestions = (count: number = 5): DisplayQuestion[] => {
-    const shuffled = [...allExpandedQuestions].sort(() => Math.random() - 0.5);
+// Get random questions for a quiz session, optionally filtered by continent
+const getQuizQuestions = (count: number = 5, continent?: string): DisplayQuestion[] => {
+    let questions = [...allExpandedQuestions];
+
+    // Filter by continent if specified
+    if (continent) {
+        questions = questions.filter(q => q.continent === continent);
+    }
+
+    // Shuffle and pick
+    const shuffled = questions.sort(() => Math.random() - 0.5);
     return shuffled.slice(0, count).map(transformQuestion);
 };
 
@@ -317,9 +325,16 @@ const ExplanationPanel: React.FC<{ explanation: string; isCorrect: boolean; xp: 
 
 const QuestionScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute();
 
-    // Generate quiz questions once on mount
-    const quizQuestions = useMemo(() => getQuizQuestions(5), []);
+    // Get continent from navigation params (if navigating from map)
+    const selectedContinent = (route.params as { continent?: string })?.continent;
+
+    // Generate quiz questions once on mount, filtered by continent if specified
+    const quizQuestions = useMemo(
+        () => getQuizQuestions(5, selectedContinent),
+        [selectedContinent]
+    );
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);

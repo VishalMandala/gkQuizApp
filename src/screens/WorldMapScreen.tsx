@@ -4,9 +4,10 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, useWindowDimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 import Svg, { Circle, Line, Path, G, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 // ============================================================================
@@ -198,9 +199,10 @@ interface ContinentNodeProps {
     mapWidth: number;
     mapHeight: number;
     scale: number;
+    onPress: (continentId: string) => void;
 }
 
-const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidth, mapHeight, scale }) => {
+const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidth, mapHeight, scale, onPress }) => {
     const { scale: entryScale, opacity } = useNodeAnimation(400 + index * 100);
     const pulseScale = usePulse(600 + index * 50, continent.complete ? 1.1 : 1.05);
 
@@ -212,6 +214,12 @@ const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidt
     const x = (continent.xPercent / 100) * mapWidth - size / 2;
     const y = (continent.yPercent / 100) * mapHeight - size / 2;
 
+    const handlePress = () => {
+        if (!continent.locked) {
+            onPress(continent.id);
+        }
+    };
+
     return (
         <Animated.View
             style={[
@@ -219,7 +227,7 @@ const ContinentNode: React.FC<ContinentNodeProps> = ({ continent, index, mapWidt
                 { left: x, top: y, opacity, transform: [{ scale: Animated.multiply(entryScale, pulseScale) }] },
             ]}
         >
-            <TouchableOpacity activeOpacity={0.85} disabled={continent.locked}>
+            <TouchableOpacity activeOpacity={0.85} disabled={continent.locked} onPress={handlePress}>
                 {/* Outer glow for complete */}
                 {continent.complete && (
                     <View style={[styles.glowRing, {
@@ -367,6 +375,23 @@ const Header: React.FC<{ scale: number }> = ({ scale }) => {
 
 const WorldMapScreen: React.FC = () => {
     const { width, height, isTablet, isLargeTablet, scale, mapHeight } = useResponsive();
+    const navigation = useNavigation();
+
+    // Map continent IDs to the Question data continent format
+    const continentIdMap: Record<string, string> = {
+        'N_AMERICA': 'NORTH_AMERICA',
+        'S_AMERICA': 'SOUTH_AMERICA',
+        'EUROPE': 'EUROPE',
+        'AFRICA': 'AFRICA',
+        'ASIA': 'ASIA',
+        'OCEANIA': 'AUSTRALIA_OCEANIA',
+        'ANTARCTICA': 'ANTARCTICA',
+    };
+
+    const handleContinentPress = (continentId: string) => {
+        const mappedContinent = continentIdMap[continentId] || continentId;
+        (navigation as any).navigate('Question', { continent: mappedContinent });
+    };
 
     return (
         <View style={styles.container}>
@@ -391,6 +416,7 @@ const WorldMapScreen: React.FC = () => {
                             mapWidth={width}
                             mapHeight={mapHeight}
                             scale={scale}
+                            onPress={handleContinentPress}
                         />
                     ))}
                 </View>
