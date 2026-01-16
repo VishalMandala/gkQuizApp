@@ -32,18 +32,28 @@ import {
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // ============================================================================
-// DESIGN TOKENS
+// DESIGN TOKENS - VIBRANT RAINBOW PALETTE
 // ============================================================================
 
 const colors = {
     bg: { deep: '#030712', card: '#111d32', cardLight: '#1a2942' },
     accent: {
+        // Core colors
         indigo: '#6366F1', purple: '#8B5CF6', gold: '#FBBF24',
         green: '#10B981', cyan: '#06B6D4', pink: '#EC4899',
-        orange: '#F59E0B', red: '#EF4444'
+        orange: '#F59E0B', red: '#EF4444',
+        // Rainbow spectrum
+        rainbow: ['#FF6B6B', '#FF8E53', '#FFCD39', '#4ADE80', '#22D3EE', '#818CF8', '#E879F9'],
+        // Neon vibrant
+        neonPink: '#FF10F0', neonBlue: '#00D4FF', neonGreen: '#39FF14', neonOrange: '#FF6B00',
+        // Galaxy
+        nebula: '#7B2FBE', stardust: '#FFE66D', cosmicBlue: '#4169E1',
     },
     text: { white: '#FFF', primary: '#F1F5F9', secondary: '#CBD5E1', muted: '#64748B' },
 };
+
+// Rainbow gradient for special effects
+const rainbowColors = ['#FF6B6B', '#FF8E53', '#FFCD39', '#4ADE80', '#22D3EE', '#818CF8', '#E879F9'];
 
 // ============================================================================
 // MOCK USER DATA (Replace with actual user context later)
@@ -135,14 +145,14 @@ const PulsingGlow: React.FC<{ color: string; size: number }> = ({ color, size })
         Animated.loop(
             Animated.sequence([
                 Animated.timing(pulseAnim, {
-                    toValue: 1.3,
-                    duration: 1500,
+                    toValue: 1.4,
+                    duration: 1200,
                     easing: Easing.inOut(Easing.sin),
                     useNativeDriver: true,
                 }),
                 Animated.timing(pulseAnim, {
                     toValue: 1,
-                    duration: 1500,
+                    duration: 1200,
                     easing: Easing.inOut(Easing.sin),
                     useNativeDriver: true,
                 }),
@@ -151,8 +161,8 @@ const PulsingGlow: React.FC<{ color: string; size: number }> = ({ color, size })
     }, []);
 
     const opacity = pulseAnim.interpolate({
-        inputRange: [1, 1.3],
-        outputRange: [0.4, 0.15],
+        inputRange: [1, 1.4],
+        outputRange: [0.5, 0.1],
     });
 
     return (
@@ -167,6 +177,118 @@ const PulsingGlow: React.FC<{ color: string; size: number }> = ({ color, size })
                 transform: [{ scale: pulseAnim }],
             }}
         />
+    );
+};
+
+// ============================================================================
+// SPARKLE STAR ANIMATION - Twinkling stars around nodes
+// ============================================================================
+
+const SparkleStars: React.FC<{ count: number; radius: number; color: string }> = ({ count, radius, color }) => {
+    const stars = useMemo(() =>
+        Array.from({ length: count }, (_, i) => ({
+            id: i,
+            angle: (i / count) * Math.PI * 2,
+            distance: radius * (0.8 + Math.random() * 0.4),
+        }))
+        , [count, radius]);
+
+    return (
+        <>
+            {stars.map(star => (
+                <TwinkleStar key={star.id} angle={star.angle} distance={star.distance} color={color} />
+            ))}
+        </>
+    );
+};
+
+const TwinkleStar: React.FC<{ angle: number; distance: number; color: string }> = ({ angle, distance, color }) => {
+    const twinkleAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const delay = Math.random() * 2000;
+        Animated.loop(
+            Animated.sequence([
+                Animated.delay(delay),
+                Animated.timing(twinkleAnim, {
+                    toValue: 1,
+                    duration: 400,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(twinkleAnim, {
+                    toValue: 0,
+                    duration: 400,
+                    useNativeDriver: true,
+                }),
+                Animated.delay(1000 + Math.random() * 1000),
+            ])
+        ).start();
+    }, []);
+
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+
+    return (
+        <Animated.Text
+            style={{
+                position: 'absolute',
+                left: x - 6,
+                top: y - 6,
+                fontSize: 12,
+                opacity: twinkleAnim,
+                transform: [{ scale: twinkleAnim.interpolate({ inputRange: [0, 1], outputRange: [0.5, 1.2] }) }],
+            }}
+        >
+            ✦
+        </Animated.Text>
+    );
+};
+
+// ============================================================================
+// RAINBOW RING ANIMATION - Spinning rainbow border
+// ============================================================================
+
+const RainbowRing: React.FC<{ size: number }> = ({ size }) => {
+    const rotateAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        Animated.loop(
+            Animated.timing(rotateAnim, {
+                toValue: 1,
+                duration: 3000,
+                easing: Easing.linear,
+                useNativeDriver: true,
+            })
+        ).start();
+    }, []);
+
+    const rotate = rotateAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
+    return (
+        <Animated.View
+            style={{
+                position: 'absolute',
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                transform: [{ rotate }],
+            }}
+        >
+            <LinearGradient
+                colors={['#FF6B6B', '#FF8E53', '#FFCD39', '#4ADE80', '#22D3EE', '#818CF8', '#E879F9'] as const}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: size / 2,
+                    opacity: 0.6,
+                }}
+            />
+        </Animated.View>
     );
 };
 
@@ -278,8 +400,36 @@ const MilestoneNode: React.FC<MilestoneNodeProps> = ({ level, currentLevel, inde
                 activeOpacity={0.8}
                 style={styles.nodeTouchable}
             >
+                {/* Rainbow ring for current level */}
+                {isCurrent && <RainbowRing size={glowSize + 20} />}
+
                 {/* Pulsing glow for current level */}
                 {isCurrent && <PulsingGlow color={tierColor} size={glowSize} />}
+
+                {/* Sparkle stars around current level */}
+                {isCurrent && <SparkleStars count={8} radius={nodeSize * 0.9} color={colors.accent.gold} />}
+
+                {/* Multiple glow layers for depth on major milestones */}
+                {isMajorMilestone && !isFuture && (
+                    <>
+                        <View style={{
+                            position: 'absolute',
+                            width: nodeSize + 40,
+                            height: nodeSize + 40,
+                            borderRadius: (nodeSize + 40) / 2,
+                            backgroundColor: tierColor,
+                            opacity: 0.15,
+                        }} />
+                        <View style={{
+                            position: 'absolute',
+                            width: nodeSize + 25,
+                            height: nodeSize + 25,
+                            borderRadius: (nodeSize + 25) / 2,
+                            backgroundColor: tierColor,
+                            opacity: 0.25,
+                        }} />
+                    </>
+                )}
 
                 {/* Outer ring for unlocked nodes */}
                 {!isFuture && (
@@ -624,14 +774,20 @@ const PuzzlePathScreen: React.FC = () => {
         return () => clearTimeout(timer);
     }, [currentLevel, milestones]);
 
-    // Floating particles
+    // Floating particles - more colorful and varied
+    const particleColors = [
+        colors.accent.gold, colors.accent.purple, colors.accent.cyan,
+        colors.accent.pink, colors.accent.neonPink, colors.accent.neonBlue,
+        colors.accent.green, colors.accent.orange, '#FF6B6B', '#4ADE80'
+    ];
+
     const particles = useMemo(() =>
-        Array.from({ length: 15 }, (_, i) => ({
+        Array.from({ length: 25 }, (_, i) => ({
             id: i,
-            delay: i * 400,
-            size: 4 + Math.random() * 6,
-            color: [colors.accent.gold, colors.accent.purple, colors.accent.cyan, colors.accent.pink][i % 4],
-            leftPercent: 5 + Math.random() * 90,
+            delay: i * 300,
+            size: 3 + Math.random() * 8,
+            color: particleColors[i % particleColors.length],
+            leftPercent: 3 + Math.random() * 94,
         }))
         , []);
 
