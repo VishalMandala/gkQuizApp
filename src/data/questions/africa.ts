@@ -533,6 +533,466 @@ const funFactsQuestions: Question[] = [
 ];
 
 // ============================================================================
+// AFRICA - BATCH 2: GEOGRAPHY (10 more questions)
+// ============================================================================
+
+const geographyBatch2: Question[] = [
+    {
+        id: 'africa-geo-006',
+        continent: 'AFRICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Capitals',
+        difficulty: 0.2, // Easy - Kids
+        fascinationScore: 0.85,
+        hookText: 'What is the capital city of Egypt — home to the famous pyramids nearby?',
+        options: [
+            { id: 'a', text: 'Alexandria' },
+            { id: 'b', text: 'Cairo' },
+            { id: 'c', text: 'Luxor' },
+            { id: 'd', text: 'Giza' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Cairo is Egypt\'s capital and Africa\'s largest city with over 20 million people! The Great Pyramids of Giza are just 15 km away. Cairo is called "the city of a thousand minarets" because of its many mosques. 🏛️',
+        explanationShort: 'Cairo: Africa\'s largest city — pyramids just 15 km away!',
+        source: 'Egyptian Tourism Authority',
+    },
+    {
+        id: 'africa-geo-007',
+        continent: 'AFRICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Borders',
+        difficulty: 0.5, // Medium
+        fascinationScore: 0.88,
+        hookText: 'Which African country has the most neighboring countries — touching 9 different nations?',
+        options: [
+            { id: 'a', text: 'Tanzania' },
+            { id: 'b', text: 'Democratic Republic of Congo' },
+            { id: 'c', text: 'Sudan' },
+            { id: 'd', text: 'Ethiopia' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Democratic Republic of Congo (DRC) borders 9 countries — more than any other African nation! It\'s the 2nd largest country in Africa by area and contains the world\'s 2nd largest rainforest after the Amazon. 🗺️',
+        explanationShort: 'DRC: 9 neighboring countries — 2nd largest rainforest!',
+        source: 'African Union',
+    },
+    {
+        id: 'africa-geo-008',
+        continent: 'AFRICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Islands',
+        difficulty: 0.6, // Medium-Hard
+        fascinationScore: 0.9,
+        hookText: 'Madagascar is the world\'s 4th largest island. What percentage of its wildlife is found NOWHERE else on Earth?',
+        options: [
+            { id: 'a', text: 'About 50%' },
+            { id: 'b', text: 'About 70%' },
+            { id: 'c', text: 'About 90%' },
+            { id: 'd', text: 'About 95%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 90% of Madagascar\'s wildlife is endemic — found nowhere else on Earth! This includes all lemur species (over 100!), most chameleon species, and unique baobab trees. It split from Africa 160 million years ago and evolved separately. 🦎',
+        explanationShort: 'Madagascar: 90% wildlife found nowhere else on Earth!',
+        source: 'WWF Madagascar',
+    },
+    {
+        id: 'africa-geo-009',
+        continent: 'AFRICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Lakes',
+        difficulty: 0.4, // Medium-Easy
+        fascinationScore: 0.87,
+        hookText: 'Lake Victoria is Africa\'s largest lake. Which three countries share it?',
+        options: [
+            { id: 'a', text: 'Kenya, Tanzania, Uganda' },
+            { id: 'b', text: 'Ethiopia, Sudan, South Sudan' },
+            { id: 'c', text: 'Zambia, Zimbabwe, Botswana' },
+            { id: 'd', text: 'Nigeria, Niger, Chad' },
+        ],
+        correctAnswer: 'a',
+        explanation: 'Lake Victoria is shared by Kenya, Tanzania, and Uganda! It\'s about the size of Ireland and is the source of the Nile River. Over 30 million people depend on it for fishing, and it contains 200+ species of fish. 🐟',
+        explanationShort: 'Lake Victoria: Size of Ireland — source of the Nile!',
+        source: 'Lake Victoria Basin Commission',
+    },
+    {
+        id: 'africa-geo-010',
+        continent: 'AFRICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Volcanoes',
+        difficulty: 0.7, // Hard
+        fascinationScore: 0.95,
+        hookText: 'There\'s an African volcano with the world\'s largest lava lake — you can see glowing lava 24/7. Where is it?',
+        options: [
+            { id: 'a', text: 'Mount Kenya, Kenya' },
+            { id: 'b', text: 'Mount Nyiragongo, DR Congo' },
+            { id: 'c', text: 'Mount Cameroon, Cameroon' },
+            { id: 'd', text: 'Erta Ale, Ethiopia' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Mount Nyiragongo in DR Congo has the world\'s largest lava lake — a bubbling pit of molten rock you can see glowing at night! Its lava is unusually fluid and can flow at 60 km/h — faster than a car in traffic! 🌋',
+        explanationShort: 'Nyiragongo: Largest lava lake — lava flows 60 km/h!',
+        source: 'Goma Volcano Observatory',
+    },
+];
+
+// ============================================================================
+// AFRICA - BATCH 2: NATURE & WILDLIFE (10 more questions)
+// ============================================================================
+
+const natureBatch2: Question[] = [
+    {
+        id: 'africa-nat-006',
+        continent: 'AFRICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Mammals',
+        difficulty: 0.2, // Easy - Kids
+        fascinationScore: 0.92,
+        hookText: 'Zebras have stripes that are as unique as human fingerprints. What are the stripes probably used for?',
+        options: [
+            { id: 'a', text: 'Camouflage from predators' },
+            { id: 'b', text: 'Confusing biting flies' },
+            { id: 'c', text: 'Temperature control' },
+            { id: 'd', text: 'All of the above' },
+        ],
+        correctAnswer: 'd',
+        explanation: 'Scientists believe zebra stripes serve multiple purposes! They confuse biting flies (the flies can\'t land properly), help regulate temperature, and when zebras move in herds, the stripes make it hard for lions to target one individual. 🦓',
+        explanationShort: 'Zebra stripes: Confuse flies, cool down, and confuse predators!',
+        source: 'Journal of Experimental Biology',
+    },
+    {
+        id: 'africa-nat-007',
+        continent: 'AFRICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Primates',
+        difficulty: 0.4, // Medium-Easy
+        fascinationScore: 0.95,
+        hookText: 'Gorillas share about 98% of their DNA with humans. How do silverback gorillas show they\'re in charge?',
+        options: [
+            { id: 'a', text: 'By roaring loudly' },
+            { id: 'b', text: 'By chest-beating' },
+            { id: 'c', text: 'By fighting other males' },
+            { id: 'd', text: 'By eating first' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Silverback gorillas beat their chests to show dominance and communicate! The sound can travel 1 km through the forest. Despite their size (up to 200 kg), gorillas are mostly gentle vegetarians. Only about 1,000 mountain gorillas remain in the wild. 🦍',
+        explanationShort: 'Chest-beating travels 1 km — only 1,000 mountain gorillas left!',
+        source: 'Dian Fossey Gorilla Fund',
+    },
+    {
+        id: 'africa-nat-008',
+        continent: 'AFRICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Reptiles',
+        difficulty: 0.5, // Medium
+        fascinationScore: 0.88,
+        hookText: 'The Nile crocodile is Africa\'s largest reptile. How long can they hold their breath underwater?',
+        options: [
+            { id: 'a', text: 'About 15 minutes' },
+            { id: 'b', text: 'About 30 minutes' },
+            { id: 'c', text: 'About 1 hour' },
+            { id: 'd', text: 'About 2 hours' },
+        ],
+        correctAnswer: 'd',
+        explanation: 'Nile crocodiles can hold their breath for about 2 hours by slowing their heart rate! They can grow up to 6 meters long and weigh 750 kg. They\'ve existed for 200 million years — they lived with dinosaurs! 🐊',
+        explanationShort: 'Nile crocs: 2 hours underwater — lived with dinosaurs!',
+        source: 'National Geographic',
+    },
+    {
+        id: 'africa-nat-009',
+        continent: 'AFRICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Migration',
+        difficulty: 0.5, // Medium
+        fascinationScore: 0.97,
+        hookText: 'The Great Wildebeest Migration is Earth\'s largest land migration. How many animals participate?',
+        options: [
+            { id: 'a', text: 'About 500,000' },
+            { id: 'b', text: 'About 1 million' },
+            { id: 'c', text: 'About 1.5 million' },
+            { id: 'd', text: 'About 2 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 1.5 million wildebeest plus 200,000 zebras and gazelles travel in a circle between Tanzania and Kenya every year! They cover 1,800 km following the rains. Over 250,000 don\'t survive the journey — crocodiles, lions, and exhaustion take their toll. 🦁',
+        explanationShort: '1.5 million wildebeest — 1,800 km journey every year!',
+        source: 'Serengeti National Park',
+    },
+    {
+        id: 'africa-nat-010',
+        continent: 'AFRICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Insects',
+        difficulty: 0.6, // Medium-Hard
+        fascinationScore: 0.85,
+        hookText: 'African driver ants form the largest ant colonies on Earth. How many ants in one colony?',
+        options: [
+            { id: 'a', text: 'About 1 million' },
+            { id: 'b', text: 'About 5 million' },
+            { id: 'c', text: 'About 20 million' },
+            { id: 'd', text: 'About 50 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'African driver ant colonies can have 20 million members! They\'re blind but move in massive armies, eating anything in their path. They\'ve been known to kill animals as large as cows that can\'t escape. Local people actually use them to clean pests from their homes! 🐜',
+        explanationShort: '20 million ants per colony — can take down a cow!',
+        source: 'Smithsonian Institution',
+    },
+];
+
+// ============================================================================
+// AFRICA - BATCH 2: SPORTS (8 more questions)
+// ============================================================================
+
+const sportsBatch2: Question[] = [
+    {
+        id: 'africa-spo-006',
+        continent: 'AFRICA',
+        category: 'SPORTS',
+        subCategory: 'Football',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Who was the first African player to be named FIFA World Player of the Year?',
+        options: [
+            { id: 'a', text: 'Didier Drogba' },
+            { id: 'b', text: 'Samuel Eto\'o' },
+            { id: 'c', text: 'George Weah' },
+            { id: 'd', text: 'Roger Milla' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'George Weah of Liberia won in 1995 — a historic moment for African football! He later became the President of Liberia in 2018, making him one of the few athletes to become a head of state. Football star to president! ⚽👔',
+        explanationShort: 'Weah: First African world player — later became President!',
+        source: 'FIFA',
+    },
+    {
+        id: 'africa-spo-007',
+        continent: 'AFRICA',
+        category: 'SPORTS',
+        subCategory: 'Athletics',
+        difficulty: 0.5,
+        fascinationScore: 0.92,
+        hookText: 'Ethiopian runner Haile Gebrselassie broke 27 world records. At what altitude did he train?',
+        options: [
+            { id: 'a', text: 'Sea level' },
+            { id: 'b', text: '1,500 meters' },
+            { id: 'c', text: '2,400 meters' },
+            { id: 'd', text: '3,500 meters' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Ethiopian champions train at 2,400+ meters altitude in Addis Ababa! This develops more red blood cells to carry oxygen. When they compete at sea level, their bodies are "supercharged." This is why East Africans dominate distance running! 🏃',
+        explanationShort: 'Altitude training at 2,400m — East African secret weapon!',
+        source: 'International Association of Athletics',
+    },
+    {
+        id: 'africa-spo-008',
+        continent: 'AFRICA',
+        category: 'SPORTS',
+        subCategory: 'Swimming',
+        difficulty: 0.7, // Hard
+        fascinationScore: 0.88,
+        hookText: 'Chad le Clos of South Africa shocked the world by beating which legendary swimmer at the 2012 Olympics?',
+        options: [
+            { id: 'a', text: 'Ryan Lochte' },
+            { id: 'b', text: 'Michael Phelps' },
+            { id: 'c', text: 'Ian Thorpe' },
+            { id: 'd', text: 'Grant Hackett' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Chad le Clos beat Michael Phelps — the GOAT with 23 Olympic golds — in the 200m butterfly by 0.05 seconds! The famous "dad reaction" video of his father celebrating went viral. Phelps got revenge in 2016 with the famous "death stare" photo! 🥇',
+        explanationShort: 'Le Clos beat Phelps by 0.05 sec — famous dad reaction!',
+        source: 'Olympics Official',
+    },
+];
+
+// ============================================================================
+// AFRICA - BATCH 2: SCIENCE & INVENTIONS (7 questions)
+// ============================================================================
+
+const scienceBatch2: Question[] = [
+    {
+        id: 'africa-sci-001',
+        continent: 'AFRICA',
+        category: 'SCIENCE',
+        subCategory: 'Ancient Science',
+        difficulty: 0.6,
+        fascinationScore: 0.92,
+        hookText: 'Ancient Egyptians invented which important material that we still use today for writing and packaging?',
+        options: [
+            { id: 'a', text: 'Plastic' },
+            { id: 'b', text: 'Paper (papyrus)' },
+            { id: 'c', text: 'Cardboard' },
+            { id: 'd', text: 'Cloth scrolls' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Egyptians invented papyrus around 3000 BCE — the first paper-like material! Made from the papyrus plant, it was so valuable that exporting it was banned. The word "paper" comes from papyrus. Some papyrus documents are still readable after 4,000 years! 📜',
+        explanationShort: 'Papyrus: World\'s first paper — readable after 4,000 years!',
+        source: 'British Museum',
+    },
+    {
+        id: 'africa-sci-002',
+        continent: 'AFRICA',
+        category: 'SCIENCE',
+        subCategory: 'Mathematics',
+        difficulty: 0.7, // Hard
+        fascinationScore: 0.88,
+        hookText: 'The oldest known mathematical object is from Africa. What is the Ishango Bone?',
+        options: [
+            { id: 'a', text: 'A 20,000-year-old tally stick' },
+            { id: 'b', text: 'An ancient calculator' },
+            { id: 'c', text: 'A measuring tool' },
+            { id: 'd', text: 'A star chart' },
+        ],
+        correctAnswer: 'a',
+        explanation: 'The Ishango Bone from Congo is 20,000+ years old with mathematical notches! It may be the oldest evidence of humans counting or even understanding prime numbers. This suggests complex mathematical thinking existed in Africa long before anywhere else! 🔢',
+        explanationShort: 'Ishango Bone: 20,000-year-old math from Congo!',
+        source: 'Royal Belgian Institute of Natural Sciences',
+    },
+    {
+        id: 'africa-sci-003',
+        continent: 'AFRICA',
+        category: 'SCIENCE',
+        subCategory: 'Medicine',
+        difficulty: 0.6,
+        fascinationScore: 0.9,
+        hookText: 'Ancient Egyptians performed surgeries 4,000 years ago. What did they use as stitches?',
+        options: [
+            { id: 'a', text: 'Metal clips' },
+            { id: 'b', text: 'Linen thread' },
+            { id: 'c', text: 'Animal sinew and hair' },
+            { id: 'd', text: 'Plant fibers only' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Egyptian surgeons used animal sinew, hair, and plant fibers as sutures! The Edwin Smith Papyrus (1600 BCE) describes 48 surgical cases including brain surgery. They also used honey as an antibiotic — which science now confirms works! 🏥',
+        explanationShort: 'Ancient Egypt: Brain surgery — honey as antibiotic!',
+        source: 'New York Academy of Medicine',
+    },
+];
+
+// ============================================================================
+// AFRICA - BATCH 2: FAMOUS PEOPLE (8 questions)
+// ============================================================================
+
+const famousPeopleBatch2: Question[] = [
+    {
+        id: 'africa-fam-001',
+        continent: 'AFRICA',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Leaders',
+        difficulty: 0.4,
+        fascinationScore: 0.95,
+        hookText: 'Nelson Mandela spent 27 years in prison. What was his prisoner number that he became known by?',
+        options: [
+            { id: 'a', text: '46664' },
+            { id: 'b', text: '12345' },
+            { id: 'c', text: '78910' },
+            { id: 'd', text: '55555' },
+        ],
+        correctAnswer: 'a',
+        explanation: 'Mandela\'s prisoner number 46664 became a powerful symbol. He was the 466th prisoner in 1964. After release, he became South Africa\'s first Black president and won the Nobel Peace Prize. The number 46664 is now a famous campaign against AIDS. ✊',
+        explanationShort: 'Mandela: Prisoner 46664 → First Black president!',
+        source: 'Nelson Mandela Foundation',
+    },
+    {
+        id: 'africa-fam-002',
+        continent: 'AFRICA',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Scientists',
+        difficulty: 0.6,
+        fascinationScore: 0.88,
+        hookText: 'Who discovered the famous 3.2-million-year-old human ancestor skeleton "Lucy" in Ethiopia?',
+        options: [
+            { id: 'a', text: 'Richard Leakey' },
+            { id: 'b', text: 'Mary Leakey' },
+            { id: 'c', text: 'Donald Johanson' },
+            { id: 'd', text: 'Tim White' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Donald Johanson found Lucy in 1974 while listening to "Lucy in the Sky with Diamonds" — hence the name! Lucy proved humans walked upright 3.2 million years ago. Ethiopia is called the "Cradle of Humanity" because of such discoveries. 🦴',
+        explanationShort: 'Lucy named after Beatles song — proved upright walking!',
+        source: 'Smithsonian National Museum',
+    },
+    {
+        id: 'africa-fam-003',
+        continent: 'AFRICA',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Explorers',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'Wangari Maathai was the first African woman to win the Nobel Peace Prize. What did she do?',
+        options: [
+            { id: 'a', text: 'Ended a war' },
+            { id: 'b', text: 'Planted 51 million trees' },
+            { id: 'c', text: 'Invented a vaccine' },
+            { id: 'd', text: 'Founded a school' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Wangari Maathai of Kenya founded the Green Belt Movement, planting over 51 million trees! She won the 2004 Nobel Prize for linking environmental conservation with women\'s rights and peace. She proved that planting trees can change lives and politics! 🌳',
+        explanationShort: 'Wangari Maathai: 51 million trees — Nobel Peace Prize!',
+        source: 'Nobel Prize Foundation',
+    },
+];
+
+// ============================================================================
+// AFRICA - BATCH 2: FUN FACTS (7 more questions)
+// ============================================================================
+
+const funFactsBatch2: Question[] = [
+    {
+        id: 'africa-fun-004',
+        continent: 'AFRICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Demographics',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'Africa\'s population is growing fast. By 2050, what fraction of the world\'s young people will be African?',
+        options: [
+            { id: 'a', text: 'About 1/4 (25%)' },
+            { id: 'b', text: 'About 1/3 (33%)' },
+            { id: 'c', text: 'About 40%' },
+            { id: 'd', text: 'About 50%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'By 2050, 40% of all young people (under 25) will live in Africa! The continent\'s population will double to 2.5 billion by 2050. Nigeria alone will have more people than the USA. Africa is the youngest continent — median age is just 19! 👶',
+        explanationShort: 'Africa 2050: 40% of world\'s youth — median age just 19!',
+        source: 'United Nations Population Division',
+    },
+    {
+        id: 'africa-fun-005',
+        continent: 'AFRICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Technology',
+        difficulty: 0.5,
+        fascinationScore: 0.92,
+        hookText: 'M-Pesa mobile money from Kenya changed banking forever. What percentage of Kenya\'s GDP flows through it?',
+        options: [
+            { id: 'a', text: 'About 10%' },
+            { id: 'b', text: 'About 25%' },
+            { id: 'c', text: 'About 50%' },
+            { id: 'd', text: 'About 75%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 50% of Kenya\'s entire economy flows through M-Pesa! Launched in 2007, it lets people send money via text message. Over 50 million people in Africa use it. Kenya invented mobile payments before most developed countries! 📱💰',
+        explanationShort: 'M-Pesa: 50% of Kenya\'s GDP — Africa invented mobile money!',
+        source: 'World Bank',
+    },
+    {
+        id: 'africa-fun-006',
+        continent: 'AFRICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Culture',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.85,
+        hookText: 'Nollywood is Africa\'s biggest film industry. How many movies does it produce per year?',
+        options: [
+            { id: 'a', text: 'About 500 films' },
+            { id: 'b', text: 'About 1,000 films' },
+            { id: 'c', text: 'About 2,500 films' },
+            { id: 'd', text: 'About 5,000 films' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Nigeria\'s Nollywood produces about 2,500 films per year — second only to India\'s Bollywood! It employs 1 million people and generates $1 billion annually. Most films are made in just 2 weeks with tiny budgets but huge audiences! 🎬',
+        explanationShort: 'Nollywood: 2,500 films/year — 2nd largest film industry!',
+        source: 'UNESCO',
+    },
+];
+
+// ============================================================================
 // COMBINE ALL AFRICA QUESTIONS
 // ============================================================================
 
@@ -544,6 +1004,14 @@ export const africaQuestionsExpanded: Question[] = [
     ...musicQuestions,
     ...recordsQuestions,
     ...funFactsQuestions,
+    // Batch 2
+    ...geographyBatch2,
+    ...natureBatch2,
+    ...sportsBatch2,
+    ...scienceBatch2,
+    ...famousPeopleBatch2,
+    ...funFactsBatch2,
 ];
 
 export default africaQuestionsExpanded;
+

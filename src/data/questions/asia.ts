@@ -488,6 +488,485 @@ const funFactsQuestions: Question[] = [
 ];
 
 // ============================================================================
+// ASIA - BATCH 2: GEOGRAPHY (10 more questions)
+// ============================================================================
+
+const geographyBatch2: Question[] = [
+    {
+        id: 'asia-geo-006',
+        continent: 'ASIA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Landmarks',
+        difficulty: 0.2, // Easy - Kids
+        fascinationScore: 0.95,
+        hookText: 'The Taj Mahal in India took 22 years to build. Why was it built?',
+        options: [
+            { id: 'a', text: 'As a palace for the king' },
+            { id: 'b', text: 'As a tomb for the emperor\'s wife' },
+            { id: 'c', text: 'As a temple for worship' },
+            { id: 'd', text: 'As a fort for defense' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Emperor Shah Jahan built the Taj Mahal as a tomb for his beloved wife Mumtaz Mahal who died in 1631. It took 22,000 workers 22 years! The white marble changes color — pink at sunrise, white in daylight, and golden in moonlight. 💕',
+        explanationShort: 'Taj Mahal: Built for love — changes color throughout the day!',
+        source: 'UNESCO World Heritage',
+    },
+    {
+        id: 'asia-geo-007',
+        continent: 'ASIA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Deserts',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'The Gobi Desert is one of the world\'s largest. Which two countries does it cover?',
+        options: [
+            { id: 'a', text: 'China and India' },
+            { id: 'b', text: 'China and Mongolia' },
+            { id: 'c', text: 'Kazakhstan and Uzbekistan' },
+            { id: 'd', text: 'Iran and Afghanistan' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Gobi Desert spans China and Mongolia, covering 1.3 million km²! Unlike sandy deserts, most of it is rocky. Dinosaur eggs were first discovered here in 1923. Temperatures can range from -40°C in winter to +45°C in summer! 🏜️',
+        explanationShort: 'Gobi: China + Mongolia — first dinosaur eggs found here!',
+        source: 'National Geographic',
+    },
+    {
+        id: 'asia-geo-008',
+        continent: 'ASIA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Cities',
+        difficulty: 0.6, // Medium-Hard
+        fascinationScore: 0.9,
+        hookText: 'Tokyo is the world\'s most populous city. How many people live in Greater Tokyo?',
+        options: [
+            { id: 'a', text: 'About 20 million' },
+            { id: 'b', text: 'About 30 million' },
+            { id: 'c', text: 'About 38 million' },
+            { id: 'd', text: 'About 45 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Greater Tokyo has about 38 million people — more than the entire country of Canada! Train stations process 3.5 million passengers daily. Despite the crowds, Tokyo is one of the safest and cleanest cities on Earth. 🚅',
+        explanationShort: 'Tokyo: 38 million people — more than Canada!',
+        source: 'Tokyo Metropolitan Government',
+    },
+    {
+        id: 'asia-geo-009',
+        continent: 'ASIA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Unique',
+        difficulty: 0.7, // Hard
+        fascinationScore: 0.93,
+        hookText: 'The Dead Sea between Jordan and Israel is the lowest point on Earth. How low is it?',
+        options: [
+            { id: 'a', text: '200 meters below sea level' },
+            { id: 'b', text: '304 meters below sea level' },
+            { id: 'c', text: '430 meters below sea level' },
+            { id: 'd', text: '550 meters below sea level' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Dead Sea is 430 meters below sea level — the lowest point on land! It\'s so salty (34% salt vs 3.5% for oceans) that you float effortlessly. Nothing can live in it — hence "Dead" Sea. It\'s also shrinking by 1 meter per year! 🌊',
+        explanationShort: 'Dead Sea: 430m below sea level — so salty you float!',
+        source: 'Geological Survey of Israel',
+    },
+    {
+        id: 'asia-geo-010',
+        continent: 'ASIA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Rivers',
+        difficulty: 0.5,
+        fascinationScore: 0.87,
+        hookText: 'The Ganges River is sacred to over 1 billion Hindus. How many people depend on it for water?',
+        options: [
+            { id: 'a', text: 'About 150 million' },
+            { id: 'b', text: 'About 300 million' },
+            { id: 'c', text: 'About 500 million' },
+            { id: 'd', text: 'About 700 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'About 500 million people depend on the Ganges — more than any other river in the world! Hindus believe bathing in it washes away sins. The river dolphin (Gangetic dolphin) is India\'s national aquatic animal. 🐬',
+        explanationShort: 'Ganges: 500 million depend on it — sacred to 1 billion!',
+        source: 'World Wildlife Fund',
+    },
+];
+
+// ============================================================================
+// ASIA - BATCH 2: NATURE & WILDLIFE (10 more questions)
+// ============================================================================
+
+const natureBatch2: Question[] = [
+    {
+        id: 'asia-nat-006',
+        continent: 'ASIA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Birds',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.9,
+        hookText: 'The peacock is India\'s national bird. Only males have the famous colorful tails. What are the tails actually for?',
+        options: [
+            { id: 'a', text: 'Flying faster' },
+            { id: 'b', text: 'Scaring predators' },
+            { id: 'c', text: 'Attracting females' },
+            { id: 'd', text: 'Keeping warm' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Male peacocks display their stunning tail feathers to attract females! The tails can have over 200 "eye" feathers. Females (peahens) pick mates based on the size and brilliance of the display. Darwin called it "the most beautiful bird." 🦚',
+        explanationShort: 'Peacock tails: 200+ eye feathers to attract mates!',
+        source: 'Cornell Lab of Ornithology',
+    },
+    {
+        id: 'asia-nat-007',
+        continent: 'ASIA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Mammals',
+        difficulty: 0.4,
+        fascinationScore: 0.93,
+        hookText: 'The snow leopard is called the "ghost of the mountains." How many are left in the wild?',
+        options: [
+            { id: 'a', text: 'About 1,000' },
+            { id: 'b', text: 'About 2,500' },
+            { id: 'c', text: 'About 4,000-6,500' },
+            { id: 'd', text: 'About 10,000' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Only about 4,000-6,500 snow leopards remain, living in the mountains of Central Asia. They\'re incredibly elusive — some researchers spend years trying to spot one! Their tails are almost as long as their bodies, used for balance and warmth. 🐆❄️',
+        explanationShort: 'Snow leopards: 4,000-6,500 left — "ghosts of the mountains"!',
+        source: 'Snow Leopard Trust',
+    },
+    {
+        id: 'asia-nat-008',
+        continent: 'ASIA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Marine',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'The Japanese spider crab has the longest leg span of any arthropod. How wide can they spread?',
+        options: [
+            { id: 'a', text: 'Up to 2 meters' },
+            { id: 'b', text: 'Up to 3 meters' },
+            { id: 'c', text: 'Up to 4 meters' },
+            { id: 'd', text: 'Up to 5 meters' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Japanese spider crabs can have a leg span of up to 4 meters (13 feet) — wider than a car! They can weigh up to 19 kg and live for over 100 years. They live in deep water around Japan and are considered a delicacy. 🦀',
+        explanationShort: 'Spider crabs: 4m leg span — can live 100+ years!',
+        source: 'Japan Marine Science Foundation',
+    },
+    {
+        id: 'asia-nat-009',
+        continent: 'ASIA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Reptiles',
+        difficulty: 0.6,
+        fascinationScore: 0.92,
+        hookText: 'The king cobra is the world\'s longest venomous snake. How long can it grow?',
+        options: [
+            { id: 'a', text: 'Up to 3 meters' },
+            { id: 'b', text: 'Up to 4.5 meters' },
+            { id: 'c', text: 'Up to 5.5 meters' },
+            { id: 'd', text: 'Up to 7 meters' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'King cobras can grow up to 5.5 meters (18 feet) — as long as a small car! One bite has enough venom to kill an elephant. Unlike most snakes, females build nests and guard their eggs. They\'re actually quite shy and avoid humans. 🐍',
+        explanationShort: 'King cobra: 5.5m long — one bite can kill an elephant!',
+        source: 'Smithsonian National Zoo',
+    },
+    {
+        id: 'asia-nat-010',
+        continent: 'ASIA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Unique',
+        difficulty: 0.5,
+        fascinationScore: 0.95,
+        hookText: 'The Rafflesia in Southeast Asia is the world\'s largest flower. How wide can it grow?',
+        options: [
+            { id: 'a', text: 'About 50 cm' },
+            { id: 'b', text: 'About 75 cm' },
+            { id: 'c', text: 'About 1 meter' },
+            { id: 'd', text: 'About 1.5 meters' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Rafflesia flowers can grow up to 1 meter (3 feet) wide and weigh 11 kg! But here\'s the catch — they smell like rotting flesh! This attracts flies for pollination. They have no leaves, stems, or roots and only bloom for a few days. 🌺',
+        explanationShort: 'Rafflesia: 1 meter wide — smells like rotting flesh!',
+        source: 'Royal Botanic Gardens, Kew',
+    },
+];
+
+// ============================================================================
+// ASIA - BATCH 2: SPORTS (8 more questions)
+// ============================================================================
+
+const sportsBatch2: Question[] = [
+    {
+        id: 'asia-spo-006',
+        continent: 'ASIA',
+        category: 'SPORTS',
+        subCategory: 'Cricket',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Sachin Tendulkar of India is considered cricket\'s greatest batsman. How many international runs did he score?',
+        options: [
+            { id: 'a', text: 'About 25,000' },
+            { id: 'b', text: 'About 30,000' },
+            { id: 'c', text: 'About 34,000' },
+            { id: 'd', text: 'About 40,000' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Sachin Tendulkar scored 34,357 international runs — the most in history! He played for 24 years, was worshipped as the "God of Cricket" in India, and holds 100 international centuries. 1.3 billion people watched his final match! 🏏',
+        explanationShort: 'Tendulkar: 34,357 runs — "God of Cricket"!',
+        source: 'International Cricket Council',
+    },
+    {
+        id: 'asia-spo-007',
+        continent: 'ASIA',
+        category: 'SPORTS',
+        subCategory: 'Table Tennis',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'China dominates Olympic table tennis. How many of the gold medals have they won since 1988?',
+        options: [
+            { id: 'a', text: 'About 50%' },
+            { id: 'b', text: 'About 65%' },
+            { id: 'c', text: 'About 80%' },
+            { id: 'd', text: 'About 90%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'China has won about 80% of all Olympic table tennis golds since it became an Olympic sport in 1988! Millions of Chinese play recreationally. The ball can travel over 100 km/h despite weighing just 2.7 grams! 🏓',
+        explanationShort: 'China: 80% of Olympic table tennis golds!',
+        source: 'ITTF',
+    },
+    {
+        id: 'asia-spo-008',
+        continent: 'ASIA',
+        category: 'SPORTS',
+        subCategory: 'Sumo',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'Sumo wrestling is Japan\'s national sport. How much do top sumo wrestlers typically weigh?',
+        options: [
+            { id: 'a', text: 'About 100-120 kg' },
+            { id: 'b', text: 'About 130-160 kg' },
+            { id: 'c', text: 'About 150-200 kg' },
+            { id: 'd', text: 'About 200-250 kg' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Top sumo wrestlers (rikishi) typically weigh 150-200 kg, though some exceed 250 kg! They live in training stables, eat massive amounts of "chanko-nabe" stew, and follow ancient rituals. Grand champions are treated like celebrities in Japan! 🏋️',
+        explanationShort: 'Sumo: 150-200 kg wrestlers — ancient ritual sport!',
+        source: 'Japan Sumo Association',
+    },
+];
+
+// ============================================================================
+// ASIA - BATCH 2: FOOD (7 more questions)
+// ============================================================================
+
+const foodBatch2: Question[] = [
+    {
+        id: 'asia-food-004',
+        continent: 'ASIA',
+        category: 'FOOD',
+        subCategory: 'Tea',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.88,
+        hookText: 'Tea was discovered in China about 5,000 years ago. How was it supposedly discovered?',
+        options: [
+            { id: 'a', text: 'Farmers grew it intentionally' },
+            { id: 'b', text: 'Leaves fell into boiling water by accident' },
+            { id: 'c', text: 'Animals ate the leaves and seemed healthy' },
+            { id: 'd', text: 'A king demanded a new drink' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Legend says Emperor Shen Nung discovered tea in 2737 BCE when tea leaves blew into his boiling water! Today, tea is the world\'s 2nd most consumed drink after water. China still produces 40% of the world\'s tea. 🍵',
+        explanationShort: 'Tea: Discovered by accident 5,000 years ago!',
+        source: 'Tea Association',
+    },
+    {
+        id: 'asia-food-005',
+        continent: 'ASIA',
+        category: 'FOOD',
+        subCategory: 'Street Food',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Pho is Vietnam\'s famous soup. How do you correctly pronounce "pho"?',
+        options: [
+            { id: 'a', text: 'Like "foe"' },
+            { id: 'b', text: 'Like "fo"' },
+            { id: 'c', text: 'Like "fuh"' },
+            { id: 'd', text: 'Like "fah"' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Pho is pronounced "fuh"! This rice noodle soup with broth, meat, and herbs is eaten for breakfast, lunch, and dinner in Vietnam. The broth can take 24 hours to prepare. A bowl costs just $1-2 from street vendors! 🍜',
+        explanationShort: 'Pho: Pronounced "fuh" — broth takes 24 hours!',
+        source: 'Vietnamese Cuisine Association',
+    },
+    {
+        id: 'asia-food-006',
+        continent: 'ASIA',
+        category: 'FOOD',
+        subCategory: 'Unusual',
+        difficulty: 0.6,
+        fascinationScore: 0.95,
+        hookText: 'Fugu (pufferfish) is a Japanese delicacy that can KILL you if prepared wrong. How many years of training do chefs need?',
+        options: [
+            { id: 'a', text: '1-2 years' },
+            { id: 'b', text: '3-5 years' },
+            { id: 'c', text: '7-10 years' },
+            { id: 'd', text: '15 years' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Fugu chefs need 3-5 years of training and must pass a strict licensing exam! The fish contains tetrodotoxin — 1,200 times more poisonous than cyanide. About 5 people die from fugu poisoning each year, usually from amateur preparation. ☠️🐡',
+        explanationShort: 'Fugu: 1,200x more poisonous than cyanide — chefs train 3-5 years!',
+        source: 'Japan Ministry of Health',
+    },
+];
+
+// ============================================================================
+// ASIA - BATCH 2: FESTIVALS (5 questions)
+// ============================================================================
+
+const festivalsBatch2: Question[] = [
+    {
+        id: 'asia-fest-001',
+        continent: 'ASIA',
+        category: 'FESTIVALS',
+        subCategory: 'Celebrations',
+        difficulty: 0.3, // Easy
+        fascinationScore: 0.92,
+        hookText: 'Diwali is the Hindu Festival of Lights celebrated across India. How many days does it last?',
+        options: [
+            { id: 'a', text: '1 day' },
+            { id: 'b', text: '3 days' },
+            { id: 'c', text: '5 days' },
+            { id: 'd', text: '7 days' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Diwali lasts 5 days and is one of the biggest festivals in the world! Over 1 billion people celebrate with lights, fireworks, sweets, and gifts. It celebrates the victory of light over darkness and good over evil. 🪔✨',
+        explanationShort: 'Diwali: 5 days — 1 billion celebrate worldwide!',
+        source: 'India Tourism',
+    },
+    {
+        id: 'asia-fest-002',
+        continent: 'ASIA',
+        category: 'FESTIVALS',
+        subCategory: 'New Year',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Chinese New Year is based on the lunar calendar. How many animals are in the Chinese zodiac cycle?',
+        options: [
+            { id: 'a', text: '8 animals' },
+            { id: 'b', text: '10 animals' },
+            { id: 'c', text: '12 animals' },
+            { id: 'd', text: '15 animals' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Chinese zodiac has 12 animals: Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, and Pig. Each year is named after an animal, and your birth year\'s animal supposedly shapes your personality! 🐉',
+        explanationShort: 'Chinese zodiac: 12 animals cycle every 12 years!',
+        source: 'Chinese Cultural Center',
+    },
+    {
+        id: 'asia-fest-003',
+        continent: 'ASIA',
+        category: 'FESTIVALS',
+        subCategory: 'Water Festival',
+        difficulty: 0.5,
+        fascinationScore: 0.93,
+        hookText: 'Thailand\'s Songkran festival involves the world\'s biggest water fight. How many days does it last?',
+        options: [
+            { id: 'a', text: '1 day' },
+            { id: 'b', text: '3 days' },
+            { id: 'c', text: '5 days' },
+            { id: 'd', text: '7 days' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Songkran lasts 3 days (April 13-15) and is like a national water fight! It\'s the Thai New Year, and splashing water symbolizes washing away the old year. Millions of tourists join the fun with water guns and buckets! 💦🎉',
+        explanationShort: 'Songkran: 3-day national water fight for Thai New Year!',
+        source: 'Tourism Authority of Thailand',
+    },
+];
+
+// ============================================================================
+// ASIA - BATCH 2: SCIENCE & FAMOUS PEOPLE (10 questions)
+// ============================================================================
+
+const scienceAndPeopleBatch2: Question[] = [
+    {
+        id: 'asia-sci-001',
+        continent: 'ASIA',
+        category: 'SCIENCE',
+        subCategory: 'Inventions',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Paper was invented in China. Approximately when was it invented?',
+        options: [
+            { id: 'a', text: 'About 500 BCE' },
+            { id: 'b', text: 'About 100 CE' },
+            { id: 'c', text: 'About 500 CE' },
+            { id: 'd', text: 'About 1000 CE' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Paper was invented in China around 100 CE by Cai Lun! Before paper, people wrote on bamboo strips, silk, or animal skins. The papermaking process was kept secret for 500 years. Paper changed human civilization more than almost any invention! 📜',
+        explanationShort: 'Paper: Chinese invention ~100 CE — changed civilization!',
+        source: 'Smithsonian Institution',
+    },
+    {
+        id: 'asia-sci-002',
+        continent: 'ASIA',
+        category: 'SCIENCE',
+        subCategory: 'Inventions',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'Gunpowder was accidentally invented in China. What were alchemists actually trying to create?',
+        options: [
+            { id: 'a', text: 'A new weapon' },
+            { id: 'b', text: 'An elixir of immortality' },
+            { id: 'c', text: 'A new type of paint' },
+            { id: 'd', text: 'A healing medicine' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Chinese alchemists were trying to create an "elixir of immortality" around 850 CE when they accidentally invented gunpowder! Instead of eternal life, they got explosions. It was first used for fireworks, then weapons. The irony! 💥',
+        explanationShort: 'Gunpowder: Created seeking immortality — got explosions instead!',
+        source: 'Science History Institute',
+    },
+    {
+        id: 'asia-fam-001',
+        continent: 'ASIA',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Leaders',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Mahatma Gandhi led India\'s independence movement without violence. What does "Mahatma" mean?',
+        options: [
+            { id: 'a', text: 'Great King' },
+            { id: 'b', text: 'Wise Teacher' },
+            { id: 'c', text: 'Great Soul' },
+            { id: 'd', text: 'Peaceful Warrior' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Mahatma means "Great Soul" in Sanskrit. Gandhi\'s real name was Mohandas. He led India to independence from Britain in 1947 using nonviolent civil disobedience. His methods inspired Martin Luther King Jr., Nelson Mandela, and many others! ✊',
+        explanationShort: 'Gandhi: "Great Soul" — inspired MLK and Mandela!',
+        source: 'Gandhi Heritage Portal',
+    },
+    {
+        id: 'asia-fam-002',
+        continent: 'ASIA',
+        category: 'FAMOUS_PEOPLE',
+        subCategory: 'Innovators',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'Jack Ma started Alibaba from his apartment. What was his job before becoming a billionaire?',
+        options: [
+            { id: 'a', text: 'Engineer' },
+            { id: 'b', text: 'English teacher' },
+            { id: 'c', text: 'Banker' },
+            { id: 'd', text: 'Factory worker' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Jack Ma was an English teacher earning $12/month before starting Alibaba in 1999 from his apartment! He failed his college entrance exam 3 times and was rejected from 30 jobs (including KFC). Now Alibaba is worth over $200 billion! 📱',
+        explanationShort: 'Jack Ma: English teacher → billionaire — rejected 30 times!',
+        source: 'Forbes',
+    },
+];
+
+// ============================================================================
 // COMBINE ALL ASIA QUESTIONS
 // ============================================================================
 
@@ -498,6 +977,14 @@ export const asiaQuestionsExpanded: Question[] = [
     ...foodQuestions,
     ...recordsQuestions,
     ...funFactsQuestions,
+    // Batch 2
+    ...geographyBatch2,
+    ...natureBatch2,
+    ...sportsBatch2,
+    ...foodBatch2,
+    ...festivalsBatch2,
+    ...scienceAndPeopleBatch2,
 ];
 
 export default asiaQuestionsExpanded;
+
