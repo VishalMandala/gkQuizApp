@@ -1,0 +1,560 @@
+/**
+ * Global Quest - Europe Questions
+ * 50+ Family-Friendly General Knowledge Questions
+ * 
+ * Categories: Geography, Nature, Sports, Food, Music, Science, 
+ *             Famous People, Festivals, Records, Fun Facts
+ */
+
+import type { Question } from '../../types';
+
+// ============================================================================
+// EUROPE - GEOGRAPHY & LANDMARKS (12 questions)
+// ============================================================================
+
+const geographyQuestions: Question[] = [
+    {
+        id: 'europe-geo-001',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Landmarks',
+        difficulty: 0.3,
+        fascinationScore: 0.92,
+        hookText: 'The Eiffel Tower was supposed to be temporary. How long was it meant to stand?',
+        options: [
+            { id: 'a', text: '5 years' },
+            { id: 'b', text: '20 years' },
+            { id: 'c', text: '50 years' },
+            { id: 'd', text: '100 years' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Eiffel Tower was built for the 1889 World\'s Fair and was meant to be dismantled after 20 years! It was saved because it became useful as a radio antenna. Now it\'s the most-visited paid monument in the world — about 7 million people climb it each year! 🗼',
+        explanationShort: 'Eiffel Tower: Meant to last 20 years, still standing 130+ years later!',
+        source: 'Eiffel Tower Official',
+    },
+    {
+        id: 'europe-geo-002',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Countries',
+        difficulty: 0.3,
+        fascinationScore: 0.88,
+        hookText: 'Which European country is so small that you can walk across it in about 1 hour?',
+        options: [
+            { id: 'a', text: 'Monaco' },
+            { id: 'b', text: 'Vatican City' },
+            { id: 'c', text: 'San Marino' },
+            { id: 'd', text: 'Liechtenstein' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Vatican City is only 0.44 km² — you can walk across it in about 45 minutes! It\'s the world\'s smallest country, has its own post office, pharmacy, and even a railway station. The entire population is only about 800 people! 🇻🇦',
+        explanationShort: 'Vatican City: Walk across in 45 min — population only 800!',
+        source: 'Vatican State',
+    },
+    {
+        id: 'europe-geo-003',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Rivers',
+        difficulty: 0.4,
+        fascinationScore: 0.85,
+        hookText: 'The Danube River flows through MORE capital cities than any other river. How many?',
+        options: [
+            { id: 'a', text: '2 capitals' },
+            { id: 'b', text: '4 capitals' },
+            { id: 'c', text: '6 capitals' },
+            { id: 'd', text: '8 capitals' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Danube flows through 4 capital cities: Vienna (Austria), Bratislava (Slovakia), Budapest (Hungary), and Belgrade (Serbia)! No other river in the world touches so many capitals. It also inspired the famous "Blue Danube" waltz! 🌊',
+        explanationShort: 'Danube: 4 capitals — Vienna, Bratislava, Budapest, Belgrade!',
+        source: 'Danube River Commission',
+    },
+    {
+        id: 'europe-geo-004',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Islands',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Iceland has so much volcanic activity that they use it to heat homes. What percentage of homes get FREE geothermal heating?',
+        options: [
+            { id: 'a', text: 'About 25%' },
+            { id: 'b', text: 'About 50%' },
+            { id: 'c', text: 'About 75%' },
+            { id: 'd', text: 'About 90%' },
+        ],
+        correctAnswer: 'd',
+        explanation: 'About 90% of Icelandic homes are heated by geothermal energy — hot water from underground! Iceland sits on a volcanic hotspot with about 130 volcanoes. They even bake bread by burying it in hot volcanic ground! 🌋',
+        explanationShort: 'Iceland: 90% free heating from volcanoes — bake bread underground!',
+        source: 'Icelandic Energy Authority',
+    },
+    {
+        id: 'europe-geo-005',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Mountains',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The Alps stretch across how many European countries?',
+        options: [
+            { id: 'a', text: '4 countries' },
+            { id: 'b', text: '6 countries' },
+            { id: 'c', text: '8 countries' },
+            { id: 'd', text: '10 countries' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Alps stretch across 8 countries: France, Switzerland, Italy, Austria, Germany, Slovenia, Liechtenstein, and Monaco! Mont Blanc (4,808m) is the highest peak. About 14 million people live in the Alps! ⛰️',
+        explanationShort: 'Alps: 8 countries, 14 million residents, Mont Blanc 4,808m!',
+        source: 'Alpine Convention',
+    },
+    {
+        id: 'europe-geo-006',
+        continent: 'EUROPE',
+        category: 'GEOGRAPHY',
+        subCategory: 'Canals',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Venice, Italy is built on how many islands, connected by about 400 bridges?',
+        options: [
+            { id: 'a', text: 'About 50 islands' },
+            { id: 'b', text: 'About 118 islands' },
+            { id: 'c', text: 'About 200 islands' },
+            { id: 'd', text: 'About 300 islands' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Venice is built on 118 small islands connected by about 400 bridges! There are no cars — everyone travels by boat or on foot. The city is slowly sinking (about 1-2mm per year), and special flood barriers now protect it! 🛶',
+        explanationShort: 'Venice: 118 islands, 400 bridges, no cars — slowly sinking!',
+        source: 'Venice Tourism Board',
+    },
+];
+
+// ============================================================================
+// EUROPE - NATURE & WILDLIFE (8 questions)
+// ============================================================================
+
+const natureQuestions: Question[] = [
+    {
+        id: 'europe-nat-001',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Phenomena',
+        difficulty: 0.4,
+        fascinationScore: 0.95,
+        hookText: 'The Northern Lights (Aurora Borealis) are best seen in which European countries?',
+        options: [
+            { id: 'a', text: 'Spain and Portugal' },
+            { id: 'b', text: 'Norway, Sweden, Finland, Iceland' },
+            { id: 'c', text: 'Greece and Italy' },
+            { id: 'd', text: 'France and Germany' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Northern Lights dance across the skies of Norway, Sweden, Finland, and Iceland! They\'re caused by particles from the sun hitting Earth\'s atmosphere. The best time to see them is September to March. Some people travel just to see this magical light show! ✨',
+        explanationShort: 'Northern Lights: Norway, Sweden, Finland, Iceland — magical!',
+        source: 'Visit Norway',
+    },
+    {
+        id: 'europe-nat-002',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Forests',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'The Black Forest in Germany is famous for what sweet treat?',
+        options: [
+            { id: 'a', text: 'Apple strudel' },
+            { id: 'b', text: 'Black Forest cake (Schwarzwälder Kirschtorte)' },
+            { id: 'c', text: 'Gummy bears' },
+            { id: 'd', text: 'Pretzels' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Black Forest cake — layers of chocolate, cherries, and cream — originated in the Black Forest region! The forest is also famous for cuckoo clocks and inspiring fairy tales like Hansel and Gretel. It\'s one of Germany\'s largest forests. 🍰',
+        explanationShort: 'Black Forest: Famous cake, cuckoo clocks, fairy tale inspiration!',
+        source: 'German National Tourist Board',
+    },
+    {
+        id: 'europe-nat-003',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Mammals',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'The European bison was almost extinct. How many were left in the wild in 1927?',
+        options: [
+            { id: 'a', text: 'About 5,000' },
+            { id: 'b', text: 'About 1,000' },
+            { id: 'c', text: 'About 100' },
+            { id: 'd', text: 'ZERO (extinct in wild)' },
+        ],
+        correctAnswer: 'd',
+        explanation: 'European bison went EXTINCT in the wild in 1927! Only 54 survived in zoos. Thanks to conservation, there are now over 7,000 in the wild again — mostly in Poland\'s Białowieża Forest, Europe\'s last primeval forest. A great conservation success! 🦬',
+        explanationShort: 'European bison: Extinct in 1927, now 7,000+ — conservation win!',
+        source: 'IUCN Red List',
+    },
+    {
+        id: 'europe-nat-004',
+        continent: 'EUROPE',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Marine',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The Mediterranean Sea is home to how many species of sharks?',
+        options: [
+            { id: 'a', text: 'About 10 species' },
+            { id: 'b', text: 'About 25 species' },
+            { id: 'c', text: 'About 47 species' },
+            { id: 'd', text: 'About 100 species' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Mediterranean has about 47 shark species, including great whites! But don\'t worry — shark attacks are extremely rare (about 1 per year). Sharks have lived there for millions of years and are crucial for the ecosystem. 🦈',
+        explanationShort: 'Mediterranean: 47 shark species including great whites!',
+        source: 'Mediterranean Science Commission',
+    },
+];
+
+// ============================================================================
+// EUROPE - SPORTS & OLYMPICS (10 questions)
+// ============================================================================
+
+const sportsQuestions: Question[] = [
+    {
+        id: 'europe-spo-001',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Football',
+        difficulty: 0.3,
+        fascinationScore: 0.92,
+        hookText: 'The FIFA World Cup trophy is made of 18-karat gold. How much does it weigh?',
+        options: [
+            { id: 'a', text: 'About 2 kg' },
+            { id: 'b', text: 'About 4 kg' },
+            { id: 'c', text: 'About 6 kg' },
+            { id: 'd', text: 'About 10 kg' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The World Cup trophy weighs 6.175 kg (about 13.6 lbs) and is worth about $20 million! It was designed by Italian sculptor Silvio Gazzaniga in 1974. Winners get to keep a gold-plated replica — the real one stays with FIFA! ⚽🏆',
+        explanationShort: 'World Cup trophy: 6 kg of gold — worth $20 million!',
+        source: 'FIFA',
+    },
+    {
+        id: 'europe-spo-002',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Olympics',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'The modern Olympic Games started in which European city in 1896?',
+        options: [
+            { id: 'a', text: 'Rome, Italy' },
+            { id: 'b', text: 'Paris, France' },
+            { id: 'c', text: 'Athens, Greece' },
+            { id: 'd', text: 'London, England' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Athens, Greece hosted the first modern Olympics in 1896 with just 241 athletes from 14 countries! The ancient Olympics were held in Olympia, Greece for over 1,000 years. Greece still lights the Olympic flame for every Games! 🔥',
+        explanationShort: 'Athens 1896: First modern Olympics — 241 athletes, 14 countries!',
+        source: 'International Olympic Committee',
+    },
+    {
+        id: 'europe-spo-003',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Football',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'Real Madrid has won the UEFA Champions League more than any other club. How many times?',
+        options: [
+            { id: 'a', text: '8 times' },
+            { id: 'b', text: '11 times' },
+            { id: 'c', text: '15 times' },
+            { id: 'd', text: '18 times' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Real Madrid has won the Champions League 15 times — more than any other club! AC Milan is second with 7 titles. Real Madrid also won the first 5 European Cups ever (1956-1960). They\'re the "Kings of Europe"! 👑⚽',
+        explanationShort: 'Real Madrid: 15 Champions League titles — most ever!',
+        source: 'UEFA',
+    },
+    {
+        id: 'europe-spo-004',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Tennis',
+        difficulty: 0.4,
+        fascinationScore: 0.85,
+        hookText: 'Wimbledon is the oldest tennis tournament in the world. What surface is it played on?',
+        options: [
+            { id: 'a', text: 'Clay' },
+            { id: 'b', text: 'Hard court' },
+            { id: 'c', text: 'Grass' },
+            { id: 'd', text: 'Indoor carpet' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Wimbledon is played on grass and started in 1877! It\'s the only Grand Slam played on grass. Players must wear all white, and strawberries with cream are a famous tradition. About 28,000 kg of strawberries are eaten each year! 🎾🍓',
+        explanationShort: 'Wimbledon: Grass courts since 1877, all-white dress code!',
+        source: 'All England Lawn Tennis Club',
+    },
+    {
+        id: 'europe-spo-005',
+        continent: 'EUROPE',
+        category: 'SPORTS',
+        subCategory: 'Cycling',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'The Tour de France cyclists cover about how many kilometers in 3 weeks?',
+        options: [
+            { id: 'a', text: 'About 1,500 km' },
+            { id: 'b', text: 'About 2,500 km' },
+            { id: 'c', text: 'About 3,500 km' },
+            { id: 'd', text: 'About 5,000 km' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Tour de France riders cover about 3,500 km (2,175 miles) in 21 days — that\'s like cycling from New York to Los Angeles! They climb mountains, average 40 km/h, and burn about 6,000 calories per day! 🚴',
+        explanationShort: 'Tour de France: 3,500 km in 21 days — 6,000 calories/day!',
+        source: 'Tour de France Official',
+    },
+];
+
+// ============================================================================
+// EUROPE - FOOD & CUISINE (8 questions)
+// ============================================================================
+
+const foodQuestions: Question[] = [
+    {
+        id: 'europe-food-001',
+        continent: 'EUROPE',
+        category: 'FOOD',
+        subCategory: 'Origins',
+        difficulty: 0.3,
+        fascinationScore: 0.9,
+        hookText: 'Pizza originated in which European city, where the first pizzeria opened in 1830?',
+        options: [
+            { id: 'a', text: 'Rome, Italy' },
+            { id: 'b', text: 'Naples, Italy' },
+            { id: 'c', text: 'Florence, Italy' },
+            { id: 'd', text: 'Venice, Italy' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Modern pizza was invented in Naples! The Margherita pizza (tomato, mozzarella, basil) was created in 1889 for Queen Margherita, using the colors of the Italian flag. Antica Pizzeria Port\'Alba opened in 1830 — the world\'s first pizzeria! 🍕',
+        explanationShort: 'Pizza: Naples, Italy — first pizzeria opened 1830!',
+        source: 'UNESCO Intangible Heritage',
+    },
+    {
+        id: 'europe-food-002',
+        continent: 'EUROPE',
+        category: 'FOOD',
+        subCategory: 'Cheese',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'France produces about how many different types of cheese?',
+        options: [
+            { id: 'a', text: 'About 100 types' },
+            { id: 'b', text: 'About 400 types' },
+            { id: 'c', text: 'About 1,000 types' },
+            { id: 'd', text: 'About 1,500 types' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'France has about 1,000 different cheeses! Charles de Gaulle once said, "How can you govern a country which has 246 varieties of cheese?" (the number has grown since!). The French eat about 27 kg of cheese per person per year! 🧀',
+        explanationShort: 'France: ~1,000 cheeses — eat 27 kg per person per year!',
+        source: 'French Dairy Board',
+    },
+    {
+        id: 'europe-food-003',
+        continent: 'EUROPE',
+        category: 'FOOD',
+        subCategory: 'Chocolate',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Belgium is famous for chocolate. How many chocolatiers (chocolate makers) does it have?',
+        options: [
+            { id: 'a', text: 'About 500' },
+            { id: 'b', text: 'About 1,000' },
+            { id: 'c', text: 'About 2,000' },
+            { id: 'd', text: 'About 3,000' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Belgium has over 2,000 chocolate shops! Belgians invented pralines (filled chocolates) in 1912. Brussels Airport is the world\'s biggest chocolate seller — 800 tons per year! Belgians eat about 8 kg of chocolate per person annually. 🍫',
+        explanationShort: 'Belgium: 2,000+ chocolate shops — invented pralines in 1912!',
+        source: 'Belgian Chocolate Village',
+    },
+    {
+        id: 'europe-food-004',
+        continent: 'EUROPE',
+        category: 'FOOD',
+        subCategory: 'Pasta',
+        difficulty: 0.3,
+        fascinationScore: 0.85,
+        hookText: 'How many different shapes of pasta exist in Italy?',
+        options: [
+            { id: 'a', text: 'About 50 shapes' },
+            { id: 'b', text: 'About 150 shapes' },
+            { id: 'c', text: 'About 350 shapes' },
+            { id: 'd', text: 'About 600 shapes' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Italy has about 350 different pasta shapes! From spaghetti to farfalle (butterflies) to orecchiette (little ears). Each shape is designed to hold sauce differently. Italians eat about 23 kg of pasta per person per year! 🍝',
+        explanationShort: 'Italy: 350 pasta shapes — each holds sauce differently!',
+        source: 'Italian Food Academy',
+    },
+];
+
+// ============================================================================
+// EUROPE - RECORDS & SUPERLATIVES (6 questions)
+// ============================================================================
+
+const recordsQuestions: Question[] = [
+    {
+        id: 'europe-rec-001',
+        continent: 'EUROPE',
+        category: 'RECORDS',
+        subCategory: 'Population',
+        difficulty: 0.5,
+        fascinationScore: 0.85,
+        hookText: 'Russia is so big that it spans how many time zones?',
+        options: [
+            { id: 'a', text: '5 time zones' },
+            { id: 'b', text: '8 time zones' },
+            { id: 'c', text: '11 time zones' },
+            { id: 'd', text: '15 time zones' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Russia spans 11 time zones — from Europe to the Pacific Ocean! When it\'s Monday morning in Moscow, it\'s already Monday evening in Vladivostok. Russia is the largest country on Earth — bigger than Pluto! 🌍⏰',
+        explanationShort: 'Russia: 11 time zones — bigger than Pluto!',
+        source: 'Russian Federal Statistics',
+    },
+    {
+        id: 'europe-rec-002',
+        continent: 'EUROPE',
+        category: 'RECORDS',
+        subCategory: 'Oldest',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'The world\'s oldest restaurant is in Europe. What year did it open?',
+        options: [
+            { id: 'a', text: '1525' },
+            { id: 'b', text: '1725' },
+            { id: 'c', text: '1825' },
+            { id: 'd', text: '1625' },
+        ],
+        correctAnswer: 'a',
+        explanation: 'Stiftskeller St. Peter in Salzburg, Austria opened in 803 AD — but the Guinness record goes to Sobrino de Botín in Madrid, Spain (1725). However, documents show Stiftskeller served food since 803! That\'s over 1,200 years old! 🍽️',
+        explanationShort: 'Oldest restaurant: Salzburg 803 AD or Madrid 1725!',
+        source: 'Guinness World Records',
+    },
+    {
+        id: 'europe-rec-003',
+        continent: 'EUROPE',
+        category: 'RECORDS',
+        subCategory: 'Tallest',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The Netherlands is famous for being the tallest country. What\'s the average height for Dutch men?',
+        options: [
+            { id: 'a', text: '5\'9" (175 cm)' },
+            { id: 'b', text: '5\'11" (180 cm)' },
+            { id: 'c', text: '6\'0" (183 cm)' },
+            { id: 'd', text: '6\'1" (185 cm)' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Dutch men average about 183 cm (6 feet) — the tallest in the world! Scientists think it\'s a combination of genetics, excellent healthcare, and lots of dairy. Dutch women are also the tallest, averaging 170 cm! 📏',
+        explanationShort: 'Netherlands: Tallest people — men average 6 feet!',
+        source: 'The Lancet Medical Journal',
+    },
+];
+
+// ============================================================================
+// EUROPE - FUN FACTS & WEIRD (8 questions)
+// ============================================================================
+
+const funFactsQuestions: Question[] = [
+    {
+        id: 'europe-fun-001',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Unusual',
+        difficulty: 0.4,
+        fascinationScore: 0.95,
+        hookText: 'In Sweden, there\'s a hotel made entirely of ice that\'s rebuilt every year. What happens in summer?',
+        options: [
+            { id: 'a', text: 'It\'s air-conditioned to stay frozen' },
+            { id: 'b', text: 'It melts and returns to the river' },
+            { id: 'c', text: 'It\'s moved to a freezer warehouse' },
+            { id: 'd', text: 'Only the furniture melts' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The ICEHOTEL in Jukkasjärvi, Sweden melts every spring and returns to the Torne River! Each winter, artists rebuild it using 1,000 tons of ice. Guests sleep on ice beds (with reindeer skins and sleeping bags) at -5°C! ❄️',
+        explanationShort: 'ICEHOTEL: Melts each year, rebuilt with 1,000 tons of ice!',
+        source: 'ICEHOTEL Sweden',
+    },
+    {
+        id: 'europe-fun-002',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Laws',
+        difficulty: 0.5,
+        fascinationScore: 0.92,
+        hookText: 'In Switzerland, it\'s illegal to do what after 10 PM?',
+        options: [
+            { id: 'a', text: 'Walk barefoot' },
+            { id: 'b', text: 'Flush the toilet in an apartment' },
+            { id: 'c', text: 'Play loud music' },
+            { id: 'd', text: 'Watch television' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'In some Swiss apartments, flushing the toilet after 10 PM is banned due to noise regulations! The Swiss take quiet hours very seriously. You also can\'t mow your lawn on Sundays, wash your car on Sundays, or recycle bottles on Sundays! 🚽📜',
+        explanationShort: 'Switzerland: No toilet flushing after 10 PM in apartments!',
+        source: 'Swiss Federal Council',
+    },
+    {
+        id: 'europe-fun-003',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Bizarre',
+        difficulty: 0.4,
+        fascinationScore: 0.93,
+        hookText: 'Finland has more saunas than cars. About how many saunas does Finland have?',
+        options: [
+            { id: 'a', text: 'About 1 million' },
+            { id: 'b', text: 'About 2 million' },
+            { id: 'c', text: 'About 3 million' },
+            { id: 'd', text: 'About 5 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Finland has about 3.3 million saunas for 5.5 million people — that\'s 1 sauna for every 2 people! There are saunas in homes, offices, and even in the Parliament building. Business deals are often made in saunas. It\'s a national tradition! 🧖',
+        explanationShort: 'Finland: 3.3 million saunas — 1 per 2 people!',
+        source: 'Finnish Sauna Society',
+    },
+    {
+        id: 'europe-fun-004',
+        continent: 'EUROPE',
+        category: 'FUN_FACTS',
+        subCategory: 'Technology',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'The Bluetooth technology was named after a European king. Which country was he from?',
+        options: [
+            { id: 'a', text: 'Sweden' },
+            { id: 'b', text: 'Denmark' },
+            { id: 'c', text: 'Norway' },
+            { id: 'd', text: 'Finland' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Bluetooth is named after Harald "Bluetooth" Gormsson, a Danish king from the 900s! He united warring tribes, just like Bluetooth unites devices. The Bluetooth logo is his initials (H and B) in Viking runes! 📱',
+        explanationShort: 'Bluetooth: Named after Danish Viking king Harald Bluetooth!',
+        source: 'Bluetooth Special Interest Group',
+    },
+];
+
+// ============================================================================
+// COMBINE ALL EUROPE QUESTIONS
+// ============================================================================
+
+export const europeQuestionsExpanded: Question[] = [
+    ...geographyQuestions,
+    ...natureQuestions,
+    ...sportsQuestions,
+    ...foodQuestions,
+    ...recordsQuestions,
+    ...funFactsQuestions,
+];
+
+export default europeQuestionsExpanded;

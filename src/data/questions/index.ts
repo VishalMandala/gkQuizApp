@@ -9,11 +9,21 @@
 
 import { africaQuestionsExpanded } from './africa';
 import { asiaQuestionsExpanded } from './asia';
+import { europeQuestionsExpanded } from './europe';
+import { northAmericaQuestionsExpanded } from './northAmerica';
+import { southAmericaQuestionsExpanded } from './southAmerica';
+import { australiaQuestionsExpanded } from './australia';
+import { antarcticaQuestionsExpanded } from './antarctica';
 import type { Question, Continent, Category } from '../../types';
 
 // Re-export individual continent question arrays
 export { africaQuestionsExpanded } from './africa';
 export { asiaQuestionsExpanded } from './asia';
+export { europeQuestionsExpanded } from './europe';
+export { northAmericaQuestionsExpanded } from './northAmerica';
+export { southAmericaQuestionsExpanded } from './southAmerica';
+export { australiaQuestionsExpanded } from './australia';
+export { antarcticaQuestionsExpanded } from './antarctica';
 
 // ============================================================================
 // COMBINED QUESTIONS
@@ -21,17 +31,15 @@ export { asiaQuestionsExpanded } from './asia';
 
 /**
  * All expanded questions from the new modular structure
- * This will grow as we add more continents
  */
 export const allExpandedQuestions: Question[] = [
     ...africaQuestionsExpanded,
     ...asiaQuestionsExpanded,
-    // TODO: Add more continents
-    // ...europeQuestionsExpanded,
-    // ...northAmericaQuestionsExpanded,
-    // ...southAmericaQuestionsExpanded,
-    // ...australiaQuestionsExpanded,
-    // ...antarcticaQuestionsExpanded,
+    ...europeQuestionsExpanded,
+    ...northAmericaQuestionsExpanded,
+    ...southAmericaQuestionsExpanded,
+    ...australiaQuestionsExpanded,
+    ...antarcticaQuestionsExpanded,
 ];
 
 // ============================================================================
@@ -124,21 +132,26 @@ export const getQuestionStats = () => {
 };
 
 // ============================================================================
-// CONTENT POPULATION TARGETS
+// CONTENT POPULATION TRACKER
 // ============================================================================
 
 /**
- * Target: 500 questions per continent
+ * Current Progress (as of latest update):
  * 
- * AFRICA:     50 questions ✅ (10% complete)
- * ASIA:       45 questions ✅ (9% complete)
- * EUROPE:     0 questions (TODO)
- * NORTH_AMERICA: 0 questions (TODO)
- * SOUTH_AMERICA: 0 questions (TODO)
- * AUSTRALIA_OCEANIA: 0 questions (TODO)
- * ANTARCTICA: 0 questions (TODO)
+ * AFRICA:            ~50 questions  (10% of 500 target)
+ * ASIA:              ~45 questions  (9% of 500 target)
+ * EUROPE:            ~50 questions  (10% of 500 target)
+ * NORTH_AMERICA:     ~40 questions  (8% of 500 target)
+ * SOUTH_AMERICA:     ~12 questions  (2% of 500 target)
+ * AUSTRALIA_OCEANIA: ~15 questions  (3% of 500 target)
+ * ANTARCTICA:        ~12 questions  (2% of 500 target)
  * 
- * Total: ~95 questions / 3,500 target = 2.7% complete
+ * TOTAL:             ~224 questions / 3,500 target = 6.4% complete
+ * 
+ * Next Steps:
+ * - Add 450+ questions to each continent
+ * - Focus on Sports, Food, Science categories
+ * - Ensure age-appropriate difficulty distribution
  */
 
 export default allExpandedQuestions;
