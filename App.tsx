@@ -16,7 +16,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 // Import screens
 import HomeScreen from './src/screens/HomeScreen';
 import WorldMapScreen from './src/screens/WorldMapScreen';
-import ProgressScreen from './src/screens/ProgressScreen';
+import PuzzlePathScreen from './src/screens/PuzzlePathScreen';
 import RewardsScreen from './src/screens/RewardsScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import QuestionScreen from './src/screens/QuestionScreen';
@@ -36,7 +36,7 @@ const CustomTabBar: React.FC<{ state: any; descriptors: any; navigation: any }> 
   const tabConfig = [
     { name: 'Home', icon: '🏠' },
     { name: 'Map', icon: '🌍' },
-    { name: 'Progress', icon: '📊' },
+    { name: 'Puzzle', icon: '🧩' },
     { name: 'Rewards', icon: '🏆' },
     { name: 'Profile', icon: '👤' },
   ];
@@ -106,7 +106,7 @@ const TabNavigator = () => (
   >
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="Map" component={WorldMapScreen} />
-    <Tab.Screen name="Progress" component={ProgressScreen} />
+    <Tab.Screen name="Puzzle" component={PuzzlePathScreen} />
     <Tab.Screen name="Rewards" component={RewardsScreen} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
