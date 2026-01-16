@@ -566,51 +566,97 @@ const AnimatedPathLine: React.FC<{
 }> = ({ fromLevel, toLevel, currentLevel, index }) => {
     const isPast = toLevel <= currentLevel;
     const isCurrent = fromLevel <= currentLevel && toLevel > currentLevel;
-    const tier = getLevelTier(toLevel);
+    const isFuture = fromLevel > currentLevel;
+    const tier = getLevelTier(isPast ? toLevel : fromLevel);
     const tierColor = getTierColor(tier);
 
-    const widthAnim = useRef(new Animated.Value(0)).current;
+    const heightAnim = useRef(new Animated.Value(0)).current;
+    const glowAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         Animated.sequence([
-            Animated.delay(Math.min(index * 25 + 100, 400)), // Faster path drawing
-            Animated.timing(widthAnim, {
-                toValue: 1,
-                duration: 300,
-                easing: Easing.out(Easing.cubic),
-                useNativeDriver: false,
-            }),
+            Animated.delay(Math.min(index * 20 + 50, 300)),
+            Animated.parallel([
+                Animated.timing(heightAnim, {
+                    toValue: 1,
+                    duration: 250,
+                    easing: Easing.out(Easing.cubic),
+                    useNativeDriver: false,
+                }),
+                // Glow animation for completed paths
+                isPast && Animated.loop(
+                    Animated.sequence([
+                        Animated.timing(glowAnim, { toValue: 1, duration: 1000, useNativeDriver: true }),
+                        Animated.timing(glowAnim, { toValue: 0.5, duration: 1000, useNativeDriver: true }),
+                    ])
+                ),
+            ].filter(Boolean) as Animated.CompositeAnimation[]),
         ]).start();
     }, []);
 
-    const isLeft = index % 4 < 2;
-
     return (
         <View style={styles.pathLineContainer}>
-            <Animated.View
-                style={[
-                    styles.pathLine,
-                    {
-                        backgroundColor: isPast ? tierColor : isCurrent ? `${tierColor}80` : '#374151',
-                        width: widthAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['0%', '60%'],
-                        }),
-                        alignSelf: isLeft ? 'flex-start' : 'flex-end',
-                        marginLeft: isLeft ? 60 : 0,
-                        marginRight: isLeft ? 0 : 60,
-                    },
-                ]}
-            />
-            {/* Glowing orb on path */}
-            {(isPast || isCurrent) && (
-                <View style={[
-                    styles.pathOrb,
-                    {
-                        backgroundColor: tierColor,
-                        left: isLeft ? '30%' : '50%',
-                    }
-                ]} />
+            {/* Main vertical connecting line */}
+            <View style={styles.pathLineWrapper}>
+                {/* Glow effect for completed paths */}
+                {isPast && (
+                    <Animated.View
+                        style={[
+                            styles.pathLineGlow,
+                            {
+                                backgroundColor: tierColor,
+                                opacity: glowAnim.interpolate({
+                                    inputRange: [0.5, 1],
+                                    outputRange: [0.2, 0.5],
+                                }),
+                            }
+                        ]}
+                    />
+                )}
+
+                {/* Solid line for completed, dotted for future */}
+                <Animated.View
+                    style={[
+                        styles.pathLineVertical,
+                        isPast ? {
+                            // Completed: Bold, solid, glowing
+                            backgroundColor: tierColor,
+                            width: 6,
+                            shadowColor: tierColor,
+                            shadowOpacity: 0.8,
+                            shadowRadius: 8,
+                            shadowOffset: { width: 0, height: 0 },
+                            elevation: 5,
+                        } : isCurrent ? {
+                            // Current: Animated gradient
+                            backgroundColor: `${tierColor}80`,
+                            width: 4,
+                        } : {
+                            // Future: Dotted line (using border)
+                            backgroundColor: 'transparent',
+                            borderLeftWidth: 3,
+                            borderLeftColor: '#4b5563',
+                            borderStyle: 'dashed',
+                            width: 3,
+                        },
+                        {
+                            height: heightAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, 40],
+                            }),
+                        },
+                    ]}
+                />
+            </View>
+
+            {/* Glowing orb at connection point for completed */}
+            {isPast && (
+                <View style={[styles.pathOrb, { backgroundColor: tierColor }]} />
+            )}
+
+            {/* Small dot for current path */}
+            {isCurrent && (
+                <View style={[styles.pathOrbSmall, { backgroundColor: tierColor }]} />
             )}
         </View>
     );
@@ -1009,9 +1055,45 @@ const styles = StyleSheet.create({
     },
     checkmarkText: { fontSize: 12, fontWeight: '800', color: '#fff' },
 
-    pathLineContainer: { height: 35, justifyContent: 'center', position: 'relative' },
+    pathLineContainer: {
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+    },
+    pathLineWrapper: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+    },
+    pathLineGlow: {
+        position: 'absolute',
+        width: 20,
+        height: 40,
+        borderRadius: 10,
+    },
+    pathLineVertical: {
+        borderRadius: 3,
+    },
     pathLine: { height: 4, borderRadius: 2 },
-    pathOrb: { position: 'absolute', width: 10, height: 10, borderRadius: 5, top: 12 },
+    pathOrb: {
+        position: 'absolute',
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        top: 19,
+        shadowColor: '#fff',
+        shadowOpacity: 0.5,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    pathOrbSmall: {
+        position: 'absolute',
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        top: 21,
+    },
 
     finalDestination: { alignItems: 'center', marginTop: 40, paddingVertical: 30 },
     finalGlow: {
