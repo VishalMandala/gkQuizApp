@@ -774,7 +774,7 @@ const PuzzlePathScreen: React.FC = () => {
         return () => clearTimeout(timer);
     }, [currentLevel, milestones]);
 
-    // Floating particles - more colorful and varied
+    // Floating particles - BIGGER and more colorful
     const particleColors = [
         colors.accent.gold, colors.accent.purple, colors.accent.cyan,
         colors.accent.pink, colors.accent.neonPink, colors.accent.neonBlue,
@@ -782,12 +782,13 @@ const PuzzlePathScreen: React.FC = () => {
     ];
 
     const particles = useMemo(() =>
-        Array.from({ length: 25 }, (_, i) => ({
+        Array.from({ length: 30 }, (_, i) => ({
             id: i,
-            delay: i * 300,
-            size: 3 + Math.random() * 8,
+            delay: i * 250,
+            // Much bigger particles: 8-28px (was 3-11px)
+            size: 8 + Math.random() * 20,
             color: particleColors[i % particleColors.length],
-            leftPercent: 3 + Math.random() * 94,
+            leftPercent: 2 + Math.random() * 96,
         }))
         , []);
 
