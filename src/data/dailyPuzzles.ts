@@ -284,6 +284,94 @@ export const dailyDiscoveries: Omit<DailyDiscovery, 'id' | 'date' | 'isCollected
         continent: 'EUROPE',
         category: 'FUN_FACTS',
     },
+
+    // MORE GEOGRAPHY
+    { factText: 'Canada has more lakes than the rest of the world combined. There are about 2 million lakes in Canada!', factShort: 'Canada: More lakes than rest of world combined!', source: 'Natural Resources Canada', continent: 'NORTH_AMERICA', category: 'GEOGRAPHY' },
+    { factText: 'Africa is the only continent in all four hemispheres — it crosses the equator and the prime meridian.', factShort: 'Africa: Only continent in all 4 hemispheres!', source: 'National Geographic', continent: 'AFRICA', category: 'GEOGRAPHY' },
+    { factText: 'The Dead Sea is so salty that you can float without trying. It\'s 10 times saltier than the ocean!', factShort: 'Dead Sea: Float without trying — 10x saltier!', source: 'Smithsonian', continent: 'ASIA', category: 'GEOGRAPHY' },
+    { factText: 'Iceland has no mosquitoes. The climate changes too rapidly for them to complete their breeding cycle.', factShort: 'Iceland: Zero mosquitoes — too cold for them!', source: 'University of Iceland', continent: 'EUROPE', category: 'GEOGRAPHY' },
+    { factText: 'Australia is wider than the moon. Australia is 4,000 km across; the moon is 3,400 km in diameter.', factShort: 'Australia: Wider than the moon! 🌙', source: 'NASA', continent: 'AUSTRALIA_OCEANIA', category: 'GEOGRAPHY' },
+    { factText: 'The Sahara Desert is almost as big as the entire United States. It\'s 9.2 million km²!', factShort: 'Sahara: Almost as big as the entire USA!', source: 'World Atlas', continent: 'AFRICA', category: 'GEOGRAPHY' },
+    { factText: 'Every continent has a city called Rome. There are Romes in North America, Europe, Africa, and Australia!', factShort: 'Rome exists on every continent!', source: 'Geographic Names', category: 'GEOGRAPHY' },
+    { factText: 'The Pacific Ocean is larger than all landmasses combined. It covers more than 30% of Earth\'s surface.', factShort: 'Pacific Ocean: Bigger than ALL land combined!', source: 'NOAA', continent: 'AUSTRALIA_OCEANIA', category: 'GEOGRAPHY' },
+
+    // MORE NATURE
+    { factText: 'A shrimp\'s heart is in its head. They also have 10 legs and can swim backwards!', factShort: 'Shrimp: Heart is in its head! 🦐', source: 'Marine Biology', category: 'NATURE_WILDLIFE' },
+    { factText: 'Elephants are the only animals that can\'t jump. Their legs are designed for supporting weight, not springing.', factShort: 'Elephants: Only animals that can\'t jump!', source: 'Smithsonian', continent: 'AFRICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'A snail can sleep for 3 years. They enter hibernation when conditions are too dry.', factShort: 'Snails: Can sleep for 3 years straight!', source: 'National Geographic', category: 'NATURE_WILDLIFE' },
+    { factText: 'Tigers have striped skin, not just striped fur. Each tiger\'s pattern is unique like a fingerprint.', factShort: 'Tigers: Striped skin — unique like fingerprints!', source: 'WWF', continent: 'ASIA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Hummingbirds are the only birds that can fly backwards and upside down.', factShort: 'Hummingbirds: Fly backwards AND upside down!', source: 'Audubon Society', continent: 'NORTH_AMERICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Dolphins sleep with one eye open. Half their brain stays awake to watch for predators!', factShort: 'Dolphins: Sleep with one eye open — half-brain awake!', source: 'Marine Science', category: 'NATURE_WILDLIFE' },
+    { factText: 'A single tree can absorb 22 kg of CO2 per year and produce enough oxygen for 2 people.', factShort: 'One tree = oxygen for 2 people per year!', source: 'USDA Forest Service', category: 'NATURE_WILDLIFE' },
+    { factText: 'Penguins propose to their mates with a pebble. They search for the perfect one!', factShort: 'Penguins: Propose with the perfect pebble! 💎', source: 'BBC Earth', continent: 'ANTARCTICA', category: 'NATURE_WILDLIFE' },
+
+    // MORE HISTORY
+    { factText: 'Vikings used to give kittens to new brides for good luck. Cats were sacred to Freya, goddess of love.', factShort: 'Vikings: Gave kittens as wedding gifts!', source: 'Smithsonian', continent: 'EUROPE', category: 'HISTORY' },
+    { factText: 'Ancient Egyptians shaved off their eyebrows to mourn the deaths of their cats.', factShort: 'Ancient Egypt: Shaved eyebrows when cats died!', source: 'British Museum', continent: 'AFRICA', category: 'HISTORY' },
+    { factText: 'The Great Wall of China is not visible from space with the naked eye. That\'s a myth!', factShort: 'Great Wall: NOT visible from space — myth busted!', source: 'NASA', continent: 'ASIA', category: 'HISTORY' },
+    { factText: 'Coca-Cola was first sold as medicine for headaches and exhaustion in 1886.', factShort: 'Coca-Cola: Started as medicine in 1886!', source: 'Coca-Cola Archives', continent: 'NORTH_AMERICA', category: 'HISTORY' },
+    { factText: 'The Eiffel Tower was supposed to be temporary. It was built for the 1889 World\'s Fair and meant to be dismantled!', factShort: 'Eiffel Tower: Was supposed to be temporary!', source: 'Tour Eiffel', continent: 'EUROPE', category: 'HISTORY' },
+    { factText: 'The first computer programmer was a woman — Ada Lovelace, in the 1840s.', factShort: 'First programmer: Ada Lovelace — 1840s woman!', source: 'Computer History Museum', continent: 'EUROPE', category: 'HISTORY' },
+
+    // MORE SCIENCE
+    { factText: 'Your brain uses 20% of your body\'s energy, despite being only 2% of your weight.', factShort: 'Brain: 2% of weight, uses 20% of energy!', source: 'NIH', category: 'SCIENCE' },
+    { factText: 'Hot water freezes faster than cold water. This is called the Mpemba effect.', factShort: 'Hot water freezes FASTER than cold! 🧊', source: 'Royal Society of Chemistry', category: 'SCIENCE' },
+    { factText: 'Lightning strikes Earth about 8 million times per day — that\'s 100 strikes per second!', factShort: 'Lightning: 8 million strikes per day!', source: 'NOAA', category: 'SCIENCE' },
+    { factText: 'Sound travels 4.3 times faster in water than in air. Whales can hear each other from 1,000 miles away.', factShort: 'Sound: 4.3x faster in water — whales hear 1000 miles!', source: 'NOAA', category: 'SCIENCE' },
+    { factText: 'The average person walks 100,000 miles in their lifetime — 4 times around the Earth!', factShort: 'Walk 100,000 miles in life = 4x around Earth!', source: 'Journal of Sports Medicine', category: 'SCIENCE' },
+    { factText: 'A teaspoon of neutron star weighs 6 billion tons — as much as Mount Everest!', factShort: 'Teaspoon of neutron star = 6 billion tons!', source: 'NASA', category: 'SCIENCE' },
+
+    // MORE CULTURE
+    { factText: 'In Thailand, it\'s illegal to step on money because the King\'s face is on it.', factShort: 'Thailand: Illegal to step on money!', source: 'Thai Law', continent: 'ASIA', category: 'CULTURE' },
+    { factText: 'In Greece, nodding your head means "no" and shaking it means "yes" — opposite of most countries!', factShort: 'Greece: Nodding means NO — opposite of most places!', source: 'Greek Culture Guide', continent: 'EUROPE', category: 'CULTURE' },
+    { factText: 'In Ethiopia, the calendar has 13 months and it\'s currently 7-8 years behind the Western calendar.', factShort: 'Ethiopia: 13 months, 7 years behind our calendar!', source: 'Ethiopian Calendar', continent: 'AFRICA', category: 'CULTURE' },
+    { factText: 'In India, the "head wobble" can mean yes, no, maybe, or "I understand" depending on context.', factShort: 'India: Head wobble = yes, no, AND maybe!', source: 'BBC Culture', continent: 'ASIA', category: 'CULTURE' },
+    { factText: 'In Denmark, if you\'re still unmarried at 25, friends throw cinnamon at you on your birthday!', factShort: 'Denmark: Cinnamon thrown at single 25-year-olds!', source: 'Danish Traditions', continent: 'EUROPE', category: 'CULTURE' },
+
+    // MORE SPORTS
+    { factText: 'The Olympics were held every 4 years for over 1,100 years (776 BCE - 393 CE) in ancient Greece.', factShort: 'Ancient Olympics: 1,100 years of games!', source: 'Olympic History', continent: 'EUROPE', category: 'SPORTS' },
+    { factText: 'Golf balls have 336 dimples. They help the ball fly farther by reducing air resistance.', factShort: 'Golf balls: Exactly 336 dimples!', source: 'Golf Digest', category: 'SPORTS' },
+    { factText: 'The longest tennis match lasted 11 hours and 5 minutes over 3 days (2010 Wimbledon).', factShort: 'Longest tennis match: 11 hours over 3 days!', source: 'Wimbledon', continent: 'EUROPE', category: 'SPORTS' },
+    { factText: 'The first basketball game was played with a soccer ball and peach baskets in 1891.', factShort: 'Basketball 1891: Soccer ball + peach baskets!', source: 'NBA History', continent: 'NORTH_AMERICA', category: 'SPORTS' },
+
+    // MORE FOOD
+    { factText: 'Apples float because they are 25% air. That\'s why bobbing for apples works!', factShort: 'Apples: 25% air — that\'s why they float!', source: 'USDA', category: 'FOOD' },
+    { factText: 'Carrots were originally purple before the 17th century when orange ones were bred in the Netherlands.', factShort: 'Carrots: Were purple before 17th century!', source: 'World Carrot Museum', continent: 'EUROPE', category: 'FOOD' },
+    { factText: 'The most expensive coffee in the world is made from beans eaten and pooped out by civets ($600/lb).', factShort: 'Kopi Luwak: $600/lb — civet poop coffee!', source: 'National Geographic', continent: 'ASIA', category: 'FOOD' },
+    { factText: 'Peanuts aren\'t nuts — they\'re legumes and grow underground like potatoes.', factShort: 'Peanuts: NOT nuts — legumes that grow underground!', source: 'USDA', category: 'FOOD' },
+    { factText: 'The world\'s hottest pepper (Carolina Reaper) is 200x hotter than a jalapeño.', factShort: 'Carolina Reaper: 200x hotter than jalapeño! 🌶️', source: 'Guinness World Records', continent: 'NORTH_AMERICA', category: 'FOOD' },
+    { factText: 'Chocolate was once used as currency by the Aztecs. They valued cacao beans as much as gold!', factShort: 'Aztecs: Used chocolate as money! 🍫', source: 'Smithsonian', continent: 'NORTH_AMERICA', category: 'FOOD' },
+
+    // MORE FUN FACTS
+    { factText: 'Astronauts can\'t cry in space. Tears form but don\'t fall — they just blob around your eyes!', factShort: 'Space tears: Blob around eyes — don\'t fall!', source: 'NASA', category: 'FUN_FACTS' },
+    { factText: 'A cloud can weigh more than 1 million pounds. They float because the water is spread over a huge area.', factShort: 'Clouds: Weigh 1 million pounds — still float!', source: 'USGS', category: 'FUN_FACTS' },
+    { factText: 'Your nose can remember 50,000 different scents. Smell is the sense most linked to memory.', factShort: 'Nose: Remembers 50,000 scents!', source: 'Scientific American', category: 'FUN_FACTS' },
+    { factText: 'The word "set" has the most definitions of any English word — over 430 different meanings!', factShort: '"Set": 430+ definitions — most of any word!', source: 'Oxford Dictionary', category: 'FUN_FACTS' },
+    { factText: 'A group of porcupines is called a "prickle." Other fun names: murder of crows, parliament of owls.', factShort: 'Porcupines group: Called a "prickle"! 🦔', source: 'Oxford Dictionary', category: 'FUN_FACTS' },
+    { factText: 'Maine is the closest US state to Africa. It\'s farther east than you\'d think!', factShort: 'Maine: Closest US state to Africa!', source: 'National Geographic', continent: 'NORTH_AMERICA', category: 'FUN_FACTS' },
+    { factText: 'The inventor of the microwave only received $2 for his discovery. He then cooked popcorn with it!', factShort: 'Microwave inventor: Got only $2 — made popcorn first!', source: 'Smithsonian', continent: 'NORTH_AMERICA', category: 'FUN_FACTS' },
+    { factText: 'A day on Mars is only 37 minutes longer than a day on Earth — almost the same!', factShort: 'Mars day: Only 37 minutes longer than Earth!', source: 'NASA', category: 'FUN_FACTS' },
+
+    // MORE RECORDS
+    { factText: 'The longest word in English has 189,819 letters. It\'s the chemical name for the protein titin.', factShort: 'Longest word: 189,819 letters — takes 3 hours to say!', source: 'Chemical Nomenclature', category: 'RECORDS' },
+    { factText: 'The world\'s oldest tree is over 5,000 years old — older than the Egyptian pyramids!', factShort: 'Oldest tree: 5,000 years — older than pyramids!', source: 'US Forest Service', continent: 'NORTH_AMERICA', category: 'RECORDS' },
+    { factText: 'The deepest point in the ocean is 36,000 feet deep — you could fit Mount Everest inside with room to spare.', factShort: 'Mariana Trench: Everest would fit with room to spare!', source: 'NOAA', category: 'RECORDS' },
+    { factText: 'The longest flight of a chicken is 13 seconds. Chickens can fly, just not very well!', factShort: 'Chicken flight record: 13 seconds! 🐔', source: 'Guinness World Records', category: 'RECORDS' },
+
+    // ANTARCTICA SPECIAL
+    { factText: 'Antarctica is the only continent with no native human population. Everyone there is a visitor.', factShort: 'Antarctica: No native humans — all visitors!', source: 'Antarctic Treaty', continent: 'ANTARCTICA', category: 'GEOGRAPHY' },
+    { factText: 'There\'s a blood-red waterfall in Antarctica called Blood Falls. It\'s caused by iron-rich water.', factShort: 'Blood Falls: Red waterfall in Antarctica!', source: 'Antarctic Science', continent: 'ANTARCTICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Antarctica has active volcanoes under the ice. Mount Erebus has a permanent lava lake!', factShort: 'Antarctica: Active volcanoes under ice!', source: 'USGS', continent: 'ANTARCTICA', category: 'GEOGRAPHY' },
+
+    // SOUTH AMERICA SPECIAL
+    { factText: 'The Amazon produces 20% of Earth\'s oxygen. It\'s often called "the lungs of the planet."', factShort: 'Amazon: Produces 20% of Earth\'s oxygen!', source: 'WWF', continent: 'SOUTH_AMERICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Angel Falls in Venezuela is 15 times higher than Niagara Falls — the world\'s tallest waterfall!', factShort: 'Angel Falls: 15x taller than Niagara!', source: 'National Geographic', continent: 'SOUTH_AMERICA', category: 'GEOGRAPHY' },
+    { factText: 'Brazil shares a border with every South American country except Chile and Ecuador.', factShort: 'Brazil: Borders all but 2 S. American countries!', source: 'World Atlas', continent: 'SOUTH_AMERICA', category: 'GEOGRAPHY' },
+
+    // AUSTRALIA SPECIAL  
+    { factText: 'Kangaroos can\'t walk backwards. Neither can emus — that\'s why they\'re on Australia\'s coat of arms!', factShort: 'Kangaroos AND emus: Can\'t walk backwards!', source: 'Australian Government', continent: 'AUSTRALIA_OCEANIA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Australia has more sheep than people — about 75 million sheep to 26 million humans!', factShort: 'Australia: 75 million sheep, 26 million people!', source: 'Australian Bureau of Statistics', continent: 'AUSTRALIA_OCEANIA', category: 'FUN_FACTS' },
+    { factText: 'The platypus is venomous. Males have venomous spurs on their back legs!', factShort: 'Platypus: One of few venomous mammals!', source: 'Australian Museum', continent: 'AUSTRALIA_OCEANIA', category: 'NATURE_WILDLIFE' },
 ];
 
 // ============================================================================
