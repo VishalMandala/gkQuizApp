@@ -3,10 +3,12 @@
  * Designed for scale to 100M users
  * 
  * Core Philosophy:
+ * - 1000 levels for long-term engagement
  * - Early levels are fast (hook users quickly)
  * - Mid levels provide steady progression
  * - Late levels are prestigious achievements
- * - Every 10 levels = major milestone
+ * - Every 100 levels = major milestone
+ * - Every 10 levels = minor milestone
  */
 
 import type { Continent } from '../types';
@@ -27,40 +29,58 @@ export interface LevelConfig {
 }
 
 export interface LevelUnlock {
-    type: 'CONTINENT' | 'FEATURE' | 'MODE' | 'REWARD' | 'ARTIFACT' | 'TITLE';
+    type: 'CONTINENT' | 'FEATURE' | 'MODE' | 'REWARD' | 'ARTIFACT' | 'TITLE' | 'SPECIAL';
     name: string;
     description: string;
     icon: string;
 }
 
 export type LevelTier =
-    | 'NOVICE'      // 1-10
-    | 'EXPLORER'    // 11-25
-    | 'ADVENTURER'  // 26-40
-    | 'SCHOLAR'     // 41-60
-    | 'EXPERT'      // 61-80
-    | 'MASTER'      // 81-95
-    | 'LEGEND';     // 96-100
+    | 'BEGINNER'       // 1-50
+    | 'NOVICE'         // 51-100
+    | 'APPRENTICE'     // 101-200
+    | 'EXPLORER'       // 201-300
+    | 'ADVENTURER'     // 301-400
+    | 'SCHOLAR'        // 401-500
+    | 'EXPERT'         // 501-600
+    | 'MASTER'         // 601-700
+    | 'GRANDMASTER'    // 701-800
+    | 'LEGEND'         // 801-900
+    | 'MYTHIC';        // 901-1000
 
 // ============================================================================
-// XP CURVE FORMULA
+// XP CURVE FORMULA (1000 Levels)
 // ============================================================================
 
 /**
- * XP Curve Design:
- * - Levels 1-10: Quick (500-1500 XP each) - Hook phase
- * - Levels 11-25: Moderate (1500-3000 XP each) - Engagement phase
- * - Levels 26-50: Steady (3000-5000 XP each) - Habit phase
- * - Levels 51-75: Challenging (5000-8000 XP each) - Mastery phase
- * - Levels 76-100: Prestigious (8000-15000 XP each) - Legend phase
+ * XP Curve Design for 1000 Levels:
+ * - Levels 1-50: Very Quick (~100-300 XP) - Hook phase
+ * - Levels 51-100: Quick (~300-500 XP) - Engagement phase
+ * - Levels 101-200: Moderate (~500-800 XP) - Habit building
+ * - Levels 201-400: Steady (~800-1500 XP) - Core gameplay
+ * - Levels 401-600: Challenging (~1500-2500 XP) - Mastery phase
+ * - Levels 601-800: Hard (~2500-4000 XP) - Expert phase
+ * - Levels 801-900: Very Hard (~4000-6000 XP) - Legend phase
+ * - Levels 901-1000: Prestigious (~6000-10000 XP) - Mythic phase
+ * 
+ * Average player playing 15 min/day = ~200 XP/day
+ * Time to reach key milestones:
+ * - Level 50: ~1 week
+ * - Level 100: ~3 weeks
+ * - Level 200: ~2 months
+ * - Level 500: ~8 months
+ * - Level 1000: ~3 years (hardcore players: 1 year)
  */
 export const calculateXPForLevel = (level: number): number => {
     if (level <= 1) return 0;
-    if (level <= 10) return Math.floor(300 * level * 1.2);
-    if (level <= 25) return Math.floor(800 * level * 1.15);
-    if (level <= 50) return Math.floor(1500 * level * 1.1);
-    if (level <= 75) return Math.floor(2500 * level * 1.08);
-    return Math.floor(4000 * level * 1.05);
+    if (level <= 50) return Math.floor(80 + level * 4);           // 84-280 XP
+    if (level <= 100) return Math.floor(200 + level * 3);         // 353-500 XP
+    if (level <= 200) return Math.floor(400 + level * 2);         // 602-800 XP
+    if (level <= 400) return Math.floor(600 + level * 2.5);       // 1102-1600 XP
+    if (level <= 600) return Math.floor(1000 + level * 3);        // 2203-2800 XP
+    if (level <= 800) return Math.floor(1500 + level * 3.5);      // 3604-4300 XP
+    if (level <= 900) return Math.floor(2000 + level * 4);        // 5204-5600 XP
+    return Math.floor(3000 + level * 5);                          // 7505-8000 XP
 };
 
 export const calculateTotalXPForLevel = (level: number): number => {
@@ -72,64 +92,124 @@ export const calculateTotalXPForLevel = (level: number): number => {
 };
 
 // ============================================================================
-// LEVEL TITLES
+// LEVEL TITLES (1000 Levels)
 // ============================================================================
 
 export const getLevelTitle = (level: number): string => {
-    if (level <= 5) return 'Curious Mind';
-    if (level <= 10) return 'Knowledge Seeker';
-    if (level <= 15) return 'Globe Trotter';
-    if (level <= 20) return 'Fact Finder';
-    if (level <= 25) return 'World Explorer';
-    if (level <= 30) return 'Culture Buff';
-    if (level <= 35) return 'Trivia Ace';
-    if (level <= 40) return 'Wisdom Hunter';
-    if (level <= 45) return 'Enlightened One';
-    if (level <= 50) return 'Grand Scholar';
-    if (level <= 55) return 'Knowledge Keeper';
-    if (level <= 60) return 'Master of Facts';
-    if (level <= 65) return 'Sage';
-    if (level <= 70) return 'World Authority';
-    if (level <= 75) return 'Supreme Scholar';
-    if (level <= 80) return 'Enlightened Master';
-    if (level <= 85) return 'Oracle';
-    if (level <= 90) return 'Grand Master';
-    if (level <= 95) return 'Living Legend';
-    if (level <= 99) return 'Mythical Mind';
-    return 'Omniscient One'; // Level 100
+    // Beginner (1-50)
+    if (level <= 10) return 'Curious Mind';
+    if (level <= 20) return 'Eager Learner';
+    if (level <= 30) return 'Fact Finder';
+    if (level <= 40) return 'Knowledge Seeker';
+    if (level <= 50) return 'Rising Star';
+
+    // Novice (51-100)
+    if (level <= 60) return 'Globe Trotter';
+    if (level <= 70) return 'World Watcher';
+    if (level <= 80) return 'Culture Curious';
+    if (level <= 90) return 'Trivia Trainee';
+    if (level <= 100) return 'Century Achiever';
+
+    // Apprentice (101-200)
+    if (level <= 125) return 'Knowledge Apprentice';
+    if (level <= 150) return 'Wisdom Seeker';
+    if (level <= 175) return 'Lore Keeper';
+    if (level <= 200) return 'Scholar\'s Path';
+
+    // Explorer (201-300)
+    if (level <= 225) return 'World Explorer';
+    if (level <= 250) return 'Continental Champion';
+    if (level <= 275) return 'Horizon Chaser';
+    if (level <= 300) return 'Discovery Master';
+
+    // Adventurer (301-400)
+    if (level <= 325) return 'Bold Adventurer';
+    if (level <= 350) return 'Quest Conqueror';
+    if (level <= 375) return 'Trailblazer';
+    if (level <= 400) return 'Legendary Voyager';
+
+    // Scholar (401-500)
+    if (level <= 425) return 'Enlightened Scholar';
+    if (level <= 450) return 'Sage of Facts';
+    if (level <= 475) return 'Knowledge Guardian';
+    if (level <= 500) return 'Grand Sage';
+
+    // Expert (501-600)
+    if (level <= 525) return 'Expert Analyst';
+    if (level <= 550) return 'Master Researcher';
+    if (level <= 575) return 'Wisdom Keeper';
+    if (level <= 600) return 'Supreme Expert';
+
+    // Master (601-700)
+    if (level <= 625) return 'World Master';
+    if (level <= 650) return 'Continental Master';
+    if (level <= 675) return 'Universal Authority';
+    if (level <= 700) return 'Grand Master';
+
+    // Grandmaster (701-800)
+    if (level <= 725) return 'Grandmaster I';
+    if (level <= 750) return 'Grandmaster II';
+    if (level <= 775) return 'Grandmaster III';
+    if (level <= 800) return 'Supreme Grandmaster';
+
+    // Legend (801-900)
+    if (level <= 825) return 'Rising Legend';
+    if (level <= 850) return 'Eternal Legend';
+    if (level <= 875) return 'Immortal Legend';
+    if (level <= 900) return 'Legendary Titan';
+
+    // Mythic (901-1000)
+    if (level <= 925) return 'Mythic Ascendant';
+    if (level <= 950) return 'Cosmic Intellect';
+    if (level <= 975) return 'Universal Mind';
+    if (level <= 999) return 'Omniscient Being';
+
+    return 'The Infinite One'; // Level 1000
 };
 
 export const getLevelTier = (level: number): LevelTier => {
-    if (level <= 10) return 'NOVICE';
-    if (level <= 25) return 'EXPLORER';
-    if (level <= 40) return 'ADVENTURER';
-    if (level <= 60) return 'SCHOLAR';
-    if (level <= 80) return 'EXPERT';
-    if (level <= 95) return 'MASTER';
-    return 'LEGEND';
+    if (level <= 50) return 'BEGINNER';
+    if (level <= 100) return 'NOVICE';
+    if (level <= 200) return 'APPRENTICE';
+    if (level <= 300) return 'EXPLORER';
+    if (level <= 400) return 'ADVENTURER';
+    if (level <= 500) return 'SCHOLAR';
+    if (level <= 600) return 'EXPERT';
+    if (level <= 700) return 'MASTER';
+    if (level <= 800) return 'GRANDMASTER';
+    if (level <= 900) return 'LEGEND';
+    return 'MYTHIC';
 };
 
 export const getTierColor = (tier: LevelTier): string => {
     switch (tier) {
-        case 'NOVICE': return '#10B981';      // Green
-        case 'EXPLORER': return '#3B82F6';    // Blue
-        case 'ADVENTURER': return '#8B5CF6';  // Purple
-        case 'SCHOLAR': return '#EC4899';     // Pink
-        case 'EXPERT': return '#F59E0B';      // Orange
-        case 'MASTER': return '#EF4444';      // Red
-        case 'LEGEND': return '#FBBF24';      // Gold
+        case 'BEGINNER': return '#94A3B8';      // Gray
+        case 'NOVICE': return '#10B981';        // Green
+        case 'APPRENTICE': return '#3B82F6';    // Blue
+        case 'EXPLORER': return '#06B6D4';      // Cyan
+        case 'ADVENTURER': return '#8B5CF6';    // Purple
+        case 'SCHOLAR': return '#EC4899';       // Pink
+        case 'EXPERT': return '#F59E0B';        // Orange
+        case 'MASTER': return '#EF4444';        // Red
+        case 'GRANDMASTER': return '#DC2626';   // Dark Red
+        case 'LEGEND': return '#FBBF24';        // Gold
+        case 'MYTHIC': return '#E879F9';        // Magenta/Mythic
     }
 };
 
 export const getTierBadge = (tier: LevelTier): string => {
     switch (tier) {
-        case 'NOVICE': return '🌱';
+        case 'BEGINNER': return '🌱';
+        case 'NOVICE': return '�';
+        case 'APPRENTICE': return '📖';
         case 'EXPLORER': return '🧭';
         case 'ADVENTURER': return '⚔️';
         case 'SCHOLAR': return '📚';
         case 'EXPERT': return '🎓';
         case 'MASTER': return '👑';
+        case 'GRANDMASTER': return '💎';
         case 'LEGEND': return '⭐';
+        case 'MYTHIC': return '🌟';
     }
 };
 
@@ -140,7 +220,7 @@ export const getTierBadge = (tier: LevelTier): string => {
 export const getMilestoneUnlocks = (level: number): LevelUnlock[] => {
     const unlocks: LevelUnlock[] = [];
 
-    // Continent unlocks (early game)
+    // ========== CONTINENT UNLOCKS (Early game: 1-25) ==========
     if (level === 1) {
         unlocks.push({
             type: 'CONTINENT',
@@ -190,97 +270,144 @@ export const getMilestoneUnlocks = (level: number): LevelUnlock[] => {
         });
     }
 
-    // Feature unlocks (mid game)
+    // ========== FEATURE UNLOCKS (Through level 200) ==========
     if (level === 8) {
-        unlocks.push({
-            type: 'FEATURE',
-            name: 'Daily Challenges',
-            description: 'Earn bonus XP with daily quests!',
-            icon: '📅',
-        });
+        unlocks.push({ type: 'FEATURE', name: 'Daily Challenges', description: 'Earn bonus XP with daily quests!', icon: '📅' });
     }
     if (level === 12) {
-        unlocks.push({
-            type: 'MODE',
-            name: 'Timed Mode',
-            description: 'Race against the clock!',
-            icon: '⏱️',
-        });
+        unlocks.push({ type: 'MODE', name: 'Timed Mode', description: 'Race against the clock!', icon: '⏱️' });
     }
     if (level === 18) {
-        unlocks.push({
-            type: 'MODE',
-            name: 'Duel Mode',
-            description: 'Challenge friends to knowledge battles!',
-            icon: '⚔️',
-        });
+        unlocks.push({ type: 'MODE', name: 'Duel Mode', description: 'Challenge friends to knowledge battles!', icon: '⚔️' });
     }
     if (level === 30) {
-        unlocks.push({
-            type: 'FEATURE',
-            name: 'Leaderboards',
-            description: 'Compete with players worldwide!',
-            icon: '🏆',
-        });
+        unlocks.push({ type: 'FEATURE', name: 'Leaderboards', description: 'Compete with players worldwide!', icon: '🏆' });
     }
     if (level === 40) {
-        unlocks.push({
-            type: 'MODE',
-            name: 'Expert Mode',
-            description: 'Questions for true masters!',
-            icon: '🎓',
-        });
+        unlocks.push({ type: 'MODE', name: 'Expert Mode', description: 'Questions for true masters!', icon: '🎓' });
     }
     if (level === 50) {
-        unlocks.push({
-            type: 'FEATURE',
-            name: 'Create Questions',
-            description: 'Submit your own questions!',
-            icon: '✍️',
-        });
-    }
-
-    // Artifact unlocks (late game rewards)
-    if (level === 35) {
-        unlocks.push({
-            type: 'ARTIFACT',
-            name: 'Explorer\'s Compass',
-            description: 'A rare artifact for true explorers',
-            icon: '🧭',
-        });
-    }
-    if (level === 55) {
-        unlocks.push({
-            type: 'ARTIFACT',
-            name: 'Scholar\'s Tome',
-            description: 'Ancient wisdom at your fingertips',
-            icon: '📖',
-        });
+        unlocks.push({ type: 'FEATURE', name: 'Create Questions', description: 'Submit your own questions!', icon: '✍️' });
+        unlocks.push({ type: 'SPECIAL', name: 'Beginner Complete!', description: 'You\'ve graduated from Beginner tier!', icon: '🎉' });
     }
     if (level === 75) {
-        unlocks.push({
-            type: 'ARTIFACT',
-            name: 'Master\'s Crown',
-            description: 'The crown of knowledge masters',
-            icon: '👑',
-        });
+        unlocks.push({ type: 'MODE', name: 'Marathon Mode', description: 'Answer 50 questions in one session!', icon: '🏃' });
     }
     if (level === 100) {
-        unlocks.push({
-            type: 'ARTIFACT',
-            name: 'Omniscient Orb',
-            description: 'The ultimate artifact - you know everything!',
-            icon: '🔮',
-        });
+        unlocks.push({ type: 'FEATURE', name: 'Custom Avatars', description: 'Personalize your profile!', icon: '🎭' });
+        unlocks.push({ type: 'SPECIAL', name: 'Century Club!', description: 'Welcome to Level 100!', icon: '💯' });
+    }
+    if (level === 150) {
+        unlocks.push({ type: 'MODE', name: 'Hardcore Mode', description: 'One wrong answer ends it all!', icon: '💀' });
+    }
+    if (level === 200) {
+        unlocks.push({ type: 'FEATURE', name: 'Mentor System', description: 'Help new players learn!', icon: '🤝' });
+        unlocks.push({ type: 'SPECIAL', name: 'Double Century!', description: 'Level 200 achieved!', icon: '🌟' });
     }
 
-    // Title unlocks (prestige)
-    if (level % 10 === 0) {
+    // ========== MID-GAME UNLOCKS (201-500) ==========
+    if (level === 250) {
+        unlocks.push({ type: 'MODE', name: 'Category Master', description: 'Focus on single category challenges!', icon: '📊' });
+    }
+    if (level === 300) {
+        unlocks.push({ type: 'FEATURE', name: 'Guild System', description: 'Create or join player guilds!', icon: '🏰' });
+        unlocks.push({ type: 'SPECIAL', name: 'Explorer Elite!', description: 'Level 300 - True Explorer!', icon: '🧭' });
+    }
+    if (level === 350) {
+        unlocks.push({ type: 'MODE', name: 'Boss Battles', description: 'Face ultimate knowledge challenges!', icon: '🐉' });
+    }
+    if (level === 400) {
+        unlocks.push({ type: 'FEATURE', name: 'Custom Themes', description: 'Unlock exclusive app themes!', icon: '🎨' });
+        unlocks.push({ type: 'SPECIAL', name: 'Adventurer Legend!', description: 'Level 400 milestone!', icon: '⚔️' });
+    }
+    if (level === 450) {
+        unlocks.push({ type: 'MODE', name: 'Team Battles', description: 'Compete with your guild!', icon: '🤼' });
+    }
+    if (level === 500) {
+        unlocks.push({ type: 'FEATURE', name: 'VIP Lounge', description: 'Access exclusive VIP features!', icon: '👑' });
+        unlocks.push({ type: 'SPECIAL', name: 'Half Millennium!', description: 'Level 500 - Scholar Elite!', icon: '📚' });
+    }
+
+    // ========== LATE-GAME UNLOCKS (501-800) ==========
+    if (level === 600) {
+        unlocks.push({ type: 'FEATURE', name: 'Tournament Host', description: 'Create your own tournaments!', icon: '🏟️' });
+        unlocks.push({ type: 'SPECIAL', name: 'Expert Supreme!', description: 'Level 600 achieved!', icon: '🎓' });
+    }
+    if (level === 700) {
+        unlocks.push({ type: 'FEATURE', name: 'Question Editor', description: 'Edit official questions!', icon: '✏️' });
+        unlocks.push({ type: 'SPECIAL', name: 'Grand Master!', description: 'Level 700 - True Master!', icon: '👑' });
+    }
+    if (level === 800) {
+        unlocks.push({ type: 'FEATURE', name: 'Beta Tester', description: 'Access new features first!', icon: '🧪' });
+        unlocks.push({ type: 'SPECIAL', name: 'Grandmaster Supreme!', description: 'Level 800 achieved!', icon: '💎' });
+    }
+
+    // ========== END-GAME UNLOCKS (801-1000) ==========
+    if (level === 900) {
+        unlocks.push({ type: 'FEATURE', name: 'Legend Council', description: 'Help shape the game\'s future!', icon: '🏛️' });
+        unlocks.push({ type: 'SPECIAL', name: 'Legendary Titan!', description: 'Level 900 - Near the top!', icon: '⭐' });
+    }
+    if (level === 950) {
+        unlocks.push({ type: 'SPECIAL', name: 'Almost There!', description: 'Just 50 more levels to immortality!', icon: '🔥' });
+    }
+    if (level === 1000) {
+        unlocks.push({ type: 'FEATURE', name: 'God Mode', description: 'Unlimited power and access!', icon: '⚡' });
+        unlocks.push({ type: 'SPECIAL', name: 'THE INFINITE ONE', description: 'You have achieved the impossible!', icon: '🌟' });
+        unlocks.push({ type: 'ARTIFACT', name: 'Infinity Crown', description: 'The ultimate symbol of mastery!', icon: '👑' });
+    }
+
+    // ========== ARTIFACT UNLOCKS (Special rewards) ==========
+    if (level === 35) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Explorer\'s Compass', description: 'A rare artifact for true explorers', icon: '🧭' });
+    }
+    if (level === 55) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Scholar\'s Tome', description: 'Ancient wisdom at your fingertips', icon: '📖' });
+    }
+    if (level === 100) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Century Medallion', description: 'Proof of 100 levels conquered!', icon: '🏅' });
+    }
+    if (level === 200) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Crystal Globe', description: 'See the world clearly!', icon: '🔮' });
+    }
+    if (level === 300) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Explorer\'s Telescope', description: 'Discover new horizons!', icon: '🔭' });
+    }
+    if (level === 400) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Adventurer\'s Shield', description: 'Protection for your journey!', icon: '🛡️' });
+    }
+    if (level === 500) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Scholar\'s Lantern', description: 'Light the way to knowledge!', icon: '🏮' });
+    }
+    if (level === 600) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Expert\'s Scepter', description: 'Wield the power of expertise!', icon: '🪄' });
+    }
+    if (level === 700) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Master\'s Crown', description: 'The crown of knowledge masters!', icon: '👑' });
+    }
+    if (level === 800) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Diamond Heart', description: 'Unbreakable dedication!', icon: '💎' });
+    }
+    if (level === 900) {
+        unlocks.push({ type: 'ARTIFACT', name: 'Legendary Star', description: 'Shine among the legends!', icon: '⭐' });
+    }
+
+    // ========== TITLE UNLOCKS (Every 25 levels) ==========
+    if (level % 25 === 0) {
         unlocks.push({
             type: 'TITLE',
             name: getLevelTitle(level),
             description: `Achieved Level ${level}!`,
             icon: getTierBadge(getLevelTier(level)),
+        });
+    }
+
+    // ========== CENTURY MILESTONES (Every 100 levels) ==========
+    if (level % 100 === 0 && level > 0) {
+        unlocks.push({
+            type: 'REWARD',
+            name: `${level / 100}x Century Bonus`,
+            description: `+${level * 10} bonus XP for reaching Level ${level}!`,
+            icon: '🎁',
         });
     }
 
@@ -540,7 +667,7 @@ export const getLevelProgress = (currentXP: number, level: number): number => {
 
 export const getLevelFromXP = (totalXP: number): number => {
     let level = 1;
-    while (calculateTotalXPForLevel(level + 1) <= totalXP && level < 100) {
+    while (calculateTotalXPForLevel(level + 1) <= totalXP && level < 1000) {
         level++;
     }
     return level;
