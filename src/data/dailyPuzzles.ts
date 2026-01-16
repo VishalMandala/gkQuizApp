@@ -372,6 +372,107 @@ export const dailyDiscoveries: Omit<DailyDiscovery, 'id' | 'date' | 'isCollected
     { factText: 'Kangaroos can\'t walk backwards. Neither can emus — that\'s why they\'re on Australia\'s coat of arms!', factShort: 'Kangaroos AND emus: Can\'t walk backwards!', source: 'Australian Government', continent: 'AUSTRALIA_OCEANIA', category: 'NATURE_WILDLIFE' },
     { factText: 'Australia has more sheep than people — about 75 million sheep to 26 million humans!', factShort: 'Australia: 75 million sheep, 26 million people!', source: 'Australian Bureau of Statistics', continent: 'AUSTRALIA_OCEANIA', category: 'FUN_FACTS' },
     { factText: 'The platypus is venomous. Males have venomous spurs on their back legs!', factShort: 'Platypus: One of few venomous mammals!', source: 'Australian Museum', continent: 'AUSTRALIA_OCEANIA', category: 'NATURE_WILDLIFE' },
+
+    // FAMOUS PEOPLE
+    { factText: 'Albert Einstein failed his first college entrance exam. He later revolutionized physics.', factShort: 'Einstein: Failed first college exam!', source: 'Biography.com', continent: 'EUROPE', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Leonardo da Vinci could write with one hand while drawing with the other simultaneously.', factShort: 'Da Vinci: Write and draw at same time!', source: 'Smithsonian', continent: 'EUROPE', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Oprah Winfrey was fired from her first TV job as a news anchor in Baltimore.', factShort: 'Oprah: Fired from first TV job!', source: 'Biography.com', continent: 'NORTH_AMERICA', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Mahatma Gandhi never won the Nobel Peace Prize despite being nominated 5 times.', factShort: 'Gandhi: Never won Nobel — nominated 5 times!', source: 'Nobel Prize', continent: 'ASIA', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Nelson Mandela was in prison for 27 years before becoming South Africa\'s president.', factShort: 'Mandela: 27 years prison → President!', source: 'Nelson Mandela Foundation', continent: 'AFRICA', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Stephen Hawking was told he had 2 years to live at 21. He lived to 76 and revolutionized physics.', factShort: 'Hawking: Given 2 years to live — lived to 76!', source: 'Biography.com', continent: 'EUROPE', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Walt Disney was fired from a newspaper for "lacking imagination." He won 22 Oscars.', factShort: 'Disney: Fired for no imagination — won 22 Oscars!', source: 'Disney Archives', continent: 'NORTH_AMERICA', category: 'FAMOUS_PEOPLE' },
+    { factText: 'Frida Kahlo started painting after a bus accident left her bedridden for months.', factShort: 'Frida Kahlo: Started painting after accident!', source: 'Museo Frida Kahlo', continent: 'NORTH_AMERICA', category: 'FAMOUS_PEOPLE' },
+
+    // MUSIC & ARTS
+    { factText: 'Beethoven composed his greatest works while completely deaf, including his 9th Symphony.', factShort: 'Beethoven: Composed masterpieces while DEAF!', source: 'Smithsonian', continent: 'EUROPE', category: 'MUSIC_ARTS' },
+    { factText: 'The song "Happy Birthday" was copyrighted until 2016 — it earned $2 million per year in royalties.', factShort: 'Happy Birthday: $2 million/year until 2016!', source: 'Time Magazine', continent: 'NORTH_AMERICA', category: 'MUSIC_ARTS' },
+    { factText: 'The Mona Lisa has no eyebrows. It was fashionable in Renaissance Florence to shave them.', factShort: 'Mona Lisa: No eyebrows — Renaissance fashion!', source: 'Louvre Museum', continent: 'EUROPE', category: 'MUSIC_ARTS' },
+    { factText: 'The piano has 88 keys because that\'s as many notes as the human ear can distinguish.', factShort: 'Piano: 88 keys = human ear\'s limit!', source: 'Steinway', continent: 'EUROPE', category: 'MUSIC_ARTS' },
+    { factText: 'Vincent van Gogh only sold ONE painting during his lifetime. Now his works sell for $100+ million.', factShort: 'Van Gogh: Sold 1 painting alive — now $100M+!', source: 'Van Gogh Museum', continent: 'EUROPE', category: 'MUSIC_ARTS' },
+    { factText: 'ABBA turned down $1 billion for a reunion tour. They eventually reunited in 2021 as holograms!', factShort: 'ABBA: Said no to $1 billion — came back as holograms!', source: 'BBC', continent: 'EUROPE', category: 'MUSIC_ARTS' },
+
+    // TECHNOLOGY
+    { factText: 'The first iPhone had less computing power than a modern singing birthday card.', factShort: 'First iPhone: Less power than a birthday card!', source: 'Computer History', continent: 'NORTH_AMERICA', category: 'SCIENCE' },
+    { factText: 'Google was originally called "BackRub." The name "Google" is a misspelling of "googol" (10^100).', factShort: 'Google: Was called "BackRub" originally!', source: 'Google', continent: 'NORTH_AMERICA', category: 'SCIENCE' },
+    { factText: 'The first computer virus was created in 1986 and was called "Brain."', factShort: 'First virus 1986: Called "Brain"!', source: 'Computer Security', continent: 'ASIA', category: 'SCIENCE' },
+    { factText: 'The QWERTY keyboard was designed to SLOW typists down so typewriters wouldn\'t jam.', factShort: 'QWERTY: Designed to SLOW you down!', source: 'Smithsonian', continent: 'NORTH_AMERICA', category: 'SCIENCE' },
+    { factText: 'More people own a mobile phone than a toothbrush. 6.8 billion phones vs 4.5 billion toothbrushes.', factShort: 'More phones than toothbrushes worldwide!', source: 'UN Telecom', category: 'SCIENCE' },
+
+    // MORE GEOGRAPHY
+    { factText: 'Monaco is smaller than Central Park in New York City. Only 2 km² vs 3.4 km²!', factShort: 'Monaco: Smaller than Central Park!', source: 'World Atlas', continent: 'EUROPE', category: 'GEOGRAPHY' },
+    { factText: 'There\'s a town in Norway where the sun doesn\'t set for 76 days straight in summer.', factShort: 'Norway: 76 days of continuous sunlight!', source: 'Visit Norway', continent: 'EUROPE', category: 'GEOGRAPHY' },
+    { factText: 'The driest place on Earth is in Antarctica, not Africa. Some areas haven\'t had rain in 2 million years.', factShort: 'Driest place: Antarctica — no rain for 2 million years!', source: 'NASA', continent: 'ANTARCTICA', category: 'GEOGRAPHY' },
+    { factText: 'Lake Baikal in Russia holds 20% of the world\'s unfrozen fresh water — more than all the Great Lakes combined.', factShort: 'Lake Baikal: 20% of world\'s fresh water!', source: 'Smithsonian', continent: 'ASIA', category: 'GEOGRAPHY' },
+    { factText: 'The shortest place name in the world is "Å" — a village in Norway. It means "stream" in Norse.', factShort: 'Shortest place name: "Å" in Norway!', source: 'Visit Norway', continent: 'EUROPE', category: 'GEOGRAPHY' },
+
+    // MORE NATURE
+    { factText: 'A woodpecker\'s tongue wraps around its skull. It protects the brain from impact!', factShort: 'Woodpecker: Tongue wraps around skull!', source: 'Audubon Society', category: 'NATURE_WILDLIFE' },
+    { factText: 'Starfish don\'t have blood. They pump seawater through their bodies instead!', factShort: 'Starfish: No blood — use seawater!', source: 'Marine Biology', category: 'NATURE_WILDLIFE' },
+    { factText: 'Butterflies taste with their feet. They land on food to check if it\'s edible!', factShort: 'Butterflies: Taste with their feet!', source: 'Smithsonian', category: 'NATURE_WILDLIFE' },
+    { factText: 'Giraffes only need 30 minutes of sleep per day, taken in 5-minute naps.', factShort: 'Giraffes: 30 minutes sleep/day in 5-min naps!', source: 'San Diego Zoo', continent: 'AFRICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Koalas sleep 22 hours per day. Eucalyptus leaves provide so little energy!', factShort: 'Koalas: Sleep 22 hours daily!', source: 'Australia Zoo', continent: 'AUSTRALIA_OCEANIA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Sea otters hold hands while sleeping so they don\'t drift apart.', factShort: 'Sea otters: Hold hands while sleeping! 🦦', source: 'Monterey Bay Aquarium', continent: 'NORTH_AMERICA', category: 'NATURE_WILDLIFE' },
+    { factText: 'Axolotls can regenerate their brain. They can regrow limbs, hearts, and even parts of their brain!', factShort: 'Axolotls: Can regrow their BRAIN!', source: 'Nature', continent: 'NORTH_AMERICA', category: 'NATURE_WILDLIFE' },
+
+    // MORE HISTORY
+    { factText: 'The Great Fire of London in 1666 destroyed 13,000 houses but only 6 people died.', factShort: 'Great Fire of London: 13,000 houses, 6 deaths!', source: 'Museum of London', continent: 'EUROPE', category: 'HISTORY' },
+    { factText: 'Genghis Khan\'s empire was so large that 0.5% of the world\'s population today may be related to him.', factShort: 'Genghis Khan: 0.5% of humans related to him!', source: 'Nature Genetics', continent: 'ASIA', category: 'HISTORY' },
+    { factText: 'The Berlin Wall fell because a spokesman accidentally said borders were open "immediately."', factShort: 'Berlin Wall: Fell due to accidental announcement!', source: 'History.com', continent: 'EUROPE', category: 'HISTORY' },
+    { factText: 'Ancient Romans used urine as mouthwash. The ammonia actually does whiten teeth!', factShort: 'Romans: Used urine as mouthwash! 😬', source: 'Smithsonian', continent: 'EUROPE', category: 'HISTORY' },
+    { factText: 'The first person convicted of speeding was going 8 mph in a 2 mph zone in 1896.', factShort: 'First speeding ticket: 8 mph in 2 mph zone!', source: 'BBC', continent: 'EUROPE', category: 'HISTORY' },
+
+    // MORE SCIENCE
+    { factText: 'Your body has enough iron to make a 3-inch nail.', factShort: 'Your body: Enough iron for a 3-inch nail!', source: 'NIH', category: 'SCIENCE' },
+    { factText: 'If you drilled a tunnel through Earth and jumped in, you\'d arrive at the other side in 42 minutes.', factShort: 'Tunnel through Earth = 42 minute trip!', source: 'Physics Today', category: 'SCIENCE' },
+    { factText: 'The smell of rain has a name: "petrichor." It\'s caused by bacteria in the soil.', factShort: 'Rain smell = "Petrichor" — from soil bacteria!', source: 'Nature', category: 'SCIENCE' },
+    { factText: 'Your stomach gets a completely new lining every 3-4 days. Otherwise it would digest itself!', factShort: 'Stomach: New lining every 3-4 days!', source: 'NIH', category: 'SCIENCE' },
+    { factText: 'One tablespoon of a neutron star would weigh 6 billion tons.', factShort: 'Neutron star: 1 tablespoon = 6 billion tons!', source: 'NASA', category: 'SCIENCE' },
+    { factText: 'Glass is actually a liquid that flows very slowly. Ancient windows are thicker at the bottom.', factShort: 'Glass: Actually a slow-flowing liquid!', source: 'Scientific American', category: 'SCIENCE' },
+
+    // MORE CULTURE
+    { factText: 'In South Korea, your "age" goes up on New Year\'s Day, not your birthday!', factShort: 'Korea: Age changes on New Year — not birthday!', source: 'Korea Herald', continent: 'ASIA', category: 'CULTURE' },
+    { factText: 'In Japan, slurping your soup is a compliment to the chef and helps cool it down.', factShort: 'Japan: Slurp soup = compliment to chef!', source: 'Japan Tourism', continent: 'ASIA', category: 'CULTURE' },
+    { factText: 'In some parts of China, brides wear red instead of white. White is for funerals.', factShort: 'China: Brides wear red — white is for funerals!', source: 'Chinese Culture', continent: 'ASIA', category: 'CULTURE' },
+    { factText: 'In Brazil, the OK hand gesture is considered very offensive.', factShort: 'Brazil: OK gesture is offensive!', source: 'Culture Guide', continent: 'SOUTH_AMERICA', category: 'CULTURE' },
+    { factText: 'In Russia, giving someone an even number of flowers is only for funerals.', factShort: 'Russia: Even flowers = funeral only!', source: 'Russian Culture', continent: 'EUROPE', category: 'CULTURE' },
+
+    // MORE FUN FACTS
+    { factText: 'A single strand of spaghetti is called a "spaghetto."', factShort: 'One spaghetti = "spaghetto"!', source: 'Italian Language', continent: 'EUROPE', category: 'FUN_FACTS' },
+    { factText: 'Humans are the only animals that blush. Charles Darwin called it "the most peculiar expression."', factShort: 'Only humans blush — Darwin called it peculiar!', source: 'Darwin', category: 'FUN_FACTS' },
+    { factText: 'A group of cats is called a "clowder." A group of kittens is a "kindle."', factShort: 'Cats: "Clowder" — Kittens: "Kindle"! 🐱', source: 'Oxford Dictionary', category: 'FUN_FACTS' },
+    { factText: 'Nintendo originally sold playing cards, then vacuum cleaners, then love hotels before video games.', factShort: 'Nintendo: Playing cards → vacuums → love hotels → games!', source: 'Nintendo History', continent: 'ASIA', category: 'FUN_FACTS' },
+    { factText: 'Cashews grow on the bottom of apples. The "cashew apple" fruit is edible too!', factShort: 'Cashews: Grow on apples!', source: 'USDA', continent: 'SOUTH_AMERICA', category: 'FUN_FACTS' },
+    { factText: 'Your tongue print is as unique as your fingerprint.', factShort: 'Tongue print: Unique like fingerprints!', source: 'Biometrics', category: 'FUN_FACTS' },
+    { factText: 'A blue whale\'s fart bubble is large enough to enclose a horse.', factShort: 'Blue whale fart: Big enough for a horse!', source: 'Marine Biology', category: 'FUN_FACTS' },
+    { factText: 'Cows have best friends and get stressed when separated from them.', factShort: 'Cows: Have best friends — get stressed apart!', source: 'Animal Behavior', category: 'FUN_FACTS' },
+
+    // MORE SPORTS
+    { factText: 'Michael Jordan was cut from his high school basketball team sophomore year.', factShort: 'Jordan: Cut from high school team!', source: 'ESPN', continent: 'NORTH_AMERICA', category: 'SPORTS' },
+    { factText: 'The Olympic flame is lit using a parabolic mirror and the sun in Greece for every Games.', factShort: 'Olympic flame: Lit by sunlight in Greece!', source: 'Olympics', continent: 'EUROPE', category: 'SPORTS' },
+    { factText: 'Baseball was invented in 1846 but didn\'t have gloves until 1875. Players caught with bare hands!', factShort: 'Baseball 1846-1875: No gloves — bare hands!', source: 'Baseball Hall of Fame', continent: 'NORTH_AMERICA', category: 'SPORTS' },
+    { factText: 'The Super Bowl halftime show is the most watched musical event in the world.', factShort: 'Super Bowl halftime: Most watched music event!', source: 'NFL', continent: 'NORTH_AMERICA', category: 'SPORTS' },
+    { factText: 'Usain Bolt ate 1,000 Chicken McNuggets during the 2008 Beijing Olympics and won 3 gold medals.', factShort: 'Bolt: 1,000 McNuggets at Olympics — won 3 golds!', source: 'ESPN', continent: 'NORTH_AMERICA', category: 'SPORTS' },
+
+    // MORE FOOD
+    { factText: 'Ketchup was sold as medicine in the 1830s. It was believed to cure diarrhea!', factShort: 'Ketchup 1830s: Sold as medicine!', source: 'Smithsonian', continent: 'NORTH_AMERICA', category: 'FOOD' },
+    { factText: 'Fortune cookies were invented in California, not China. Chinese restaurants in China don\'t have them!', factShort: 'Fortune cookies: Invented in California — not China!', source: 'NPR', continent: 'NORTH_AMERICA', category: 'FOOD' },
+    { factText: 'Honey is the only food that never spoils. 3,000-year-old honey was found edible in Egyptian tombs.', factShort: 'Honey: Never spoils — 3,000-year-old still edible!', source: 'National Geographic', continent: 'AFRICA', category: 'FOOD' },
+    { factText: 'Strawberries have more vitamin C than oranges. One cup has 150% of your daily needs!', factShort: 'Strawberries: More vitamin C than oranges!', source: 'USDA', category: 'FOOD' },
+    { factText: 'The world\'s most stolen food is cheese. About 4% of all cheese produced is stolen!', factShort: 'Cheese: Most stolen food — 4% disappears!', source: 'British Cheese Board', continent: 'EUROPE', category: 'FOOD' },
+
+    // MORE RECORDS
+    { factText: 'The world\'s largest snowflake ever recorded was 15 inches wide — in Montana, 1887.', factShort: 'Biggest snowflake: 15 inches — Montana 1887!', source: 'Guinness World Records', continent: 'NORTH_AMERICA', category: 'RECORDS' },
+    { factText: 'The most expensive painting ever sold was Da Vinci\'s Salvator Mundi for $450 million.', factShort: 'Most expensive painting: $450 million!', source: 'Christie\'s', continent: 'EUROPE', category: 'RECORDS' },
+    { factText: 'The tallest man ever was 8\'11" (2.72m). Robert Wadlow was still growing when he died at 22.', factShort: 'Tallest man ever: 8\'11" — still growing!', source: 'Guinness World Records', continent: 'NORTH_AMERICA', category: 'RECORDS' },
+    { factText: 'The smallest country by population is Vatican City with about 800 residents.', factShort: 'Vatican City: 800 people — smallest population!', source: 'Vatican', continent: 'EUROPE', category: 'RECORDS' },
+    { factText: 'The loudest animal is the sperm whale — 230 decibels. That\'s louder than a rocket launch!', factShort: 'Sperm whale: 230 decibels — louder than rockets!', source: 'NOAA', category: 'RECORDS' },
+
+    // FESTIVALS
+    { factText: 'Diwali uses more fireworks than any other event in the world — over 1 billion each year.', factShort: 'Diwali: 1 billion fireworks — most in world!', source: 'Times of India', continent: 'ASIA', category: 'FESTIVALS' },
+    { factText: 'Carnival in Rio has 2 million people dancing in the streets daily for a week.', factShort: 'Rio Carnival: 2 million dancing daily!', source: 'Rio Tourism', continent: 'SOUTH_AMERICA', category: 'FESTIVALS' },
+    { factText: 'Oktoberfest serves 7 million liters of beer in just 16 days. That\'s 1.3 million gallons!', factShort: 'Oktoberfest: 7 million liters in 16 days!', source: 'Munich Tourism', continent: 'EUROPE', category: 'FESTIVALS' },
+    { factText: 'The Holi festival of colors uses naturally colored powders from flowers and turmeric.', factShort: 'Holi colors: Made from flowers + turmeric!', source: 'India Tourism', continent: 'ASIA', category: 'FESTIVALS' },
+    { factText: 'La Tomatina festival throws 150,000 tomatoes in one hour. Participants must squish tomatoes before throwing!', factShort: 'La Tomatina: 150,000 tomatoes in 1 hour!', source: 'Spain Tourism', continent: 'EUROPE', category: 'FESTIVALS' },
 ];
 
 // ============================================================================
