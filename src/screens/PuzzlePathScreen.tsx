@@ -375,9 +375,9 @@ const MilestoneNode: React.FC<MilestoneNodeProps> = ({ level, currentLevel, inde
     // ZIG-ZAG WAVY PATTERN: More dramatic left-right movement
     const pattern = index % 4;
     let horizontalOffset = 0;
-    if (pattern === 0) horizontalOffset = -120;     // Far left
+    if (pattern === 0) horizontalOffset = -150;     // Far far left
     else if (pattern === 1) horizontalOffset = 0;   // Center
-    else if (pattern === 2) horizontalOffset = 120; // Far right
+    else if (pattern === 2) horizontalOffset = 150; // Far far right
     else horizontalOffset = 0;                      // Center
 
     const rotateInterpolate = rotateAnim.interpolate({
@@ -592,9 +592,9 @@ const AnimatedPathLine: React.FC<{
 
     // Get horizontal positions - must match MilestoneNode offsets
     const getOffset = (p: number) => {
-        if (p === 0) return -120;
+        if (p === 0) return -150;
         if (p === 1) return 0;
-        if (p === 2) return 120;
+        if (p === 2) return 150;
         return 0;
     };
 
@@ -620,8 +620,8 @@ const AnimatedPathLine: React.FC<{
                 {/* Snake-like wavy S-curve path */}
                 <Path
                     d={`M ${SCREEN_WIDTH / 2 - 10 + fromX} 0 
-                        C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 80 : -80)} 15,
-                          ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -80 : 80)} 45,
+                        C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 100 : -100)} 15,
+                          ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -100 : 100)} 45,
                           ${SCREEN_WIDTH / 2 - 10 + toX} 60`}
                     stroke={isPast ? tierColor : isCurrent ? `${tierColor}90` : '#374151'}
                     strokeWidth={isPast ? 5 : 3}
@@ -635,8 +635,8 @@ const AnimatedPathLine: React.FC<{
                 {isPast && (
                     <Path
                         d={`M ${SCREEN_WIDTH / 2 - 10 + fromX} 0 
-                            C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 80 : -80)} 15,
-                              ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -80 : 80)} 45,
+                            C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 100 : -100)} 15,
+                              ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -100 : 100)} 45,
                               ${SCREEN_WIDTH / 2 - 10 + toX} 60`}
                         stroke={tierColor}
                         strokeWidth={12}
