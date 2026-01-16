@@ -642,7 +642,7 @@ const AnimatedPathLine: React.FC<{
                         {
                             height: heightAnim.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: [0, 40],
+                                outputRange: [0, 60],
                             }),
                         },
                     ]}
@@ -792,10 +792,11 @@ const PuzzlePathScreen: React.FC = () => {
     const { currentLevel, totalXP } = mockUser;
     const scrollRef = useRef<ScrollView>(null);
 
-    // Generate sequential levels to display (show all levels 1 to current+20)
-    // This creates a proper level-by-level journey
+    // Progressive unlock: Show completed levels + current level + next 5 locked levels
+    // Users must complete each level to unlock the next
     const levels = useMemo(() => {
-        const maxLevel = Math.min(currentLevel + 20, 1000); // Show up to 20 levels ahead
+        // Show from level 1 to current level + 5 (preview of upcoming locked levels)
+        const maxLevel = Math.min(currentLevel + 5, 1000);
         const allLevels: number[] = [];
         for (let i = 1; i <= maxLevel; i++) {
             allLevels.push(i);
@@ -807,11 +808,11 @@ const PuzzlePathScreen: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             const currentIndex = levels.findIndex(l => l === currentLevel);
-            if (currentIndex > 3 && scrollRef.current) {
-                // Each node is approximately 100px tall
-                scrollRef.current.scrollTo({ y: currentIndex * 100 - 150, animated: true });
+            if (currentIndex > 2 && scrollRef.current) {
+                // Scroll to show current level in the middle of the screen
+                scrollRef.current.scrollTo({ y: Math.max(0, currentIndex * 130 - 200), animated: true });
             }
-        }, 800);
+        }, 600);
         return () => clearTimeout(timer);
     }, [currentLevel, levels]);
 
@@ -1056,7 +1057,7 @@ const styles = StyleSheet.create({
     checkmarkText: { fontSize: 12, fontWeight: '800', color: '#fff' },
 
     pathLineContainer: {
-        height: 50,
+        height: 70,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
@@ -1068,9 +1069,9 @@ const styles = StyleSheet.create({
     },
     pathLineGlow: {
         position: 'absolute',
-        width: 20,
-        height: 40,
-        borderRadius: 10,
+        width: 30,
+        height: 60,
+        borderRadius: 15,
     },
     pathLineVertical: {
         borderRadius: 3,
@@ -1078,21 +1079,23 @@ const styles = StyleSheet.create({
     pathLine: { height: 4, borderRadius: 2 },
     pathOrb: {
         position: 'absolute',
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        top: 19,
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        top: 27,
         shadowColor: '#fff',
-        shadowOpacity: 0.5,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOpacity: 0.6,
+        shadowRadius: 6,
+        elevation: 4,
+        borderWidth: 2,
+        borderColor: 'rgba(255,255,255,0.5)',
     },
     pathOrbSmall: {
         position: 'absolute',
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        top: 21,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        top: 30,
     },
 
     finalDestination: { alignItems: 'center', marginTop: 40, paddingVertical: 30 },
