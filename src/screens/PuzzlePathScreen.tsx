@@ -608,8 +608,8 @@ const AnimatedPathLine: React.FC<{
 
     return (
         <View style={[styles.curvedPathContainer]}>
-            {/* SVG S-curve wavy path */}
-            <Svg height="70" width={SCREEN_WIDTH - 40} style={styles.svgPath}>
+            {/* SVG snake-like wavy path */}
+            <Svg height="60" width={SCREEN_WIDTH - 20} style={styles.svgPath}>
                 <Defs>
                     <RadialGradient id={`grad-${index}`} cx="50%" cy="50%" r="50%">
                         <Stop offset="0%" stopColor={tierColor} stopOpacity="1" />
@@ -617,16 +617,16 @@ const AnimatedPathLine: React.FC<{
                     </RadialGradient>
                 </Defs>
 
-                {/* S-curve wavy connecting path using cubic bezier */}
+                {/* Snake-like wavy S-curve path */}
                 <Path
-                    d={`M ${SCREEN_WIDTH / 2 - 20 + fromX} 0 
-                        C ${SCREEN_WIDTH / 2 - 20 + fromX + (isMovingRight ? 40 : -40)} 20,
-                          ${SCREEN_WIDTH / 2 - 20 + toX + (isMovingRight ? -40 : 40)} 50,
-                          ${SCREEN_WIDTH / 2 - 20 + toX} 70`}
-                    stroke={isPast ? tierColor : isCurrent ? `${tierColor}80` : '#374151'}
-                    strokeWidth={isPast ? 6 : 3}
+                    d={`M ${SCREEN_WIDTH / 2 - 10 + fromX} 0 
+                        C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 80 : -80)} 15,
+                          ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -80 : 80)} 45,
+                          ${SCREEN_WIDTH / 2 - 10 + toX} 60`}
+                    stroke={isPast ? tierColor : isCurrent ? `${tierColor}90` : '#374151'}
+                    strokeWidth={isPast ? 5 : 3}
                     strokeLinecap="round"
-                    strokeDasharray={isPast || isCurrent ? undefined : "8,8"}
+                    strokeDasharray={isPast || isCurrent ? undefined : "6,6"}
                     fill="none"
                     opacity={isPast ? 1 : 0.5}
                 />
@@ -634,25 +634,15 @@ const AnimatedPathLine: React.FC<{
                 {/* Glow effect for completed paths */}
                 {isPast && (
                     <Path
-                        d={`M ${SCREEN_WIDTH / 2 - 20 + fromX} 0 
-                            C ${SCREEN_WIDTH / 2 - 20 + fromX + (isMovingRight ? 40 : -40)} 20,
-                              ${SCREEN_WIDTH / 2 - 20 + toX + (isMovingRight ? -40 : 40)} 50,
-                              ${SCREEN_WIDTH / 2 - 20 + toX} 70`}
+                        d={`M ${SCREEN_WIDTH / 2 - 10 + fromX} 0 
+                            C ${SCREEN_WIDTH / 2 - 10 + fromX + (isMovingRight ? 80 : -80)} 15,
+                              ${SCREEN_WIDTH / 2 - 10 + toX + (isMovingRight ? -80 : 80)} 45,
+                              ${SCREEN_WIDTH / 2 - 10 + toX} 60`}
                         stroke={tierColor}
-                        strokeWidth={14}
+                        strokeWidth={12}
                         strokeLinecap="round"
                         fill="none"
-                        opacity={0.25}
-                    />
-                )}
-
-                {/* Orb at midpoint for completed */}
-                {isPast && (
-                    <Circle
-                        cx={SCREEN_WIDTH / 2 - 20 + fromX + deltaX / 2}
-                        cy={35}
-                        r={6}
-                        fill={tierColor}
+                        opacity={0.2}
                     />
                 )}
             </Svg>
@@ -999,7 +989,7 @@ const styles = StyleSheet.create({
     startBadge: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20 },
     startText: { fontSize: 12, fontWeight: '800', color: '#fff', letterSpacing: 1 },
 
-    milestoneContainer: { alignItems: 'center', marginVertical: 12 },
+    milestoneContainer: { alignItems: 'center', marginVertical: 8 },
     nodeTouchable: { alignItems: 'center' },
     outerRing: { position: 'absolute', borderWidth: 2, borderStyle: 'dashed' },
     nodeWrapper: {},
@@ -1056,7 +1046,7 @@ const styles = StyleSheet.create({
 
     // Curved SVG path styles
     curvedPathContainer: {
-        height: 70,
+        height: 60,
         alignItems: 'center',
         justifyContent: 'center',
     },
