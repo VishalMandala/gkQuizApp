@@ -3,11 +3,13 @@
  * Interactive quiz with animations and feedback
  */
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Animated, Easing, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import allExpandedQuestions from '../data/questions';
+import type { Question } from '../types';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -24,49 +26,69 @@ const colors = {
 const spacing = { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20, 6: 24, 8: 32 };
 
 // ============================================================================
-// MOCK DATA
+// CONTINENT EMOJI MAPPING
 // ============================================================================
 
-const sampleQuestions = [
-    {
-        id: '1',
-        continent: 'Africa',
-        continentEmoji: '🦁',
-        category: 'History',
-        difficulty: 3,
-        hook: "The walls of this palace tell the story of a conquering lion...",
-        question: "Which African emperor built the iconic rock-hewn churches of Lalibela?",
-        options: [
-            { id: 'A', text: 'Menelik II' },
-            { id: 'B', text: 'Haile Selassie' },
-            { id: 'C', text: 'King Lalibela' },
-            { id: 'D', text: 'Tewodros II' },
-        ],
-        correctAnswer: 'C',
-        explanation: "King Lalibela of Ethiopia commissioned 11 monolithic churches carved from solid rock in the 12th century. Legend says angels helped complete the work at night. These churches remain active places of worship today, drawing pilgrims from around the world.",
-        xpReward: 50,
-        timeLimit: 30,
-    },
-    {
-        id: '2',
-        continent: 'Asia',
-        continentEmoji: '🌏',
-        category: 'Geography',
-        difficulty: 2,
-        hook: "A sea that keeps getting saltier, shrinking every year...",
-        question: "The Dead Sea borders which two countries?",
-        options: [
-            { id: 'A', text: 'Israel and Egypt' },
-            { id: 'B', text: 'Israel and Jordan' },
-            { id: 'C', text: 'Jordan and Saudi Arabia' },
-            { id: 'D', text: 'Syria and Lebanon' },
-        ],
-        correctAnswer: 'B',
-        explanation: "The Dead Sea, Earth's lowest point on land at 430m below sea level, lies between Israel and Jordan. Its extreme salinity (34.2%) allows swimmers to float effortlessly. Sadly, it's shrinking by about 1 meter per year.",
-        xpReward: 35,
-        timeLimit: 25,
-    },
-];
+const continentEmojis: Record<string, string> = {
+    AFRICA: '🦁',
+    ASIA: '🐼',
+    EUROPE: '🏰',
+    NORTH_AMERICA: '🗽',
+    SOUTH_AMERICA: '🌴',
+    AUSTRALIA_OCEANIA: '🦘',
+    ANTARCTICA: '🐧',
+};
+
+const continentNames: Record<string, string> = {
+    AFRICA: 'Africa',
+    ASIA: 'Asia',
+    EUROPE: 'Europe',
+    NORTH_AMERICA: 'North America',
+    SOUTH_AMERICA: 'South America',
+    AUSTRALIA_OCEANIA: 'Australia',
+    ANTARCTICA: 'Antarctica',
+};
+
+// ============================================================================
+// TRANSFORM QUESTION DATA
+// ============================================================================
+
+interface DisplayQuestion {
+    id: string;
+    continent: string;
+    continentEmoji: string;
+    category: string;
+    difficulty: number;
+    hook: string;
+    question: string;
+    options: { id: string; text: string }[];
+    correctAnswer: string;
+    explanation: string;
+    xpReward: number;
+    timeLimit: number;
+}
+
+const transformQuestion = (q: Question): DisplayQuestion => ({
+    id: q.id,
+    continent: continentNames[q.continent] || q.continent,
+    continentEmoji: continentEmojis[q.continent] || '🌍',
+    category: q.category.replace('_', ' '),
+    difficulty: Math.ceil(q.difficulty * 5), // Convert 0-1 to 1-5 scale
+    hook: q.hookText,
+    question: q.hookText, // Use hookText as the question
+    options: q.options.map(opt => ({ id: opt.id.toUpperCase(), text: opt.text })),
+    correctAnswer: q.correctAnswer.toUpperCase(),
+    explanation: q.explanation,
+    xpReward: Math.floor(20 + q.difficulty * 30), // 20-50 XP based on difficulty
+    timeLimit: Math.floor(20 + (1 - q.difficulty) * 15), // Easier = more time
+});
+
+// Get 5 random questions for a quiz session
+const getQuizQuestions = (count: number = 5): DisplayQuestion[] => {
+    const shuffled = [...allExpandedQuestions].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count).map(transformQuestion);
+};
+
 
 // ============================================================================
 // ANIMATION HOOKS
@@ -129,7 +151,7 @@ const useTimerAnimation = (duration: number, onComplete: () => void) => {
 // COMPONENTS
 // ============================================================================
 
-const Header: React.FC<{ question: typeof sampleQuestions[0]; currentIndex: number; total: number; onClose: () => void }> = ({ question, currentIndex, total, onClose }) => {
+const Header: React.FC<{ question: DisplayQuestion; currentIndex: number; total: number; onClose: () => void }> = ({ question, currentIndex, total, onClose }) => {
     const { opacity, translateY } = useEntranceAnimation(0);
 
     return (
@@ -182,7 +204,7 @@ const TimerBar: React.FC<{ duration: number; onTimeUp: () => void; isPaused: boo
     );
 };
 
-const QuestionCard: React.FC<{ question: typeof sampleQuestions[0] }> = ({ question }) => {
+const QuestionCard: React.FC<{ question: DisplayQuestion }> = ({ question }) => {
     const { opacity, translateY } = useEntranceAnimation(150);
 
     return (
@@ -295,13 +317,17 @@ const ExplanationPanel: React.FC<{ explanation: string; isCorrect: boolean; xp: 
 
 const QuestionScreen: React.FC = () => {
     const navigation = useNavigation();
+
+    // Generate quiz questions once on mount
+    const quizQuestions = useMemo(() => getQuizQuestions(5), []);
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [score, setScore] = useState(0);
 
-    const currentQuestion = sampleQuestions[currentQuestionIndex];
+    const currentQuestion = quizQuestions[currentQuestionIndex];
 
     const handleSelectAnswer = (optionId: string) => {
         if (showResult) return;
@@ -317,7 +343,7 @@ const QuestionScreen: React.FC = () => {
     };
 
     const handleNext = () => {
-        if (currentQuestionIndex < sampleQuestions.length - 1) {
+        if (currentQuestionIndex < quizQuestions.length - 1) {
             setCurrentQuestionIndex(prev => prev + 1);
             setSelectedAnswer(null);
             setShowResult(false);
@@ -343,8 +369,8 @@ const QuestionScreen: React.FC = () => {
             <View style={[styles.glowOrb, { bottom: '30%', left: '-15%', backgroundColor: colors.accent.indigo }]} />
 
             <SafeAreaView style={styles.safeArea}>
-                <Header question={currentQuestion} currentIndex={currentQuestionIndex} total={sampleQuestions.length} onClose={handleClose} />
-                <ProgressBar currentIndex={currentQuestionIndex} total={sampleQuestions.length} />
+                <Header question={currentQuestion} currentIndex={currentQuestionIndex} total={quizQuestions.length} onClose={handleClose} />
+                <ProgressBar currentIndex={currentQuestionIndex} total={quizQuestions.length} />
                 {!showResult && <TimerBar duration={currentQuestion.timeLimit} onTimeUp={handleTimeUp} isPaused={showResult} />}
 
                 <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
