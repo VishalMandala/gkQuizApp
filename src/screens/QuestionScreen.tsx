@@ -87,14 +87,35 @@ const transformQuestion = (q: Question): DisplayQuestion => ({
 const getQuizQuestions = (count: number = 5, continent?: string): DisplayQuestion[] => {
     let questions = [...allExpandedQuestions];
 
+    console.log(`[Quiz] Total questions available: ${questions.length}`);
+    console.log(`[Quiz] Selected continent: ${continent || 'ALL'}`);
+
     // Filter by continent if specified
     if (continent) {
-        questions = questions.filter(q => q.continent === continent);
+        const filtered = questions.filter(q => q.continent === continent);
+        console.log(`[Quiz] Questions for ${continent}: ${filtered.length}`);
+
+        // If we have enough questions for this continent, use them
+        if (filtered.length >= count) {
+            questions = filtered;
+        } else if (filtered.length > 0) {
+            // Use all available from this continent, but pad with random questions
+            const shuffledFiltered = filtered.sort(() => Math.random() - 0.5);
+            const remaining = questions
+                .filter(q => q.continent !== continent)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, count - filtered.length);
+            questions = [...shuffledFiltered, ...remaining];
+            console.log(`[Quiz] Padded with ${remaining.length} extra questions`);
+        }
+        // If no questions for continent, fall through to use all questions
     }
 
     // Shuffle and pick
     const shuffled = questions.sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, count).map(transformQuestion);
+    const result = shuffled.slice(0, count).map(transformQuestion);
+    console.log(`[Quiz] Returning ${result.length} questions`);
+    return result;
 };
 
 
@@ -341,6 +362,23 @@ const QuestionScreen: React.FC = () => {
     const [showResult, setShowResult] = useState(false);
     const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
     const [score, setScore] = useState(0);
+
+    // Safety check - if no questions, go back
+    if (quizQuestions.length === 0) {
+        return (
+            <View style={{ flex: 1, backgroundColor: '#030712', justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+                <Text style={{ color: '#fff', fontSize: 18, textAlign: 'center' }}>
+                    No questions available for this continent yet!
+                </Text>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={{ marginTop: 20, backgroundColor: '#6366F1', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 12 }}
+                >
+                    <Text style={{ color: '#fff', fontWeight: '700' }}>Go Back</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 
     const currentQuestion = quizQuestions[currentQuestionIndex];
 
