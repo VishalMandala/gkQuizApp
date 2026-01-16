@@ -822,6 +822,191 @@ const recordsAndFunFacts: Question[] = [
 ];
 
 // ============================================================================
+// ANTARCTICA - BATCH 3: HISTORY & EXPLORATION (8 questions)
+// ============================================================================
+
+const historyBatch3: Question[] = [
+    {
+        id: 'ant-hist-001',
+        continent: 'ANTARCTICA',
+        category: 'HISTORY',
+        subCategory: 'Exploration',
+        difficulty: 0.4,
+        fascinationScore: 0.93,
+        hookText: 'Who was the first person to reach the South Pole?',
+        options: [
+            { id: 'a', text: 'Robert Scott (UK)' },
+            { id: 'b', text: 'Roald Amundsen (Norway)' },
+            { id: 'c', text: 'Ernest Shackleton (UK)' },
+            { id: 'd', text: 'James Cook (UK)' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Roald Amundsen of Norway reached the South Pole first on December 14, 1911! Robert Scott arrived 34 days later and tragically died on the return journey. Amundsen used sled dogs while Scott used ponies and man-hauling — a fatal mistake. 🏆',
+        explanationShort: 'Amundsen: First to South Pole — 34 days before Scott!',
+        source: 'Scott Polar Research Institute',
+    },
+    {
+        id: 'ant-hist-002',
+        continent: 'ANTARCTICA',
+        category: 'HISTORY',
+        subCategory: 'Exploration',
+        difficulty: 0.5,
+        fascinationScore: 0.95,
+        hookText: 'Ernest Shackleton\'s ship Endurance was trapped in ice. How long did his crew survive before rescue?',
+        options: [
+            { id: 'a', text: '6 months' },
+            { id: 'b', text: '12 months' },
+            { id: 'c', text: '22 months' },
+            { id: 'd', text: '36 months' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Shackleton\'s crew survived 22 months after their ship was crushed by ice in 1915! Not a single man died. Shackleton sailed 800 miles in a tiny boat to get help. It\'s considered the greatest survival story ever. The Endurance wreck was found in 2022! 🚢',
+        explanationShort: 'Shackleton: 22 months — greatest survival story ever!',
+        source: 'Royal Geographical Society',
+    },
+    {
+        id: 'ant-hist-003',
+        continent: 'ANTARCTICA',
+        category: 'HISTORY',
+        subCategory: 'Treaties',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'The Antarctic Treaty was signed in 1959. How many countries have now signed it?',
+        options: [
+            { id: 'a', text: '12 countries' },
+            { id: 'b', text: '29 countries' },
+            { id: 'c', text: '54 countries' },
+            { id: 'd', text: '75 countries' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Antarctic Treaty now has 54 signatory nations! It bans military activity, nuclear testing, and territorial claims. Antarctica is dedicated to peace and science. It\'s the most successful international treaty ever — no wars, no disputes, just cooperation! 🕊️',
+        explanationShort: 'Antarctic Treaty: 54 nations — peace and science only!',
+        source: 'Antarctic Treaty Secretariat',
+    },
+    {
+        id: 'ant-hist-004',
+        continent: 'ANTARCTICA',
+        category: 'HISTORY',
+        subCategory: 'Discoveries',
+        difficulty: 0.6,
+        fascinationScore: 0.87,
+        hookText: 'Scientists have found meteorites from Mars in Antarctica. How many meteorites have been found there total?',
+        options: [
+            { id: 'a', text: 'About 5,000' },
+            { id: 'b', text: 'About 20,000' },
+            { id: 'c', text: 'About 45,000' },
+            { id: 'd', text: 'About 100,000' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Over 45,000 meteorites have been found in Antarctica — more than everywhere else combined! Dark rocks are easy to spot on white ice, and ice movement concentrates them. Some are from Mars and the Moon! Antarctica is the best meteorite hunting ground on Earth. 🪨☄️',
+        explanationShort: 'Antarctica: 45,000+ meteorites — more than rest of world!',
+        source: 'NASA Meteorite Program',
+    },
+];
+
+// ============================================================================
+// ANTARCTICA - BATCH 3: MORE FUN FACTS (7 questions)
+// ============================================================================
+
+const moreFunFactsBatch3: Question[] = [
+    {
+        id: 'ant-fun-012',
+        continent: 'ANTARCTICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Unique',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Antarctica has an ATM machine. What bank operates it?',
+        options: [
+            { id: 'a', text: 'Bank of America' },
+            { id: 'b', text: 'Wells Fargo' },
+            { id: 'c', text: 'There\'s no ATM' },
+            { id: 'd', text: 'There are 2 ATMs' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'There are 2 Wells Fargo ATMs at McMurdo Station! They were installed in 1998. A technician flies down once a year to service them. Most people don\'t need cash there — almost everything is free for scientists! 💵',
+        explanationShort: '2 Wells Fargo ATMs — serviced once a year!',
+        source: 'Wells Fargo',
+    },
+    {
+        id: 'ant-fun-013',
+        continent: 'ANTARCTICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Music',
+        difficulty: 0.5,
+        fascinationScore: 0.88,
+        hookText: 'The first concert in Antarctica was performed by which band?',
+        options: [
+            { id: 'a', text: 'Coldplay' },
+            { id: 'b', text: 'Metallica' },
+            { id: 'c', text: 'U2' },
+            { id: 'd', text: 'The Rolling Stones' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Metallica played a concert in Antarctica in 2013, becoming the first major band to perform on all 7 continents! Only about 120 people attended. They used special sound equipment so as not to disturb wildlife. The show was called "Freeze \'Em All"! 🎸',
+        explanationShort: 'Metallica: First band to play all 7 continents — "Freeze \'Em All"!',
+        source: 'Metallica Official',
+    },
+    {
+        id: 'ant-fun-014',
+        continent: 'ANTARCTICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Sports',
+        difficulty: 0.4,
+        fascinationScore: 0.87,
+        hookText: 'The Antarctic Ice Marathon is run near the South Pole. What is the temperature often like?',
+        options: [
+            { id: 'a', text: 'Around -10°C' },
+            { id: 'b', text: 'Around -20°C' },
+            { id: 'c', text: 'Around -30°C' },
+            { id: 'd', text: 'Around -40°C' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Antarctic Ice Marathon is run at around -20°C (sometimes colder) at 80° South latitude! Runners face wind, altitude, and snow. It costs about $20,000 to enter. Only about 50 people run it each year. The course is entirely on ice and snow! 🏃‍♂️❄️',
+        explanationShort: 'Antarctic Marathon: -20°C — $20,000 to enter!',
+        source: 'Antarctic Ice Marathon',
+    },
+    {
+        id: 'ant-fun-015',
+        continent: 'ANTARCTICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Communication',
+        difficulty: 0.4,
+        fascinationScore: 0.85,
+        hookText: 'Antarctica has its own top-level internet domain. What is it?',
+        options: [
+            { id: 'a', text: '.ant' },
+            { id: 'b', text: '.aq' },
+            { id: 'c', text: '.ice' },
+            { id: 'd', text: '.sp (South Pole)' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Antarctica\'s domain is .aq (from the French "Antarctique")! There are very few .aq websites since you need a physical presence in Antarctica to get one. Research stations have satellite internet, but it\'s slow and expensive! 🌐',
+        explanationShort: '.aq domain: Need to be in Antarctica to get one!',
+        source: 'IANA',
+    },
+    {
+        id: 'ant-fun-016',
+        continent: 'ANTARCTICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Records',
+        difficulty: 0.5,
+        fascinationScore: 0.9,
+        hookText: 'The coldest temperature ever recorded on Earth was in Antarctica. How cold was it?',
+        options: [
+            { id: 'a', text: '-78.5°C (-109.3°F)' },
+            { id: 'b', text: '-89.2°C (-128.6°F)' },
+            { id: 'c', text: '-94.7°C (-138.5°F)' },
+            { id: 'd', text: '-98.6°C (-145.5°F)' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The coldest temperature ever was -94.7°C (-138.5°F) measured by satellite in 2010! The coldest ground measurement was -89.2°C at Vostok Station in 1983. At these temperatures, metal shatters like glass and boiling water freezes before hitting the ground! 🥶',
+        explanationShort: '-94.7°C: Coldest ever — metal shatters like glass!',
+        source: 'NASA Earth Observatory',
+    },
+];
+
+// ============================================================================
 // COMBINE ALL ANTARCTICA QUESTIONS
 // ============================================================================
 
@@ -835,6 +1020,9 @@ export const antarcticaQuestionsExpanded: Question[] = [
     ...natureBatch2,
     ...scienceBatch2,
     ...recordsAndFunFacts,
+    // Batch 3
+    ...historyBatch3,
+    ...moreFunFactsBatch3,
 ];
 
 export default antarcticaQuestionsExpanded;

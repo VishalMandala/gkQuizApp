@@ -1653,6 +1653,210 @@ const musicBatch3: Question[] = [
 ];
 
 // ============================================================================
+// NORTH AMERICA - BATCH 4: CANADA & MEXICO (10 questions)
+// ============================================================================
+
+const canadaMexicoBatch4: Question[] = [
+    {
+        id: 'namerica-can-001',
+        continent: 'NORTH_AMERICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Canada',
+        difficulty: 0.3,
+        fascinationScore: 0.88,
+        hookText: 'Canada has more lakes than any other country. About how many?',
+        options: [
+            { id: 'a', text: 'About 500,000' },
+            { id: 'b', text: 'About 1 million' },
+            { id: 'c', text: 'About 2 million' },
+            { id: 'd', text: 'About 3 million' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Canada has about 2 million lakes — more than all other countries combined! The Great Lakes hold 20% of the world\'s fresh surface water. If you visited one Canadian lake per day, it would take over 5,400 years to see them all! 🏞️',
+        explanationShort: 'Canada: 2 million lakes — more than rest of world!',
+        source: 'Natural Resources Canada',
+    },
+    {
+        id: 'namerica-can-002',
+        continent: 'NORTH_AMERICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Canada',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Canada produces how much of the world\'s maple syrup?',
+        options: [
+            { id: 'a', text: 'About 50%' },
+            { id: 'b', text: 'About 65%' },
+            { id: 'c', text: 'About 70%' },
+            { id: 'd', text: 'About 85%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Canada produces about 70% of the world\'s maple syrup — Quebec alone produces 90% of that! It takes 40 gallons of sap to make 1 gallon of syrup. Canada even has a "Global Strategic Maple Syrup Reserve" like oil reserves! 🍁',
+        explanationShort: 'Canada: 70% of world\'s maple syrup — has strategic reserves!',
+        source: 'Quebec Maple Producers',
+    },
+    {
+        id: 'namerica-mex-001',
+        continent: 'NORTH_AMERICA',
+        category: 'HISTORY',
+        subCategory: 'Mexico',
+        difficulty: 0.4,
+        fascinationScore: 0.93,
+        hookText: 'The Aztec capital Tenochtitlan was built on a lake. What city stands there today?',
+        options: [
+            { id: 'a', text: 'Guadalajara' },
+            { id: 'b', text: 'Cancún' },
+            { id: 'c', text: 'Mexico City' },
+            { id: 'd', text: 'Monterrey' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Mexico City was built on top of Tenochtitlan! The Aztec city had 200,000 people in 1500 — larger than most European cities. It was built on islands in Lake Texcoco. Mexico City is now sinking because they drained the lake and built on soft soil! 🏛️',
+        explanationShort: 'Mexico City: Built on Tenochtitlan — now sinking!',
+        source: 'National Geographic',
+    },
+    {
+        id: 'namerica-mex-002',
+        continent: 'NORTH_AMERICA',
+        category: 'CULTURE',
+        subCategory: 'Mexico',
+        difficulty: 0.3,
+        fascinationScore: 0.92,
+        hookText: 'Mexico celebrates Day of the Dead (Día de los Muertos). How many days is it?',
+        options: [
+            { id: 'a', text: '1 day' },
+            { id: 'b', text: '2 days' },
+            { id: 'c', text: '3 days' },
+            { id: 'd', text: '7 days' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Day of the Dead lasts 3 days (October 31 - November 2)! Families honor deceased loved ones with altars, marigolds, sugar skulls, and favorite foods. It\'s NOT scary — it\'s a celebration of life! UNESCO declared it an Intangible Cultural Heritage. 💀🌺',
+        explanationShort: 'Day of the Dead: 3 days — celebrates life, not scary!',
+        source: 'UNESCO',
+    },
+    {
+        id: 'namerica-can-003',
+        continent: 'NORTH_AMERICA',
+        category: 'SPORTS',
+        subCategory: 'Canada',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'Ice hockey is Canada\'s national winter sport. How many NHL teams are Canadian?',
+        options: [
+            { id: 'a', text: '5 teams' },
+            { id: 'b', text: '7 teams' },
+            { id: 'c', text: '9 teams' },
+            { id: 'd', text: '11 teams' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Canada has 7 NHL teams — but no Canadian team has won the Stanley Cup since 1993 (Montreal Canadiens)! Over 40% of NHL players are Canadian. Canada also invented basketball — James Naismith was Canadian! 🏒',
+        explanationShort: 'Canada NHL: 7 teams — no Cup since 1993!',
+        source: 'NHL',
+    },
+];
+
+// ============================================================================
+// NORTH AMERICA - BATCH 4: CENTRAL AMERICA & CARIBBEAN (10 questions)
+// ============================================================================
+
+const centralAmericaCaribbean: Question[] = [
+    {
+        id: 'namerica-car-001',
+        continent: 'NORTH_AMERICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Caribbean',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'Jamaica is famous for giving the world what music genre?',
+        options: [
+            { id: 'a', text: 'Jazz' },
+            { id: 'b', text: 'Reggae' },
+            { id: 'c', text: 'Salsa' },
+            { id: 'd', text: 'Hip hop' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'Jamaica gave the world reggae music! Bob Marley is the most famous reggae artist ever. Jamaica also invented ska and dancehall. Despite being only 2.9 million people, Jamaica has an outsized cultural influence — Usain Bolt is also Jamaican! 🎵🇯🇲',
+        explanationShort: 'Jamaica: Reggae, Bob Marley, Usain Bolt — 2.9 million people!',
+        source: 'UNESCO',
+    },
+    {
+        id: 'namerica-car-002',
+        continent: 'NORTH_AMERICA',
+        category: 'FUN_FACTS',
+        subCategory: 'Caribbean',
+        difficulty: 0.4,
+        fascinationScore: 0.88,
+        hookText: 'Cuba is famous for classic American cars from the 1950s. Why are there so many?',
+        options: [
+            { id: 'a', text: 'Cubans love vintage cars' },
+            { id: 'b', text: 'US embargo prevented new imports' },
+            { id: 'c', text: 'They\'re cheaper' },
+            { id: 'd', text: 'Historic preservation law' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The US embargo since 1962 prevented new American cars from entering Cuba! About 60,000 classic cars from the 1950s still drive there. Cubans are masters at keeping them running with homemade parts. They\'re now a tourist attraction! 🚗',
+        explanationShort: 'Cuba: 60,000 1950s cars — US embargo kept them running!',
+        source: 'Smithsonian',
+    },
+    {
+        id: 'namerica-ca-001',
+        continent: 'NORTH_AMERICA',
+        category: 'GEOGRAPHY',
+        subCategory: 'Central America',
+        difficulty: 0.4,
+        fascinationScore: 0.9,
+        hookText: 'The Panama Canal connects which two oceans?',
+        options: [
+            { id: 'a', text: 'Atlantic and Indian' },
+            { id: 'b', text: 'Atlantic and Pacific' },
+            { id: 'c', text: 'Pacific and Indian' },
+            { id: 'd', text: 'Atlantic and Arctic' },
+        ],
+        correctAnswer: 'b',
+        explanation: 'The Panama Canal connects the Atlantic and Pacific Oceans! It saves ships 8,000 miles of travel around South America. About 14,000 ships pass through yearly. The canal uses locks to lift ships 85 feet above sea level and back down! 🚢',
+        explanationShort: 'Panama Canal: Atlantic to Pacific — saves 8,000 miles!',
+        source: 'Panama Canal Authority',
+    },
+    {
+        id: 'namerica-ca-002',
+        continent: 'NORTH_AMERICA',
+        category: 'NATURE_WILDLIFE',
+        subCategory: 'Central America',
+        difficulty: 0.4,
+        fascinationScore: 0.92,
+        hookText: 'Costa Rica has 5% of the world\'s biodiversity despite being tiny. What percentage of its land is protected?',
+        options: [
+            { id: 'a', text: 'About 10%' },
+            { id: 'b', text: 'About 15%' },
+            { id: 'c', text: 'About 25%' },
+            { id: 'd', text: 'About 30%' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'Costa Rica protects about 25% of its land as national parks and reserves! It has 500,000+ species. It runs on 99% renewable energy. They abolished their army in 1949 and used the money for education and healthcare. "Pura Vida"! 🌿',
+        explanationShort: 'Costa Rica: 25% protected — 5% of world\'s species!',
+        source: 'Costa Rica Tourism Board',
+    },
+    {
+        id: 'namerica-car-003',
+        continent: 'NORTH_AMERICA',
+        category: 'RECORDS',
+        subCategory: 'Caribbean',
+        difficulty: 0.5,
+        fascinationScore: 0.87,
+        hookText: 'The Dominican Republic shares an island with which other country?',
+        options: [
+            { id: 'a', text: 'Cuba' },
+            { id: 'b', text: 'Puerto Rico' },
+            { id: 'c', text: 'Haiti' },
+            { id: 'd', text: 'Jamaica' },
+        ],
+        correctAnswer: 'c',
+        explanation: 'The Dominican Republic and Haiti share the island of Hispaniola! It\'s the only island in the Caribbean divided between two nations. The border is visible from space because of different deforestation levels. DR has 10 million people, Haiti 11 million! 🏝️',
+        explanationShort: 'Hispaniola: DR + Haiti — border visible from space!',
+        source: 'National Geographic',
+    },
+];
+
+// ============================================================================
 // COMBINE ALL NORTH AMERICA QUESTIONS
 // ============================================================================
 
@@ -1674,6 +1878,9 @@ export const northAmericaQuestionsExpanded: Question[] = [
     ...foodBatch3,
     ...festivalsBatch3,
     ...musicBatch3,
+    // Batch 4
+    ...canadaMexicoBatch4,
+    ...centralAmericaCaribbean,
 ];
 
 export default northAmericaQuestionsExpanded;
